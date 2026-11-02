@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101a17">
+  <meta name="description" content="Catálogo informativo de peptídeos. Consulte apresentações e fale com nossa equipe pelo WhatsApp.">
+  <title>Brazil Peptides — Catálogo</title>
+  <style>
+    :root{--bg:#f5f6f2;--paper:#fff;--ink:#17211e;--muted:#68736e;--line:#e2e7e1;--green:#245b49;--green2:#dcebe3;--dark:#101a17;--gold:#c8a96b;--radius:20px;--shadow:0 16px 48px rgba(24,43,34,.08)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.55}
+    a{color:inherit}button,input{font:inherit}.wrap{width:min(1160px,calc(100% - 40px));margin:auto}
+    .topbar{background:var(--dark);color:#dce6df;font-size:12px;letter-spacing:.08em;text-align:center;padding:9px 16px}
+    header{background:rgba(255,255,255,.92);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;backdrop-filter:blur(14px)}
+    .nav{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .brand{display:flex;align-items:center;gap:12px;text-decoration:none}.mark{width:39px;height:39px;border-radius:13px;background:var(--green);color:white;display:grid;place-items:center;font-weight:800;letter-spacing:-.08em}.brand-name{font-weight:800;letter-spacing:.04em;font-size:15px}.brand-sub{font-size:10px;color:var(--muted);letter-spacing:.16em;text-transform:uppercase}
+    .navlinks{display:flex;align-items:center;gap:24px;font-size:13px;color:var(--muted)}.navlinks a{text-decoration:none}.navlinks a:hover{color:var(--green)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:0;border-radius:999px;padding:12px 18px;font-weight:700;font-size:13px;text-decoration:none;cursor:pointer;transition:transform .18s,background .18s}.btn:hover{transform:translateY(-1px)}.btn-primary{background:var(--green);color:white}.btn-primary:hover{background:#194b3a}.btn-light{background:var(--green2);color:var(--green)}
+    .hero{background:var(--dark);color:white;overflow:hidden;position:relative}.hero:after{content:"";position:absolute;width:520px;height:520px;border:1px solid rgba(200,169,107,.22);border-radius:50%;right:-130px;top:-230px;box-shadow:0 0 0 55px rgba(200,169,107,.035),0 0 0 110px rgba(200,169,107,.025);pointer-events:none}
+    .hero-inner{padding:82px 0 76px;max-width:760px;position:relative;z-index:1}.eyebrow{display:inline-flex;align-items:center;gap:9px;color:#d9c18f;font-size:11px;font-weight:800;letter-spacing:.17em;text-transform:uppercase}.eyebrow:before{content:"";width:24px;height:1px;background:var(--gold)}
+    h1{font-size:clamp(40px,6vw,68px);line-height:1.04;letter-spacing:-.055em;margin:20px 0 20px;font-weight:750}.hero p{max-width:580px;color:#bfcac3;font-size:16px;margin:0 0 28px}.hero-actions{display:flex;gap:12px;flex-wrap:wrap}.hero .btn-light{background:#27352f;color:#eaf0ec}.hero-note{margin-top:32px;color:#95a49b;font-size:11px;max-width:570px}
+    .trust-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border-bottom:1px solid var(--line)}.trust-item{background:var(--paper);padding:21px max(20px,calc((100vw - 1160px)/2));padding-right:20px}.trust-item strong{display:block;font-size:13px}.trust-item span{display:block;color:var(--muted);font-size:12px;margin-top:3px}
+    main{padding:66px 0 76px}.section-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:25px}.kicker{font-size:11px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--green)}h2{font-size:clamp(29px,4vw,40px);letter-spacing:-.045em;line-height:1.1;margin:9px 0 0}.section-desc{color:var(--muted);font-size:13px;max-width:420px;margin:0}
+    .toolbar{display:flex;gap:12px;align-items:center;justify-content:space-between;margin:26px 0}.search{position:relative;max-width:360px;width:100%}.search input{width:100%;border:1px solid var(--line);background:white;border-radius:999px;padding:12px 16px 12px 42px;outline:none;color:var(--ink)}.search input:focus{border-color:var(--green)}.search svg{position:absolute;left:15px;top:14px;color:#7c8981}.result-count{font-size:12px;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.product{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;transition:transform .2s,box-shadow .2s,border-color .2s}.product:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:#cbd8cf}.product-art{height:145px;background:linear-gradient(135deg,#e5eee7,#f6f5ef);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}.product-art:before,.product-art:after{content:"";position:absolute;border:1px solid rgba(36,91,73,.15);border-radius:50%;width:160px;height:160px}.product-art:after{width:105px;height:105px}.molecule{position:relative;z-index:1;width:50px;height:50px;border:1px solid #7ca08c;border-radius:17px;display:grid;place-items:center;color:var(--green);background:rgba(255,255,255,.7);font-size:18px;font-weight:700;transform:rotate(-8deg)}.product-body{padding:21px;display:flex;flex-direction:column;flex:1}.tag{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--green);font-weight:800}.product h3{font-size:21px;letter-spacing:-.035em;margin:7px 0}.short-desc{font-size:13px;color:var(--muted);margin:0 0 18px;min-height:40px}.price-row{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding-top:15px;margin-top:auto;gap:12px}.price-caption{font-size:10px;color:var(--muted)}.price{font-size:18px;font-weight:800;letter-spacing:-.03em}.product .btn{width:100%;margin-top:16px}
+    .empty{grid-column:1/-1;padding:38px;text-align:center;border:1px dashed var(--line);border-radius:var(--radius);color:var(--muted)}
+    .about{background:#e9eee8;padding:58px 0}.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:start}.about p{color:#59675f;font-size:14px}.about-card{background:rgba(255,255,255,.72);border:1px solid #dbe3db;padding:24px;border-radius:var(--radius)}.about-card strong{display:block;margin-bottom:8px}.about-card p{margin:0;font-size:13px}
+    .faq{padding:65px 0}.faq-list{margin-top:24px;border-top:1px solid var(--line)}details{padding:19px 0;border-bottom:1px solid var(--line)}summary{font-weight:700;font-size:14px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:20px}summary:after{content:"+";font-size:20px;color:var(--green);line-height:1}details[open] summary:after{content:"−"}details p{color:var(--muted);font-size:13px;max-width:780px;margin:12px 0 0}
+    footer{background:var(--dark);color:#c6d0ca;padding:34px 0}.footer-row{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}.footer-brand{color:white;font-weight:800;letter-spacing:.06em}.footer-small{font-size:11px;color:#8e9d94;max-width:600px;margin-top:8px}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(8,17,13,.65);z-index:30;display:none;align-items:center;justify-content:center;padding:20px}.modal-backdrop.open{display:flex}.modal{background:white;border-radius:24px;width:min(650px,100%);max-height:min(88vh,850px);overflow:auto;box-shadow:0 25px 100px rgba(0,0,0,.25)}.modal-top{padding:25px 28px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:20px;align-items:start}.modal-top h2{font-size:29px;margin:7px 0}.close{border:0;background:#f0f3ef;border-radius:50%;width:36px;height:36px;font-size:21px;cursor:pointer;color:var(--ink);flex-shrink:0}.modal-content{padding:24px 28px 28px}.modal-content h3{font-size:13px;margin:22px 0 7px}.modal-content p,.modal-content li{font-size:13px;color:#59675f}.modal-content p{margin:0}.modal-content ul{padding-left:20px}.variant-list{display:grid;gap:9px;margin:14px 0 18px}.variant{display:flex;justify-content:space-between;align-items:center;gap:14px;border:1px solid var(--line);border-radius:13px;padding:13px 15px;cursor:pointer}.variant:has(input:checked){border-color:var(--green);background:#f2f7f3}.variant input{accent-color:var(--green)}.variant-label{font-size:13px;font-weight:700}.variant-price{font-weight:800}.modal-disclaimer{background:#f5f6f2;padding:13px 15px;border-radius:12px;margin:18px 0;color:#68736e;font-size:11px}.modal .btn{width:100%}.wa-icon{font-size:17px}
+    @media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.navlinks{gap:12px}.trust-item{padding-left:20px}.about-grid{gap:25px}}
+    @media(max-width:600px){.wrap{width:min(100% - 28px,1160px)}.nav{min-height:66px}.navlinks a:not(.btn){display:none}.navlinks .btn{padding:10px 13px;font-size:12px}.hero-inner{padding:60px 0 54px}.hero p{font-size:14px}.trust-row{grid-template-columns:1fr}.trust-item{padding:14px 20px}.trust-item span{font-size:11px}main{padding:48px 0}.section-head{display:block}.section-desc{margin-top:14px}.toolbar{align-items:start;flex-direction:column}.search{max-width:none}.grid{grid-template-columns:1fr;gap:13px}.product-art{height:120px}.product-body{padding:18px}.short-desc{min-height:0}.about-grid{grid-template-columns:1fr}.about{padding:44px 0}.faq{padding:48px 0}.modal-top{padding:21px 20px 16px}.modal-content{padding:20px}.footer-row{align-items:start;flex-direction:column}}
+  </style>
+</head>
+<body>
+  <div class="topbar">CATÁLOGO INFORMATIVO · ATENDIMENTO DIRETO PELO WHATSAPP</div>
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="#" aria-label="Brazil Peptides início"><span class="mark">BP</span><span><span class="brand-name" id="brandName">BRAZIL PEPTIDES</span><br><span class="brand-sub">Research catalog</span></span></a>
+      <nav class="navlinks" aria-label="Navegação"><a href="#catalogo">Catálogo</a><a href="#sobre">Informações</a><a href="#duvidas">Dúvidas</a><a id="navWhatsapp" class="btn btn-primary" href="#" target="_blank" rel="noopener">Falar no WhatsApp ↗</a></nav>
+    </div>
+  </header>
+  <section class="hero">
+    <div class="wrap"><div class="hero-inner">
+      <div class="eyebrow">Conheça nosso catálogo</div>
+      <h1>Informação clara.<br>Atendimento direto.</h1>
+      <p>Explore as apresentações disponíveis, consulte os valores e fale com nossa equipe para tirar dúvidas sobre o catálogo.</p>
+      <div class="hero-actions"><a class="btn btn-primary" href="#catalogo">Explorar produtos ↓</a><a id="heroWhatsapp" class="btn btn-light" href="#" target="_blank" rel="noopener">↗ Conversar no WhatsApp</a></div>
+      <div class="hero-note">Os conteúdos são informativos e não substituem avaliação de profissionais de saúde ou orientação regulatória aplicável.</div>
+    </div></div>
+  </section>
+  <div class="trust-row">
+    <div class="trust-item"><strong>Catálogo transparente</strong><span>Apresentações e valores por tamanho</span></div>
+    <div class="trust-item"><strong>Atendimento direto</strong><span>Converse com nossa equipe pelo WhatsApp</span></div>
+    <div class="trust-item"><strong>Informação responsável</strong><span>Consulte fontes e situação regulatória</span></div>
+  </div>
+  <main id="catalogo">
+    <div class="wrap">
+      <div class="section-head"><div><div class="kicker">Produtos</div><h2>Explore o catálogo</h2></div><p class="section-desc">Selecione um produto para ver a descrição informativa, consultar os tamanhos e escolher uma apresentação para perguntar pelo WhatsApp.</p></div>
+      <div class="toolbar"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><input id="search" type="search" placeholder="Buscar produto..." aria-label="Buscar produto"></label><span class="result-count" id="resultCount"></span></div>
+      <div class="grid" id="productGrid"><div class="empty">Carregando catálogo…</div></div>
+    </div>
+  </main>
+  <section class="about" id="sobre"><div class="wrap about-grid">
+    <div><div class="kicker">Sobre as informações</div><h2>Conheça antes de consultar.</h2><p>As descrições de cada item devem apresentar informações verificáveis, distinguir estudos preliminares de evidências clínicas e evitar promessas de resultado. A finalidade e a situação regulatória podem variar conforme a substância e o país.</p></div>
+    <div class="about-card"><strong>Importante</strong><p>Este catálogo não oferece diagnóstico, prescrição ou orientação de dose, preparo ou administração. Não utilize substâncias para fins terapêuticos sem orientação de profissional habilitado. Confirme a legalidade, a procedência e a situação regulatória antes de qualquer decisão.</p></div>
+  </div></section>
+  <section class="faq" id="duvidas"><div class="wrap"><div class="kicker">Ajuda</div><h2>Dúvidas frequentes</h2><div class="faq-list">
+    <details><summary>Como consultar um produto?</summary><p>Abra o produto no catálogo, selecione uma apresentação e clique no botão para enviar uma mensagem pré-preenchida pelo WhatsApp. A mensagem abre no aplicativo ou no WhatsApp Web; você decide se deseja enviá-la.</p></details>
+    <details><summary>Como os preços são atualizados?</summary><p>Os produtos, textos, tamanhos e preços são lidos do arquivo <code>data/catalog.json</code>. Edite esse arquivo no GitHub e publique as alterações para atualizar o site.</p></details>
+    <details><summary>As descrições são orientação médica?</summary><p>Não. O conteúdo é apenas informativo e não substitui aconselhamento profissional, avaliação de evidências ou consulta à autoridade regulatória competente.</p></details>
+  </div></div></section>
+  <footer><div class="wrap footer-row"><div><div class="footer-brand" id="footerBrand">BRAZIL PEPTIDES</div><div class="footer-small">Conteúdo informativo. Não são feitas promessas de eficácia ou resultados. Verifique as regras e exigências legais aplicáveis antes de disponibilizar qualquer produto.</div></div><a id="footerWhatsapp" class="btn btn-light" href="#" target="_blank" rel="noopener">Falar com a equipe ↗</a></div></footer>
+  <div class="modal-backdrop" id="productModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal"><div class="modal-top"><div><div class="kicker" id="modalCategory">CATÁLOGO</div><h2 id="modalTitle">Produto</h2></div><button class="close" id="closeModal" aria-label="Fechar">×</button></div><div class="modal-content" id="modalContent"></div></div>
+  </div>
+  <script>
+    const grid = document.getElementById('productGrid');
+    const modal = document.getElementById('productModal');
+    const search = document.getElementById('search');
+    let catalog = { brand: 'Brazil Peptides', whatsapp: '', products: [] };
+    let selectedProduct = null;
+
+    function money(value) {
+      return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 2 }).format(Number(value));
+    }
+    function waUrl(message) {
+      const digits = String(catalog.whatsapp || '').replace(/\D/g, '');
+      return 'https://wa.me/' + digits + '?text=' + encodeURIComponent(message);
+    }
+    function safeText(value) {
+      return String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+    }
+    function productMinPrice(product) {
+      const prices = (product.variants || []).map(v => Number(v.price)).filter(n => Number.isFinite(n) && n >= 0);
+      return prices.length ? Math.min(...prices) : null;
+    }
+    function renderProducts() {
+      const query = search.value.trim().toLocaleLowerCase('pt-BR');
+      const products = (catalog.products || []).filter(p => p.active !== false && [p.name,p.category,p.shortDescription,p.description].join(' ').toLocaleLowerCase('pt-BR').includes(query));
+      document.getElementById('resultCount').textContent = products.length + (products.length === 1 ? ' produto' : ' produtos');
+      if (!products.length) { grid.innerHTML = '<div class="empty">Nenhum produto encontrado. Tente outro termo de busca.</div>'; return; }
+      grid.innerHTML = products.map(p => {
+        const min = productMinPrice(p);
+        const priceText = min === null ? 'Consulte' : 'A partir de ' + money(min);
+        return '<article class="product"><div class="product-art" aria-hidden="true"><div class="molecule">✳</div></div><div class="product-body"><div class="tag">' + safeText(p.category || 'Catálogo') + '</div><h3>' + safeText(p.name) + '</h3><p class="short-desc">' + safeText(p.shortDescription || 'Abra para consultar os detalhes do produto.') + '</p><div class="price-row"><div><div class="price-caption">VALORES</div><div class="price">' + priceText + '</div></div><span class="tag">' + (p.variants || []).length + ' tamanhos</span></div><button class="btn btn-primary" type="button" data-product="' + safeText(p.id) + '">Ver detalhes ↗</button></div></article>';
+      }).join('');
+      grid.querySelectorAll('[data-product]').forEach(btn => btn.addEventListener('click', () => openProduct(btn.dataset.product)));
+    }
+    function openProduct(id) {
+      const p = (catalog.products || []).find(item => item.id === id);
+      if (!p) return;
+      selectedProduct = p;
+      document.getElementById('modalCategory').textContent = p.category || 'CATÁLOGO';
+      document.getElementById('modalTitle').textContent = p.name;
+      const variants = (p.variants || []);
+      const variantHtml = variants.length ? '<h3>Escolha uma apresentação</h3><div class="variant-list">' + variants.map((v,i) => '<label class="variant"><span style="display:flex;align-items:center;gap:10px"><input type="radio" name="variant" value="' + i + '" ' + (i===0?'checked':'') + '><span class="variant-label">' + safeText(v.size) + '</span></span><span class="variant-price">' + money(v.price) + '</span></label>').join('') + '</div>' : '<p>Consulte a equipe para informações sobre apresentações.</p>';
+      const useHtml = p.uses ? '<h3>Usos investigados / finalidade descrita</h3><p>' + safeText(p.uses) + '</p>' : '';
+      const evidenceHtml = p.evidence ? '<h3>Contexto das evidências</h3><p>' + safeText(p.evidence) + '</p>' : '';
+      const disclaimer = p.disclaimer || 'Informação geral, não é recomendação médica. Não use para diagnóstico, prevenção ou tratamento sem orientação profissional. Verifique a situação regulatória aplicável.';
+      document.getElementById('modalContent').innerHTML = '<p>' + safeText(p.description || '') + '</p>' + useHtml + evidenceHtml + variantHtml + '<div class="modal-disclaimer">' + safeText(disclaimer) + '</div><button class="btn btn-primary" id="askWhatsapp"><span class="wa-icon">↗</span> Consultar pelo WhatsApp</button>';
+      document.getElementById('askWhatsapp').addEventListener('click', () => {
+        const chosen = modal.querySelector('input[name="variant"]:checked');
+        const variant = chosen ? variants[Number(chosen.value)] : null;
+        const message = 'Olá! Gostaria de consultar sobre ' + p.name + (variant ? ' — apresentação ' + variant.size + ' (' + money(variant.price) + ')' : '') + '. Poderiam me passar mais informações?';
+        if (!catalog.whatsapp || catalog.whatsapp.replace(/\D/g, '').length < 10) {
+          alert('Configure o número de WhatsApp em data/catalog.json antes de publicar o site.');
+          return;
+        }
+        window.open(waUrl(message), '_blank', 'noopener,noreferrer');
+      });
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      document.getElementById('closeModal').focus();
+    }
+    function closeModal() { modal.classList.remove('open'); document.body.style.overflow = ''; }
+    document.getElementById('closeModal').addEventListener('click', closeModal);
+    modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+    search.addEventListener('input', renderProducts);
+
+    fetch('./data/catalog.json')
+      .then(response => { if (!response.ok) throw new Error('Não foi possível carregar o catálogo'); return response.json(); })
+      .then(data => {
+        catalog = { ...catalog, ...data };
+        const brand = catalog.brand || 'Brazil Peptides';
+        document.getElementById('brandName').textContent = brand.toUpperCase();
+        document.getElementById('footerBrand').textContent = brand.toUpperCase();
+        document.title = brand + ' — Catálogo';
+        const links = ['navWhatsapp','heroWhatsapp','footerWhatsapp'];
+        links.forEach(id => {
+          const link = document.getElementById(id);
+          link.href = catalog.whatsapp && catalog.whatsapp.replace(/\D/g,'').length >= 10 ? waUrl('Olá! Gostaria de mais informações sobre o catálogo.') : '#catalogo';
+          if (!catalog.whatsapp) link.title = 'Configure o WhatsApp em data/catalog.json';
+        });
+        renderProducts();
+      })
+      .catch(() => { grid.innerHTML = '<div class="empty">Não foi possível carregar o catálogo. Confira se o arquivo <code>data/catalog.json</code> existe e contém JSON válido.</div>'; });
+  </script>
+</body>
+</html>
