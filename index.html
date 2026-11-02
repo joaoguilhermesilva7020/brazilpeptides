@@ -118,21 +118,64 @@
       const useHtml = p.uses ? '<h3>Usos investigados / finalidade descrita</h3><p>' + safeText(p.uses) + '</p>' : '';
       const evidenceHtml = p.evidence ? '<h3>Contexto das evidências</h3><p>' + safeText(p.evidence) + '</p>' : '';
       const disclaimer = p.disclaimer || 'Informação geral, não é recomendação médica. Não use para diagnóstico, prevenção ou tratamento sem orientação profissional. Verifique a situação regulatória aplicável.';
-      document.getElementById('modalContent').innerHTML = '<p>' + safeText(p.description || '') + '</p>' + useHtml + evidenceHtml + variantHtml + '<div class="modal-disclaimer">' + safeText(disclaimer) + '</div><button class="btn btn-primary" id="askWhatsapp"><span class="wa-icon">↗</span> Consultar pelo WhatsApp</button>';
-      document.getElementById('askWhatsapp').addEventListener('click', () => {
-        const chosen = modal.querySelector('input[name="variant"]:checked');
-        const variant = chosen ? variants[Number(chosen.value)] : null;
-        const message = 'Olá! Gostaria de consultar sobre ' + p.name + (variant ? ' — apresentação ' + variant.size + ' (' + money(variant.price) + ')' : '') + '. Poderiam me passar mais informações?';
-        if (!catalog.whatsapp || catalog.whatsapp.replace(/\D/g, '').length < 10) {
-          alert('Configure o número de WhatsApp em data/catalog.json antes de publicar o site.');
-          return;
-        }
-        window.open(waUrl(message), '_blank', 'noopener,noreferrer');
-      });
+      document.getElementById('modalContent').innerHTML = '<p>' + safeText(p.description || '') + '</p>' + useHtml + evidenceHtml + variantHtml + '<div class="modal-disclaimer">' + safeText(disclaimer) + '</div><button class="btn btn-primary" id="addFromDetails"><span class="wa-icon">＋</span> Adicionar ao carrinho</button>';
+      document.getElementById('addFromDetails').addEventListener('click', () => { const chosen = modal.querySelector('input[name="variant"]:checked'); const variant = chosen ? variants[Number(chosen.value)] : null; if (!variant) { alert('Este produto não possui apresentação cadastrada.'); return; } addToCart(p, variant); closeModal(); openCart(); });
       modal.classList.add('open');
       document.body.style.overflow = 'hidden';
       document.getElementById('closeModal').focus();
     }
+
+    const cart = new Map();
+    const cartBackdrop = document.getElementById('cartBackdrop');
+    const cartItemsEl = document.getElementById('cartItems');
+    const cartTotalEl = document.getElementById('cartTotal');
+    const cartCountEl = document.getElementById('cartCount');
+    const toastEl = document.getElementById('toast');
+    let toastTimer;
+    function addToCart(product, variant) {
+      const key = String(product.id) + '::' + String(variant.size);
+      const existing = cart.get(key);
+      if (existing) existing.qty += 1;
+      else cart.set(key, { id: product.id, name: product.name, size: variant.size, price: Number(variant.price), qty: 1 });
+      renderCart();
+      toastEl.textContent = product.name + ' adicionado ao carrinho';
+      toastEl.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toastEl.classList.remove('show'), 1800);
+    }
+    function changeQty(key, delta) { const item = cart.get(key); if (!item) return; item.qty += delta; if (item.qty <= 0) cart.delete(key); renderCart(); }
+    function renderCart() {
+      const count = [...cart.values()].reduce((sum, item) => sum + item.qty, 0);
+      const total = [...cart.values()].reduce((sum, item) => sum + item.price * item.qty, 0);
+      cartCountEl.textContent = count;
+      cartTotalEl.textContent = money(total);
+      if (!count) {
+        cartItemsEl.innerHTML = '<div class="cart-empty">Seu carrinho está vazio.<br><span>Adicione produtos do catálogo para continuar.</span></div>';
+        document.getElementById('checkoutWhatsapp').disabled = true;
+        document.getElementById('checkoutWhatsapp').style.opacity = '.55';
+        return;
+      }
+      document.getElementById('checkoutWhatsapp').disabled = false;
+      document.getElementById('checkoutWhatsapp').style.opacity = '1';
+      cartItemsEl.innerHTML = [...cart.entries()].map(([key, item]) => '<div class="cart-line"><div class="cart-line-top"><div><div class="cart-line-name">' + safeText(item.name) + '</div><div class="cart-line-meta">' + safeText(item.size) + ' · ' + money(item.price) + ' por unidade</div></div><div class="cart-line-price">' + money(item.price * item.qty) + '</div></div><div class="cart-line-controls"><div class="qty-control"><button type="button" data-qty="-1" data-key="' + safeText(key) + '" aria-label="Diminuir quantidade">−</button><span>' + item.qty + '</span><button type="button" data-qty="1" data-key="' + safeText(key) + '" aria-label="Aumentar quantidade">+</button></div><button type="button" class="remove-item" data-remove="' + safeText(key) + '">Remover</button></div></div>').join('');
+      cartItemsEl.querySelectorAll('[data-qty]').forEach(btn => btn.addEventListener('click', () => changeQty(btn.dataset.key, Number(btn.dataset.qty))));
+      cartItemsEl.querySelectorAll('[data-remove]').forEach(btn => btn.addEventListener('click', () => { cart.delete(btn.dataset.remove); renderCart(); }));
+    }
+    function openCart() { renderCart(); cartBackdrop.classList.add('open'); document.body.style.overflow = 'hidden'; document.getElementById('closeCart').focus(); }
+    function closeCart() { cartBackdrop.classList.remove('open'); document.body.style.overflow = ''; }
+    document.getElementById('openCart').addEventListener('click', openCart);
+    document.getElementById('closeCart').addEventListener('click', closeCart);
+    cartBackdrop.addEventListener('click', e => { if (e.target === cartBackdrop) closeCart(); });
+    document.getElementById('checkoutWhatsapp').addEventListener('click', () => {
+      if (!cart.size) return;
+      if (!catalog.whatsapp || catalog.whatsapp.replace(/\D/g, '').length < 10) { alert('Configure o número de WhatsApp em data/catalog.json antes de publicar o site.'); return; }
+      const items = [...cart.values()];
+      const total = items.reduce((sum, item) => sum + item.price * item.qty, 0);
+      const lines = items.map(item => '• ' + item.name + ' — ' + item.size + ' | Qtd: ' + item.qty + ' | ' + money(item.price * item.qty));
+      const message = 'Olá! Gostaria de concluir meu pedido:\n\n' + lines.join('\n') + '\n\nTotal estimado: ' + money(total) + '\n\nPoderiam confirmar disponibilidade e próximos passos?';
+      window.open(waUrl(message), '_blank', 'noopener,noreferrer');
+    });
+
     function closeModal() { modal.classList.remove('open'); document.body.style.overflow = ''; }
     document.getElementById('closeModal').addEventListener('click', closeModal);
     modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
