@@ -147,7 +147,7 @@
         document.getElementById('brandName').textContent = brand.toUpperCase();
         document.getElementById('footerBrand').textContent = brand.toUpperCase();
         document.title = brand + ' — Catálogo';
-        const links = ['navWhatsapp','heroWhatsapp','footerWhatsapp'];
+        const links = ['heroWhatsapp','footerWhatsapp'];
         links.forEach(id => {
           const link = document.getElementById(id);
           link.href = catalog.whatsapp && catalog.whatsapp.replace(/\D/g,'').length >= 10 ? waUrl('Olá! Gostaria de mais informações sobre o catálogo.') : '#catalogo';
