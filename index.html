@@ -16,7 +16,7 @@
     .brand{display:flex;align-items:center;gap:12px;text-decoration:none}.mark{width:39px;height:39px;border-radius:13px;background:var(--green);color:white;display:grid;place-items:center;font-weight:800;letter-spacing:-.08em}.brand-name{font-weight:800;letter-spacing:.04em;font-size:15px}.brand-sub{font-size:10px;color:var(--muted);letter-spacing:.16em;text-transform:uppercase}
     .navlinks{display:flex;align-items:center;gap:24px;font-size:13px;color:var(--muted)}.navlinks a{text-decoration:none}.navlinks a:hover{color:var(--green)}
     .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:0;border-radius:999px;padding:12px 18px;font-weight:700;font-size:13px;text-decoration:none;cursor:pointer;transition:transform .18s,background .18s}.btn:hover{transform:translateY(-1px)}.btn-primary{background:var(--green);color:white}.btn-primary:hover{background:#194b3a}.btn-light{background:var(--green2);color:var(--green)}
-    .hero{background:var(--dark);color:white;overflow:hidden;position:relative}.hero:after{content:"";position:absolute;width:520px;height:520px;border:1px solid rgba(200,169,107,.22);border-radius:50%;right:-130px;top:-230px;box-shadow:0 0 0 55px rgba(200,169,107,.035),0 0 0 110px rgba(200,169,107,.025);pointer-events:none}
+    .hero{background:var(--dark);color:white;overflow:hidden;position:relative}.hero:after{content:"";position:absolute;width:520px;height:520px;border:1px solid rgba(92,180,125,.2);border-radius:50%;right:-130px;top:-230px;box-shadow:0 0 0 55px rgba(92,180,125,.035),0 0 0 110px rgba(92,180,125,.025);pointer-events:none}.hero-featured{background:radial-gradient(circle at 82% 45%,rgba(36,91,73,.48),transparent 35%),var(--dark)}.featured-copy{min-height:255px;max-width:720px}.featured-category{color:#9bd0ad;font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;margin-top:22px}.featured-copy h1{margin:10px 0 14px}.featured-copy p{max-width:650px;min-height:52px}.featured-meta{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:0 0 26px}.featured-meta span:first-child{font-size:13px;color:#d4dfd7;border-right:1px solid rgba(255,255,255,.25);padding-right:12px}.featured-price-label{font-size:11px;color:#9eafa4;text-transform:uppercase;letter-spacing:.12em}.featured-meta strong{font-size:23px;color:#fff}.featured-controls{display:flex;align-items:center;gap:12px;margin-top:24px}.featured-controls button{width:32px;height:32px;border:1px solid rgba(255,255,255,.24);border-radius:50%;background:transparent;color:white;font-size:21px;cursor:pointer}.featured-dots{display:flex;gap:7px}.featured-dot{width:7px;height:7px;padding:0;border:0!important;background:rgba(255,255,255,.3)!important}.featured-dot.active{width:22px;border-radius:99px;background:#8dcc9e!important}@media(max-width:600px){.hero-inner{padding:58px 0 52px}.featured-copy{min-height:280px}.featured-copy h1{font-size:clamp(36px,11vw,52px)}.featured-meta strong{font-size:20px}}
     .hero-inner{padding:82px 0 76px;max-width:760px;position:relative;z-index:1}.eyebrow{display:inline-flex;align-items:center;gap:9px;color:#d9c18f;font-size:11px;font-weight:800;letter-spacing:.17em;text-transform:uppercase}.eyebrow:before{content:"";width:24px;height:1px;background:var(--gold)}
     h1{font-size:clamp(40px,6vw,68px);line-height:1.04;letter-spacing:-.055em;margin:20px 0 20px;font-weight:750}.hero p{max-width:580px;color:#bfcac3;font-size:16px;margin:0 0 28px}.hero-actions{display:flex;gap:12px;flex-wrap:wrap}.hero .btn-light{background:#27352f;color:#eaf0ec}.hero-note{margin-top:32px;color:#95a49b;font-size:11px;max-width:570px}
     .trust-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border-bottom:1px solid var(--line)}.trust-item{background:var(--paper);padding:21px max(20px,calc((100vw - 1160px)/2));padding-right:20px}.trust-item strong{display:block;font-size:13px}.trust-item span{display:block;color:var(--muted);font-size:12px;margin-top:3px}
@@ -40,13 +40,18 @@
       <nav class="navlinks" aria-label="Navegação"><a href="#catalogo">Catálogo</a><a href="#calculadora">Calculadora</a><a href="#sobre">Informações</a><a href="#duvidas">Dúvidas</a><button id="openCart" class="btn btn-primary cart-trigger" type="button" aria-label="Abrir carrinho">Carrinho <span class="cart-count" id="cartCount">0</span></button></nav>
     </div>
   </header>
-  <section class="hero">
+  <section class="hero hero-featured" aria-label="Produtos em destaque">
     <div class="wrap"><div class="hero-inner">
-      <div class="eyebrow">Conheça nosso catálogo</div>
-      <h1>Informação clara.<br>Atendimento direto.</h1>
-      <p>Explore as apresentações disponíveis, consulte os valores e fale com nossa equipe para tirar dúvidas sobre o catálogo.</p>
-      <div class="hero-actions"><a class="btn btn-primary" href="#catalogo">Explorar produtos ↓</a><a id="heroWhatsapp" class="btn btn-light" href="#" target="_blank" rel="noopener">↗ Conversar no WhatsApp</a></div>
-      <div class="hero-note">Os conteúdos são informativos e não substituem avaliação de profissionais de saúde ou orientação regulatória aplicável.</div>
+      <div class="eyebrow">Destaques do catálogo</div>
+      <div class="featured-copy" aria-live="polite">
+        <div class="featured-category" id="heroProductCategory">Conheça nossa seleção</div>
+        <h1 id="heroProductName">Explore nosso catálogo</h1>
+        <p id="heroProductDescription">Informações e apresentações disponíveis em nosso catálogo.</p>
+        <div class="featured-meta"><span id="heroProductSize"></span><span class="featured-price-label">A partir de</span><strong id="heroProductPrice"></strong></div>
+      </div>
+      <div class="hero-actions"><button class="btn btn-primary" id="heroBuyNow" type="button">Comprar agora ↗</button><a class="btn btn-light" href="#catalogo">Ver catálogo completo ↓</a></div>
+      <div class="featured-controls" aria-label="Navegação dos destaques"><button type="button" id="heroPrev" aria-label="Produto anterior">‹</button><div id="heroDots" class="featured-dots"></div><button type="button" id="heroNext" aria-label="Próximo produto">›</button></div>
+      <div class="hero-note">Conteúdo informativo sobre produtos investigacionais. Não constitui recomendação de uso ou alegação de eficácia clínica.</div>
     </div></div>
   </section>
   <div class="trust-row">
@@ -138,6 +143,46 @@
       const prices = (product.variants || []).map(v => Number(v.price)).filter(n => Number.isFinite(n) && n >= 0);
       return prices.length ? Math.min(...prices) : null;
     }
+    let featuredProducts = [];
+    let featuredIndex = 0;
+    let featuredTimer = null;
+    function renderFeaturedProduct() {
+      if (!featuredProducts.length) return;
+      const p = featuredProducts[featuredIndex];
+      const variants = [...(p.variants || [])].sort((a,b) => Number(a.price) - Number(b.price));
+      const featuredVariant = variants[0];
+      document.getElementById('heroProductCategory').textContent = p.category || 'Destaque do catálogo';
+      document.getElementById('heroProductName').textContent = p.name;
+      document.getElementById('heroProductDescription').textContent = p.shortDescription || 'Consulte os detalhes e as apresentações disponíveis no catálogo.';
+      document.getElementById('heroProductSize').textContent = featuredVariant ? featuredVariant.size : 'Consulte apresentações';
+      document.getElementById('heroProductPrice').textContent = featuredVariant ? money(featuredVariant.price) : 'Consulte';
+      document.getElementById('heroBuyNow').dataset.product = p.id;
+      document.getElementById('heroDots').innerHTML = featuredProducts.map((item,i) => '<button type="button" class="featured-dot' + (i===featuredIndex?' active':'') + '" data-feature-index="' + i + '" aria-label="Ver destaque ' + (i+1) + '" aria-current="' + (i===featuredIndex?'true':'false') + '"></button>').join('');
+      document.querySelectorAll('[data-feature-index]').forEach(dot => dot.addEventListener('click', () => { featuredIndex = Number(dot.dataset.featureIndex); renderFeaturedProduct(); restartFeaturedTimer(); }));
+    }
+    function changeFeatured(direction) {
+      if (!featuredProducts.length) return;
+      featuredIndex = (featuredIndex + direction + featuredProducts.length) % featuredProducts.length;
+      renderFeaturedProduct();
+    }
+    function restartFeaturedTimer() {
+      if (featuredTimer) clearInterval(featuredTimer);
+      if (featuredProducts.length > 1 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        featuredTimer = setInterval(() => changeFeatured(1), 6500);
+      }
+    }
+    function setupFeaturedProducts() {
+      featuredProducts = (catalog.products || []).filter(p => p.active !== false && p.category !== 'Soluções & Diluentes' && (p.variants || []).length);
+      if (!featuredProducts.length) return;
+      renderFeaturedProduct();
+      restartFeaturedTimer();
+    }
+    document.getElementById('heroBuyNow').addEventListener('click', () => {
+      const id = document.getElementById('heroBuyNow').dataset.product;
+      if (id) openProduct(id);
+    });
+    document.getElementById('heroPrev').addEventListener('click', () => { changeFeatured(-1); restartFeaturedTimer(); });
+    document.getElementById('heroNext').addEventListener('click', () => { changeFeatured(1); restartFeaturedTimer(); });
     function renderProducts() {
       const query = search.value.trim().toLocaleLowerCase('pt-BR');
       const products = (catalog.products || []).filter(p => p.active !== false && [p.name,p.category,p.shortDescription,p.description].join(' ').toLocaleLowerCase('pt-BR').includes(query));
@@ -268,6 +313,7 @@
           if (!catalog.whatsapp) link.title = 'Configure o WhatsApp em data/catalog.json';
         });
         renderProducts();
+        setupFeaturedProducts();
       })
       .catch(error => {
         console.error('Erro ao carregar ou renderizar o catálogo:', error);
