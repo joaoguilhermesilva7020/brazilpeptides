@@ -83,6 +83,29 @@
     const search = document.getElementById('search');
     let catalog = { brand: 'Brazil Peptides', whatsapp: '', products: [] };
     let selectedProduct = null;
+    let currentAffiliate = null;
+    const AFFILIATE_STORAGE_KEY = 'bp_affiliate_id';
+
+    function findAffiliate(id) {
+      const normalized = String(id || '').trim().toUpperCase();
+      return (catalog.affiliates || []).find(a => a.active !== false && String(a.id || '').trim().toUpperCase() === normalized) || null;
+    }
+    function captureAffiliate() {
+      const params = new URLSearchParams(window.location.search);
+      const referralId = params.get('ref') || params.get('affiliate');
+      if (referralId) {
+        const match = findAffiliate(referralId);
+        if (match) {
+          currentAffiliate = match;
+          try { localStorage.setItem(AFFILIATE_STORAGE_KEY, match.id); } catch (_) {}
+          return;
+        }
+      }
+      try {
+        const savedId = localStorage.getItem(AFFILIATE_STORAGE_KEY);
+        currentAffiliate = savedId ? findAffiliate(savedId) : null;
+      } catch (_) { currentAffiliate = null; }
+    }
 
     function money(value) {
       return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 2 }).format(Number(value));
@@ -175,7 +198,8 @@
       const items = [...cart.values()];
       const total = items.reduce((sum, item) => sum + item.price * item.qty, 0);
       const lines = items.map(item => '• ' + item.name + ' — ' + item.size + ' | Qtd: ' + item.qty + ' | ' + money(item.price * item.qty));
-      const message = 'Olá! Gostaria de concluir meu pedido:\n\n' + lines.join('\n') + '\n\nTotal estimado: ' + money(total) + '\n\nPoderiam confirmar disponibilidade e próximos passos?';
+      const affiliateLine = currentAffiliate ? '\nAfiliado: ' + currentAffiliate.id + ' (' + currentAffiliate.name + ')' : '\nAfiliado: não informado';
+      const message = 'Olá! Gostaria de concluir meu pedido:\n\n' + lines.join('\n') + '\n\nTotal estimado: ' + money(total) + ' + affiliateLine + '\n\nPoderiam confirmar disponibilidade e próximos passos?';
       window.open(waUrl(message), '_blank', 'noopener,noreferrer');
     });
 
@@ -189,6 +213,7 @@
       .then(response => { if (!response.ok) throw new Error('Não foi possível carregar o catálogo'); return response.json(); })
       .then(data => {
         catalog = { ...catalog, ...data };
+        captureAffiliate();
         const brand = catalog.brand || 'Brazil Peptides';
         document.getElementById('brandName').textContent = brand.toUpperCase();
         document.getElementById('footerBrand').textContent = brand.toUpperCase();
