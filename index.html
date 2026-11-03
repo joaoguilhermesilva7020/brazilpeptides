@@ -84,6 +84,7 @@
     let catalog = { brand: 'Brazil Peptides', whatsapp: '', products: [] };
     let selectedProduct = null;
     let currentAffiliate = null;
+    let currentAffiliateId = '';
     const AFFILIATE_STORAGE_KEY = 'bp_affiliate_id';
 
     function findAffiliate(id) {
@@ -92,19 +93,24 @@
     }
     function captureAffiliate() {
       const params = new URLSearchParams(window.location.search);
-      const referralId = params.get('ref') || params.get('affiliate');
+      const referralId = (params.get('ref') || params.get('affiliate') || '').trim();
       if (referralId) {
-        const match = findAffiliate(referralId);
-        if (match) {
-          currentAffiliate = match;
-          try { localStorage.setItem(AFFILIATE_STORAGE_KEY, match.id); } catch (_) {}
-          return;
+        currentAffiliateId = referralId;
+        currentAffiliate = findAffiliate(referralId);
+        if (currentAffiliate) {
+          currentAffiliateId = currentAffiliate.id;
+          try { localStorage.setItem(AFFILIATE_STORAGE_KEY, currentAffiliate.id); } catch (_) {}
         }
+        return;
       }
       try {
         const savedId = localStorage.getItem(AFFILIATE_STORAGE_KEY);
         currentAffiliate = savedId ? findAffiliate(savedId) : null;
-      } catch (_) { currentAffiliate = null; }
+        currentAffiliateId = currentAffiliate ? currentAffiliate.id : '';
+      } catch (_) {
+        currentAffiliate = null;
+        currentAffiliateId = '';
+      }
     }
 
     function money(value) {
@@ -198,7 +204,7 @@
       const items = [...cart.values()];
       const total = items.reduce((sum, item) => sum + item.price * item.qty, 0);
       const lines = items.map(item => '• ' + item.name + ' — ' + item.size + ' | Qtd: ' + item.qty + ' | ' + money(item.price * item.qty));
-      const affiliateLine = currentAffiliate ? '\nAfiliado: ' + currentAffiliate.id + ' (' + currentAffiliate.name + ')' : '\nAfiliado: não informado';
+      const affiliateLine = currentAffiliateId ? '\\nRef do afiliado: ' + currentAffiliateId + (currentAffiliate && currentAffiliate.name ? ' (' + currentAffiliate.name + ')' : '') : '\\nRef do afiliado: não informado';
       const message = 'Olá! Gostaria de concluir meu pedido:\n\n' + lines.join('\n') + '\n\nTotal estimado: ' + money(total) + affiliateLine + '\n\nPoderiam confirmar disponibilidade e próximos passos?';
       window.open(waUrl(message), '_blank', 'noopener,noreferrer');
     });
