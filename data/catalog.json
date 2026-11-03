@@ -4,61 +4,72 @@
   "whatsapp": "5511999999999",
   "products": [
     {
-      "id": "peptideo-exemplo-01",
+      "id": "retatrutida",
       "active": true,
-      "name": "Peptídeo Exemplo 01",
-      "category": "Catálogo demonstrativo",
-      "shortDescription": "Substitua este texto por uma descrição curta, objetiva e verificável.",
-      "description": "Texto demonstrativo. Edite este campo com uma descrição factual do produto, incluindo identidade da substância e informações verificadas de procedência, sem promessas de resultados.",
-      "uses": "Descreva apenas finalidades documentadas e diferencie claramente pesquisa experimental de uso clínico estabelecido. Não apresente este campo como indicação ou recomendação médica.",
-      "evidence": "Resuma o nível de evidência com fontes verificáveis; diferencie estudos laboratoriais, estudos em animais e evidência clínica em humanos. Evite afirmações de eficácia não comprovadas.",
-      "disclaimer": "Conteúdo informativo, não é orientação médica. Não destinado a diagnóstico, prevenção ou tratamento. Confirme a situação regulatória e a legalidade antes de disponibilizar o produto.",
+      "name": "Retatrutida",
+      "category": "Peptídeo experimental",
+      "shortDescription": "Peptídeo experimental de ação tripla sobre os receptores GIP, GLP-1 e glucagon, investigado por seus efeitos sobre o apetite, o peso corporal e o metabolismo energético.",
+      "description": "## Retatrutida\n\nA retatrutida é um peptídeo experimental desenvolvido para ativar três receptores hormonais: GIP, GLP-1 e glucagon. Essa ação tripla é investigada por seus efeitos sobre a regulação do apetite, o metabolismo energético, o controle da glicose e o peso corporal.\n\n## Descrição do Produto\n\nA substância vem sendo estudada em ensaios clínicos relacionados à obesidade e a condições metabólicas. Seus mecanismos de ação envolvem vias hormonais associadas à saciedade, à regulação da glicemia e ao balanço energético.\n\n## Principais Características\n\n- Ação tripla sobre os receptores GIP, GLP-1 e glucagon.\n- Investigação científica relacionada ao controle do apetite e do peso corporal.\n- Estudo de efeitos sobre o metabolismo energético e a regulação da glicose.\n- A pureza depende do fabricante, do lote e do método analítico. Valores como 99,6%–99,8% só devem ser divulgados quando sustentados por certificado de análise verificável.",
+      "uses": "A retatrutida é investigada em estudos clínicos sobre obesidade e metabolismo. Não existe uma posologia aprovada para uso clínico rotineiro que possa ser recomendada para automedicação. Os esquemas utilizados em pesquisas são definidos por protocolos clínicos e supervisão médica. Não utilizar produtos de procedência incerta nem interpretar a quantidade indicada na embalagem como dose de aplicação.",
+      "evidence": "A retatrutida está em investigação clínica. Os estudos publicados avaliam alterações no peso corporal e em parâmetros metabólicos, mas os resultados dependem da população estudada, do protocolo e do período de acompanhamento. A eficácia e a segurança de longo prazo precisam ser avaliadas com base nos resultados completos dos ensaios clínicos. Não afirmar resultados garantidos nem atribuir pureza específica sem documentação do lote.",
+      "disclaimer": "Conteúdo informativo, não é orientação médica. A retatrutida é uma substância experimental e não deve ser apresentada como medicamento aprovado para uso rotineiro. Não há recomendação de automedicação, dose individual ou protocolo de aplicação neste catálogo. Confirme a situação regulatória, a procedência e a documentação técnica antes de qualquer disponibilização.",
       "variants": [
-        {
-          "size": "10 mg",
-          "price": 100
-        },
-        {
-          "size": "20 mg",
-          "price": 170
-        }
+        { "size": "10 mg", "price": 350 },
+        { "size": "20 mg", "price": 700 },
+        { "size": "30 mg", "price": 1050 },
+        { "size": "40 mg", "price": 1400 },
+        { "size": "50 mg", "price": 1750 },
+        { "size": "60 mg", "price": 2100 },
+        { "size": "70 mg", "price": 2450 },
+        { "size": "80 mg", "price": 2800 },
+        { "size": "90 mg", "price": 3150 },
+        { "size": "100 mg", "price": 3500 }
       ]
     },
     {
-      "id": "peptideo-exemplo-02",
+      "id": "tirzepatida",
       "active": true,
-      "name": "Peptídeo Exemplo 02",
-      "category": "Catálogo demonstrativo",
-      "shortDescription": "Outro item de exemplo para demonstrar a listagem.",
-      "description": "Substitua esta descrição por informações específicas e verificadas sobre o item cadastrado.",
-      "uses": "Informe contexto e finalidade documentados, sem alegações terapêuticas não comprovadas.",
-      "evidence": "Inclua uma síntese responsável das evidências disponíveis e suas limitações.",
-      "disclaimer": "Conteúdo informativo, não é orientação médica. Confirme a situação regulatória e a legalidade aplicável.",
+      "name": "Tirzepatida",
+      "category": "Medicamento sujeito a prescrição",
+      "shortDescription": "Medicamento agonista dos receptores GIP e GLP-1, estudado e utilizado em apresentações aprovadas para indicações metabólicas específicas.",
+      "description": "## Tirzepatida\n\nA tirzepatida é uma molécula que atua nos receptores GIP e GLP-1, envolvidos na regulação da glicose, do apetite e da ingestão alimentar.\n\n## Descrição do Produto\n\nEm apresentações devidamente aprovadas, a tirzepatida é utilizada para indicações clínicas específicas, que podem incluir o tratamento do diabetes tipo 2 e o controle crônico do peso, conforme a autorização aplicável em cada país. Sua utilização requer avaliação profissional, prescrição quando exigida e acompanhamento clínico.\n\n## Principais Características\n\n- Ação sobre os receptores GIP e GLP-1.\n- Efeito sobre mecanismos envolvidos na secreção de insulina dependente da glicose.\n- Investigada e utilizada em indicações metabólicas específicas, conforme a apresentação autorizada.\n- Pode contribuir para o controle glicêmico e a redução do peso em pacientes elegíveis.\n- A qualidade, a concentração e a autenticidade dependem da apresentação e do fabricante.",
+      "uses": "A tirzepatida deve ser utilizada somente conforme a indicação aprovada para a apresentação prescrita e sob acompanhamento de profissional habilitado. A dose inicial, os ajustes e a frequência de administração devem seguir a bula oficial do medicamento específico e a avaliação individual. Não utilizar quantidades de frascos ou apresentações não autorizadas como referência para definir uma dose. A automedicação pode provocar efeitos adversos e outros riscos clínicos.",
+      "evidence": "A tirzepatida possui evidências de ensaios clínicos em humanos e indicações aprovadas para determinadas apresentações e condições. Os estudos demonstram benefícios no controle glicêmico e no peso corporal em populações específicas. A magnitude dos resultados varia conforme a indicação, a duração do tratamento, as características individuais e o acompanhamento. Consulte a bula oficial e as fontes regulatórias para confirmar as indicações autorizadas e as informações de segurança.",
+      "disclaimer": "Conteúdo informativo, não é orientação médica. Medicamento sujeito a prescrição e acompanhamento clínico conforme a legislação aplicável. Pode causar náuseas, vômitos, diarreia, constipação e outros eventos adversos. A avaliação de contraindicações, interações, riscos e adequação do tratamento cabe a profissional habilitado. Verifique a procedência, a autorização sanitária e a bula da apresentação específica.",
       "variants": [
-        {
-          "size": "5 mg",
-          "price": 90
-        },
-        {
-          "size": "10 mg",
-          "price": 150
-        }
+        { "size": "10 mg", "price": 200 },
+        { "size": "20 mg", "price": 400 },
+        { "size": "30 mg", "price": 600 },
+        { "size": "40 mg", "price": 800 },
+        { "size": "50 mg", "price": 1000 },
+        { "size": "60 mg", "price": 1200 },
+        { "size": "70 mg", "price": 1400 },
+        { "size": "80 mg", "price": 1600 },
+        { "size": "90 mg", "price": 1800 },
+        { "size": "100 mg", "price": 2000 }
       ]
     },
     {
-      "id": "peptideo-exemplo-03",
-      "active": false,
-      "name": "Peptídeo Exemplo 03",
-      "category": "Oculto no catálogo",
-      "shortDescription": "Produto inativo: active false impede que apareça no site.",
-      "description": "Exemplo de item que pode ser ativado quando os dados estiverem revisados.",
-      "uses": "",
-      "evidence": "",
+      "id": "ghk-cu",
+      "active": true,
+      "name": "GHK-Cu",
+      "category": "Peptídeo de cobre",
+      "shortDescription": "Complexo de cobre e peptídeo investigado em estudos relacionados à pele, à matriz extracelular e a processos de reparação tecidual.",
+      "description": "## GHK-Cu\n\nO GHK-Cu é um complexo formado pelo peptídeo glicil-L-histidil-L-lisina ligado ao cobre. É investigado por suas possíveis interações com mecanismos celulares relacionados à matriz extracelular, à resposta oxidativa e à manutenção dos tecidos.\n\n## Descrição do Produto\n\nA literatura científica inclui investigações laboratoriais e estudos sobre formulações cosméticas tópicas. Os resultados dependem da concentração, da formulação, da estabilidade e da via de utilização. Resultados obtidos em laboratório ou em aplicações tópicas não demonstram automaticamente eficácia ou segurança para administração sistêmica.\n\n## Principais Características\n\n- Complexo de peptídeo com cobre.\n- Investigado em mecanismos celulares associados à matriz extracelular.\n- Estudado em contextos cosméticos relacionados à aparência e à condição da pele.\n- Evidências clínicas limitadas para diversas alegações de benefícios.\n- A composição, a pureza e a concentração devem ser confirmadas por documentação técnica verificável.",
+      "uses": "O GHK-Cu é investigado principalmente em contextos laboratoriais e em determinadas aplicações cosméticas tópicas. A utilização deve respeitar a finalidade, a rotulagem e a regulamentação da apresentação específica. Não existe uma dose sistêmica padrão universalmente estabelecida para uso humano. Não extrapolar informações de cosméticos tópicos para injeções ou outras vias de administração.",
+      "evidence": "As evidências incluem estudos pré-clínicos e estudos humanos limitados, especialmente em aplicações tópicas. Algumas pesquisas exploram possíveis efeitos sobre a condição da pele e processos relacionados à matriz extracelular. Ainda são necessários estudos clínicos robustos para estabelecer a eficácia, as concentrações adequadas e a segurança em diferentes aplicações. Não apresentar benefícios estéticos, crescimento capilar ou reparação tecidual como resultados garantidos.",
+      "disclaimer": "Conteúdo informativo, não é orientação médica. Não constitui indicação de tratamento nem recomendação de administração. A segurança depende da formulação, da concentração, da pureza e da via de utilização. Não utilizar produtos injetáveis de procedência incerta. Confirme a documentação técnica e a situação regulatória da apresentação antes de disponibilizá-la.",
       "variants": [
-        {
-          "size": "10 mg",
-          "price": 120
-        }
+        { "size": "50 mg", "price": 300 },
+        { "size": "100 mg", "price": 600 },
+        { "size": "150 mg", "price": 900 },
+        { "size": "200 mg", "price": 1200 },
+        { "size": "250 mg", "price": 1500 },
+        { "size": "300 mg", "price": 1800 },
+        { "size": "350 mg", "price": 2100 },
+        { "size": "400 mg", "price": 2400 },
+        { "size": "450 mg", "price": 2700 },
+        { "size": "500 mg", "price": 3000 }
       ]
     }
   ],
