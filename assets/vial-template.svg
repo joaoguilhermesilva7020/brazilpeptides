@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 440" role="img" aria-label="Frasco Aset Life Peptides">
+  <defs>
+    <linearGradient id="glass" x1="0" x2="1"><stop offset="0" stop-color="#b8c5bd"/><stop offset=".16" stop-color="#fff"/><stop offset=".52" stop-color="#dce5df"/><stop offset=".82" stop-color="#fff"/><stop offset="1" stop-color="#9eaaa2"/></linearGradient>
+    <linearGradient id="cap" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#28a45b"/><stop offset=".45" stop-color="#087a3a"/><stop offset="1" stop-color="#07542b"/></linearGradient>
+    <linearGradient id="silver" x1="0" x2="1"><stop stop-color="#87928b"/><stop offset=".25" stop-color="#f8fbf9"/><stop offset=".65" stop-color="#aeb8b1"/><stop offset="1" stop-color="#f5f7f5"/></linearGradient>
+    <linearGradient id="label" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#eaf1ec"/></linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="180%"><feGaussianBlur stdDeviation="7"/></filter>
+  </defs>
+  <ellipse cx="160" cy="422" rx="94" ry="10" fill="#263c30" opacity=".18" filter="url(#shadow)"/>
+  <rect x="91" y="22" width="138" height="62" rx="17" fill="url(#cap)" stroke="#07552d" stroke-width="2"/>
+  <path d="M104 29h112" stroke="#83d59c" stroke-width="5" stroke-linecap="round" opacity=".55"/>
+  <rect x="99" y="77" width="122" height="34" rx="8" fill="url(#silver)" stroke="#89958d"/>
+  <path d="M111 111h98v26c0 12 10 18 23 27 17 12 27 27 27 48v167c0 23-15 37-37 37H98c-22 0-37-14-37-37V212c0-21 10-36 27-48 13-9 23-15 23-27z" fill="url(#glass)" stroke="#87958c" stroke-width="3"/>
+  <path d="M77 203q0-23 22-35h122q22 12 22 35v177q0 27-27 27H104q-27 0-27-27z" fill="url(#label)" stroke="#c4d1c8" stroke-width="1.5"/>
+  <path d="M78 207q0-24 22-38h120q22 14 22 38v10H78z" fill="#f9fcfa"/>
+  <path d="M78 268h164v99H78z" fill="#07552f"/>
+  <path d="M78 263h164" stroke="#20a65a" stroke-width="5"/>
+  <path d="M78 369h164" stroke="#15934a" stroke-width="6"/>
+  <g fill="#07552f" font-family="Arial,sans-serif" text-anchor="middle">
+    <text x="160" y="239" font-size="24" font-weight="700">Aset Life</text>
+    <text x="160" y="257" font-size="11" letter-spacing="5" font-weight="700">PEPTIDES</text>
+    <text x="160" y="393" font-size="10" font-weight="700">USO EM PESQUISA</text>
+    <text x="160" y="406" font-size="8" font-weight="700">NÃO DESTINADO AO USO HUMANO</text>
+  </g>
+  <path d="M75 215q-7 5-7 23v142q0 27 13 35" fill="none" stroke="#fff" stroke-width="5" opacity=".75"/>
+  <path d="M245 214q7 10 7 28v137q0 24-12 34" fill="none" stroke="#fff" stroke-width="4" opacity=".65"/>
+  <path d="M87 119h146" stroke="#fff" stroke-width="4" opacity=".8"/>
+</svg>
