@@ -204,7 +204,7 @@
       const items = [...cart.values()];
       const total = items.reduce((sum, item) => sum + item.price * item.qty, 0);
       const lines = items.map(item => '• ' + item.name + ' — ' + item.size + ' | Qtd: ' + item.qty + ' | ' + money(item.price * item.qty));
-      const affiliateLine = currentAffiliateId ? '\\nRef do afiliado: ' + currentAffiliateId + (currentAffiliate && currentAffiliate.name ? ' (' + currentAffiliate.name + ')' : '') : '\\nRef do afiliado: não informado';
+      const affiliateLine = currentAffiliateId ? '\nREF: ' + currentAffiliateId : '';
       const message = 'Olá! Gostaria de concluir meu pedido:\n\n' + lines.join('\n') + '\n\nTotal estimado: ' + money(total) + affiliateLine + '\n\nPoderiam confirmar disponibilidade e próximos passos?';
       window.open(waUrl(message), '_blank', 'noopener,noreferrer');
     });
