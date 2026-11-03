@@ -277,9 +277,11 @@
           if (!catalog.whatsapp) link.title = 'Configure o WhatsApp em data/catalog.json';
         });
         renderProducts();
-        renderCalculatorProducts();
       })
-      .catch(() => { grid.innerHTML = '<div class="empty">Não foi possível carregar o catálogo. Confira se o arquivo <code>data/catalog.json</code> existe e contém JSON válido.</div>'; });
+      .catch(error => {
+        console.error('Erro ao carregar ou renderizar o catálogo:', error);
+        grid.innerHTML = '<div class="empty">Não foi possível exibir o catálogo. Verifique o arquivo data/catalog.json e o console do navegador para identificar o erro.</div>';
+      });
   </script>
 </body>
 </html>
