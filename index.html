@@ -62,17 +62,15 @@
     </div>
   </main>
   <section class="calculator" id="calculadora"><div class="wrap">
-    <div class="section-head"><div><div class="kicker">Ferramenta informativa</div><h2>Calculadora de concentração</h2></div><p class="section-desc">Informe a quantidade total indicada no produto, o volume de líquido informado e uma quantidade em mg ou mcg para visualizar a concentração matemática e a conversão de unidades.</p></div>
+    <div class="section-head"><div><div class="kicker">Ferramenta informativa</div><h2>Calculadora de concentração</h2></div><p class="section-desc">Informe a quantidade total indicada no produto e o volume de líquido para visualizar a concentração matemática.</p></div>
     <div class="calculator-card">
       <div class="calc-fields">
         <div class="calc-field"><label for="calcProductAmount">Quantidade no produto (mg)</label><input id="calcProductAmount" type="number" min="0" step="any" placeholder="Ex.: 10" inputmode="decimal"></div>
         <div class="calc-field"><label for="calcWaterVolume">Volume de líquido informado (mL)</label><input id="calcWaterVolume" type="number" min="0" step="any" placeholder="Ex.: 2" inputmode="decimal"></div>
-        <div class="calc-field"><label for="calcQuantity">Quantidade para conversão</label><input id="calcQuantity" type="number" min="0" step="any" value="1" inputmode="decimal"></div>
-        <div class="calc-field"><label for="calcQuantityUnit">Unidade da quantidade</label><select id="calcQuantityUnit"><option value="mg">mg</option><option value="mcg">mcg</option></select></div>
       </div>
-      <div class="calc-result" aria-live="polite"><span class="calc-label">Concentração matemática</span><strong id="calcConcentrationResult">—</strong><p id="calcConverted">Conversão de massa: —</p></div>
+      <div class="calc-result" aria-live="polite"><span class="calc-label">Concentração matemática</span><strong id="calcConcentrationResult">—</strong><p id="calcConverted">Informe os dois valores para calcular.</p></div>
     </div>
-    <div class="calc-note"><strong>Importante:</strong> o resultado apresenta somente a relação matemática entre os valores informados e a conversão entre mg e mcg. Não calcula volume de aplicação, mL por dose, UI ou marcação de seringa, nem orienta preparo, diluição ou administração. Não utilize o resultado para definir uma dose ou realizar aplicações.</div>
+    <div class="calc-note"><strong>Importante:</strong> o resultado apresenta somente a concentração matemática com base nos valores informados. Não calcula volume de aplicação, mL por dose, UI ou marcação de seringa, nem orienta preparo, diluição ou administração. Não utilize o resultado para definir uma dose ou realizar aplicações.</div>
   </div></section>
   <section class="about" id="sobre"><div class="wrap about-grid">
     <div><div class="kicker">Sobre as informações</div><h2>Conheça antes de consultar.</h2><p>As descrições de cada item devem apresentar informações verificáveis, distinguir estudos preliminares de evidências clínicas e evitar promessas de resultado. A finalidade e a situação regulatória podem variar conforme a substância e o país.</p></div>
@@ -224,35 +222,25 @@
 
     const calcProductAmount = document.getElementById("calcProductAmount");
     const calcWaterVolume = document.getElementById("calcWaterVolume");
-    const calcQuantity = document.getElementById("calcQuantity");
-    const calcQuantityUnit = document.getElementById("calcQuantityUnit");
     function formatCalc(value, maximumFractionDigits = 6) {
       return new Intl.NumberFormat("pt-BR", { maximumFractionDigits }).format(value);
     }
     function updateCalculator() {
       const productAmount = Number(calcProductAmount.value);
       const waterVolume = Number(calcWaterVolume.value);
-      const quantity = Number(calcQuantity.value);
-      const quantityUnit = calcQuantityUnit.value;
       const validProduct = calcProductAmount.value !== "" && Number.isFinite(productAmount) && productAmount > 0;
       const validVolume = calcWaterVolume.value !== "" && Number.isFinite(waterVolume) && waterVolume > 0;
-      const validQuantity = calcQuantity.value !== "" && Number.isFinite(quantity) && quantity >= 0;
-      const converted = quantityUnit === "mg" ? quantity * 1000 : quantity / 1000;
-      const convertedUnit = quantityUnit === "mg" ? "mcg" : "mg";
-      document.getElementById("calcConverted").textContent = validQuantity
-        ? "Conversão de massa: " + formatCalc(converted) + " " + convertedUnit
-        : "Conversão de massa: —";
       if (!validProduct || !validVolume) {
         document.getElementById("calcConcentrationResult").textContent = "Informe valores positivos para o produto e o volume.";
       } else {
         const mgMl = productAmount / waterVolume;
         document.getElementById("calcConcentrationResult").textContent =
           formatCalc(mgMl) + " mg/mL";
-        document.getElementById("calcConverted").textContent +=
-          " · " + formatCalc(mgMl * 1000) + " mcg/mL";
+        document.getElementById("calcConverted").textContent =
+          formatCalc(mgMl * 1000) + " mcg/mL";
       }
     }
-    [calcProductAmount, calcWaterVolume, calcQuantity, calcQuantityUnit].forEach(field => {
+    [calcProductAmount, calcWaterVolume].forEach(field => {
       field.addEventListener("input", updateCalculator);
       field.addEventListener("change", updateCalculator);
     });
