@@ -25,7 +25,7 @@
     .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.product{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;transition:transform .2s,box-shadow .2s,border-color .2s}.product:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:#cbd8cf}.product-art{height:145px;background:linear-gradient(135deg,#e5eee7,#f6f5ef);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}.product-art:before,.product-art:after{content:"";position:absolute;border:1px solid rgba(36,91,73,.15);border-radius:50%;width:160px;height:160px}.product-art:after{width:105px;height:105px}.molecule{position:relative;z-index:1;width:50px;height:50px;border:1px solid #7ca08c;border-radius:17px;display:grid;place-items:center;color:var(--green);background:rgba(255,255,255,.7);font-size:18px;font-weight:700;transform:rotate(-8deg)}.product-body{padding:21px;display:flex;flex-direction:column;flex:1}.tag{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--green);font-weight:800}.product h3{font-size:21px;letter-spacing:-.035em;margin:7px 0}.short-desc{font-size:13px;color:var(--muted);margin:0 0 18px;min-height:40px}.price-row{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding-top:15px;margin-top:auto;gap:12px}.price-caption{font-size:10px;color:var(--muted)}.price{font-size:18px;font-weight:800;letter-spacing:-.03em}.product .btn{width:100%;margin-top:16px}.cart-trigger{position:relative;white-space:nowrap}.cart-count{display:inline-grid;place-items:center;min-width:21px;height:21px;padding:0 5px;border-radius:99px;background:#fff;color:var(--green);font-size:11px;font-weight:800}.cart-backdrop{position:fixed;inset:0;background:rgba(8,17,13,.58);z-index:40;display:none;justify-content:flex-end}.cart-backdrop.open{display:flex}.cart-panel{height:100%;width:min(480px,100%);background:white;display:flex;flex-direction:column;box-shadow:-20px 0 70px rgba(0,0,0,.2)}.cart-head{padding:23px 22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px}.cart-head h2{font-size:25px;margin:0}.cart-items{padding:14px 22px;overflow:auto;flex:1}.cart-empty{text-align:center;color:var(--muted);padding:45px 12px;font-size:14px}.cart-line{padding:16px 0;border-bottom:1px solid var(--line)}.cart-line-top{display:flex;justify-content:space-between;gap:14px}.cart-line-name{font-weight:750;font-size:14px}.cart-line-meta{font-size:12px;color:var(--muted);margin-top:3px}.cart-line-price{font-weight:800;font-size:14px;white-space:nowrap}.cart-line-controls{display:flex;align-items:center;justify-content:space-between;margin-top:12px}.qty-control{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:99px;padding:4px}.qty-control button{width:28px;height:28px;border:0;border-radius:50%;background:#eef3ee;color:var(--green);font-size:17px;cursor:pointer}.qty-control span{font-size:13px;font-weight:750;min-width:15px;text-align:center}.remove-item{border:0;background:none;color:#8b5149;text-decoration:underline;font-size:12px;cursor:pointer}.cart-footer{border-top:1px solid var(--line);padding:20px 22px 24px}.cart-total{display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:16px}.cart-total strong{font-size:23px;color:var(--ink);letter-spacing:-.04em}.cart-footer .btn{width:100%}.cart-hint{font-size:11px;color:var(--muted);margin:11px 0 0;text-align:center}.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--dark);color:white;padding:12px 18px;border-radius:999px;font-size:13px;z-index:60;transition:all .2s;box-shadow:var(--shadow)}.toast.show{opacity:1;transform:translate(-50%,0)}
     .empty{grid-column:1/-1;padding:38px;text-align:center;border:1px dashed var(--line);border-radius:var(--radius);color:var(--muted)}
     .about{background:#e9eee8;padding:58px 0}.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:start}.about p{color:#59675f;font-size:14px}.about-card{background:rgba(255,255,255,.72);border:1px solid #dbe3db;padding:24px;border-radius:var(--radius)}.about-card strong{display:block;margin-bottom:8px}.about-card p{margin:0;font-size:13px}
-    .faq{padding:65px 0}.faq-list{margin-top:24px;border-top:1px solid var(--line)}details{padding:19px 0;border-bottom:1px solid var(--line)}summary{font-weight:700;font-size:14px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:20px}summary:after{content:"+";font-size:20px;color:var(--green);line-height:1}details[open] summary:after{content:"−"}details p{color:var(--muted);font-size:13px;max-width:780px;margin:12px 0 0}
+    .calculator{padding:66px 0;background:#fff}.calculator-card{display:grid;grid-template-columns:1fr 1fr;gap:28px;background:#f7f8f5;border:1px solid var(--line);border-radius:var(--radius);padding:26px;margin-top:25px}.calc-fields{display:grid;gap:16px}.calc-field{display:grid;gap:7px}.calc-field label{font-size:12px;font-weight:750}.calc-field input,.calc-field select{width:100%;border:1px solid #d8e0d8;background:#fff;border-radius:12px;padding:12px 13px;color:var(--ink);outline:none}.calc-field input:focus,.calc-field select:focus{border-color:var(--green)}.calc-result{background:var(--dark);color:#fff;border-radius:16px;padding:24px;display:flex;flex-direction:column;justify-content:center}.calc-result .calc-label{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#aab9af;font-weight:800}.calc-result strong{font-size:clamp(30px,4vw,44px);letter-spacing:-.05em;margin:8px 0}.calc-result p{font-size:13px;color:#c4d0c8;margin:0}.calc-note{margin-top:17px;padding:15px 17px;border-radius:12px;background:#f0f3ed;color:#59675f;font-size:12px}.calc-note strong{color:var(--ink)}.faq{padding:65px 0}.faq-list{margin-top:24px;border-top:1px solid var(--line)}details{padding:19px 0;border-bottom:1px solid var(--line)}summary{font-weight:700;font-size:14px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:20px}summary:after{content:"+";font-size:20px;color:var(--green);line-height:1}details[open] summary:after{content:"−"}details p{color:var(--muted);font-size:13px;max-width:780px;margin:12px 0 0}
     footer{background:var(--dark);color:#c6d0ca;padding:34px 0}.footer-row{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}.footer-brand{color:white;font-weight:800;letter-spacing:.06em}.footer-small{font-size:11px;color:#8e9d94;max-width:600px;margin-top:8px}
     .modal-backdrop{position:fixed;inset:0;background:rgba(8,17,13,.65);z-index:30;display:none;align-items:center;justify-content:center;padding:20px}.modal-backdrop.open{display:flex}.modal{background:white;border-radius:24px;width:min(650px,100%);max-height:min(88vh,850px);overflow:auto;box-shadow:0 25px 100px rgba(0,0,0,.25)}.modal-top{padding:25px 28px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:20px;align-items:start}.modal-top h2{font-size:29px;margin:7px 0}.close{border:0;background:#f0f3ef;border-radius:50%;width:36px;height:36px;font-size:21px;cursor:pointer;color:var(--ink);flex-shrink:0}.modal-content{padding:24px 28px 28px}.modal-content h3{font-size:13px;margin:22px 0 7px}.modal-content p,.modal-content li{font-size:13px;color:#59675f}.modal-content p{margin:0}.modal-content ul{padding-left:20px}.variant-list{display:grid;gap:9px;margin:14px 0 18px}.variant{display:flex;justify-content:space-between;align-items:center;gap:14px;border:1px solid var(--line);border-radius:13px;padding:13px 15px;cursor:pointer}.variant:has(input:checked){border-color:var(--green);background:#f2f7f3}.variant input{accent-color:var(--green)}.variant-label{font-size:13px;font-weight:700}.variant-price{font-weight:800}.modal-disclaimer{background:#f5f6f2;padding:13px 15px;border-radius:12px;margin:18px 0;color:#68736e;font-size:11px}.modal .btn{width:100%}.wa-icon{font-size:17px}
     @media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.navlinks{gap:12px}.trust-item{padding-left:20px}.about-grid{gap:25px}}
@@ -37,7 +37,7 @@
   <header>
     <div class="wrap nav">
       <a class="brand" href="#" aria-label="Brazil Peptides início"><span class="mark">BP</span><span><span class="brand-name" id="brandName">BRAZIL PEPTIDES</span><br><span class="brand-sub">Research catalog</span></span></a>
-      <nav class="navlinks" aria-label="Navegação"><a href="#catalogo">Catálogo</a><a href="#sobre">Informações</a><a href="#duvidas">Dúvidas</a><button id="openCart" class="btn btn-primary cart-trigger" type="button" aria-label="Abrir carrinho">Carrinho <span class="cart-count" id="cartCount">0</span></button></nav>
+      <nav class="navlinks" aria-label="Navegação"><a href="#catalogo">Catálogo</a><a href="#calculadora">Calculadora</a><a href="#sobre">Informações</a><a href="#duvidas">Dúvidas</a><button id="openCart" class="btn btn-primary cart-trigger" type="button" aria-label="Abrir carrinho">Carrinho <span class="cart-count" id="cartCount">0</span></button></nav>
     </div>
   </header>
   <section class="hero">
@@ -61,6 +61,18 @@
       <div class="grid" id="productGrid"><div class="empty">Carregando catálogo…</div></div>
     </div>
   </main>
+  <section class="calculator" id="calculadora"><div class="wrap">
+    <div class="section-head"><div><div class="kicker">Ferramenta informativa</div><h2>Calculadora de concentração</h2></div><p class="section-desc">Consulte a relação matemática entre a quantidade indicada no frasco e um volume informado na documentação técnica.</p></div>
+    <div class="calculator-card">
+      <div class="calc-fields">
+        <div class="calc-field"><label for="calcProduct">Produto e apresentação do catálogo</label><select id="calcProduct"><option value="">Selecione uma apresentação</option></select></div>
+        <div class="calc-field"><label for="calcAmount">Quantidade total indicada no frasco (mg)</label><input id="calcAmount" type="number" min="0.001" step="any" value="10" inputmode="decimal"></div>
+        <div class="calc-field"><label for="calcVolume">Volume de referência informado na documentação (mL)</label><input id="calcVolume" type="number" min="0.001" step="any" value="2" inputmode="decimal"></div>
+      </div>
+      <div class="calc-result" aria-live="polite"><span class="calc-label">Concentração matemática</span><strong id="calcMgMl">5,00 mg/mL</strong><p id="calcMcgMl">Equivalente a 5.000 mcg/mL</p></div>
+    </div>
+    <div class="calc-note"><strong>Importante:</strong> esta ferramenta calcula somente concentração matemática (quantidade total ÷ volume informado). Ela não ensina a reconstituir ou diluir produtos, não indica qual diluente utilizar, não determina dose, volume de aplicação ou marcação de seringa. Não use o resultado para preparar ou administrar substâncias. Compatibilidade, esterilidade, estabilidade, conservação e uso dependem da documentação oficial específica e de orientação de profissional habilitado.</div>
+  </div></section>
   <section class="about" id="sobre"><div class="wrap about-grid">
     <div><div class="kicker">Sobre as informações</div><h2>Conheça antes de consultar.</h2><p>As descrições de cada item devem apresentar informações verificáveis, distinguir estudos preliminares de evidências clínicas e evitar promessas de resultado. A finalidade e a situação regulatória podem variar conforme a substância e o país.</p></div>
     <div class="about-card"><strong>Importante</strong><p>Este catálogo não oferece diagnóstico, prescrição ou orientação de dose, preparo ou administração. Não utilize substâncias para fins terapêuticos sem orientação de profissional habilitado. Confirme a legalidade, a procedência e a situação regulatória antes de qualquer decisão.</p></div>
@@ -209,6 +221,45 @@
       window.open(waUrl(message), '_blank', 'noopener,noreferrer');
     });
 
+    const calcProduct = document.getElementById("calcProduct");
+    const calcAmount = document.getElementById("calcAmount");
+    const calcVolume = document.getElementById("calcVolume");
+    function parseMg(value) {
+      const match = String(value || "").match(/([0-9]+(?:[.,][0-9]+)?)\\s*mg/i);
+      return match ? Number(match[1].replace(",", ".")) : null;
+    }
+    function renderCalculatorProducts() {
+      const options = ['<option value="">Selecione uma apresentação</option>'];
+      (catalog.products || []).filter(p => p.active !== false).forEach(p => {
+        (p.variants || []).forEach(v => {
+          const mg = parseMg(v.size);
+          if (mg !== null && mg > 0) options.push('<option value="' + mg + '">' + safeText(p.name) + ' — ' + safeText(v.size) + '</option>');
+        });
+      });
+      calcProduct.innerHTML = options.join("");
+    }
+    function updateConcentration() {
+      const amount = Number(calcAmount.value);
+      const volume = Number(calcVolume.value);
+      const valid = Number.isFinite(amount) && amount > 0 && Number.isFinite(volume) && volume > 0;
+      if (!valid) {
+        document.getElementById("calcMgMl").textContent = "—";
+        document.getElementById("calcMcgMl").textContent = "Informe valores positivos para calcular.";
+        return;
+      }
+      const concentration = amount / volume;
+      document.getElementById("calcMgMl").textContent = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 4 }).format(concentration) + " mg/mL";
+      document.getElementById("calcMcgMl").textContent = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2 }).format(concentration * 1000) + " mcg/mL";
+    }
+    calcProduct.addEventListener("change", () => {
+      const amount = Number(calcProduct.value);
+      if (amount > 0) calcAmount.value = amount;
+      updateConcentration();
+    });
+    calcAmount.addEventListener("input", updateConcentration);
+    calcVolume.addEventListener("input", updateConcentration);
+    updateConcentration();
+
     function closeModal() { modal.classList.remove('open'); document.body.style.overflow = ''; }
     document.getElementById('closeModal').addEventListener('click', closeModal);
     modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
@@ -231,6 +282,7 @@
           if (!catalog.whatsapp) link.title = 'Configure o WhatsApp em data/catalog.json';
         });
         renderProducts();
+        renderCalculatorProducts();
       })
       .catch(() => { grid.innerHTML = '<div class="empty">Não foi possível carregar o catálogo. Confira se o arquivo <code>data/catalog.json</code> existe e contém JSON válido.</div>'; });
   </script>
