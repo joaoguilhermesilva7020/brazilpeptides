@@ -1,5 +1,5 @@
 {
-  "_instrucoes": "Edite este arquivo para atualizar o site. Preencha whatsapp com DDI + DDD + número, somente dígitos (ex.: 5511999999999). Ajuste nome, textos, status e apresentações. Preços são números em reais. Não publique informações médicas sem revisão de fontes e regulatória.",
+  "_instrucoes": "Edite este arquivo para atualizar o site. Preencha whatsapp com DDI + DDD + número, somente dígitos (ex.: 5511999999999). Ajuste nome, textos, status e apresentações. Preços são números em reais. Não publique informações médicas sem revisão de fontes e regulatória. Afiliados: cadastre em affiliates com id único, name e active. O link usa ?ref=ID, por exemplo https://SEU-SITE/?ref=BP1001. IDs ativos são reconhecidos e o ID capturado é incluído na mensagem do WhatsApp.",
   "brand": "Brazil Peptides",
   "whatsapp": "5511999999999",
   "products": [
@@ -14,8 +14,14 @@
       "evidence": "Resuma o nível de evidência com fontes verificáveis; diferencie estudos laboratoriais, estudos em animais e evidência clínica em humanos. Evite afirmações de eficácia não comprovadas.",
       "disclaimer": "Conteúdo informativo, não é orientação médica. Não destinado a diagnóstico, prevenção ou tratamento. Confirme a situação regulatória e a legalidade antes de disponibilizar o produto.",
       "variants": [
-        { "size": "10 mg", "price": 100 },
-        { "size": "20 mg", "price": 170 }
+        {
+          "size": "10 mg",
+          "price": 100
+        },
+        {
+          "size": "20 mg",
+          "price": 170
+        }
       ]
     },
     {
@@ -29,8 +35,14 @@
       "evidence": "Inclua uma síntese responsável das evidências disponíveis e suas limitações.",
       "disclaimer": "Conteúdo informativo, não é orientação médica. Confirme a situação regulatória e a legalidade aplicável.",
       "variants": [
-        { "size": "5 mg", "price": 90 },
-        { "size": "10 mg", "price": 150 }
+        {
+          "size": "5 mg",
+          "price": 90
+        },
+        {
+          "size": "10 mg",
+          "price": 150
+        }
       ]
     },
     {
@@ -43,8 +55,23 @@
       "uses": "",
       "evidence": "",
       "variants": [
-        { "size": "10 mg", "price": 120 }
+        {
+          "size": "10 mg",
+          "price": 120
+        }
       ]
+    }
+  ],
+  "affiliates": [
+    {
+      "id": "BP1001",
+      "name": "Afiliado Exemplo 1",
+      "active": true
+    },
+    {
+      "id": "BP1002",
+      "name": "Afiliado Exemplo 2",
+      "active": true
     }
   ]
 }
