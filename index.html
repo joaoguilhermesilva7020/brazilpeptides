@@ -30,6 +30,78 @@
     .modal-backdrop{position:fixed;inset:0;background:rgba(8,17,13,.65);z-index:30;display:none;align-items:center;justify-content:center;padding:20px}.modal-backdrop.open{display:flex}.modal{background:white;border-radius:24px;width:min(650px,100%);max-height:min(88vh,850px);overflow:auto;box-shadow:0 25px 100px rgba(0,0,0,.25)}.modal-top{padding:25px 28px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:20px;align-items:start}.modal-top h2{font-size:29px;margin:7px 0}.close{border:0;background:#f0f3ef;border-radius:50%;width:36px;height:36px;font-size:21px;cursor:pointer;color:var(--ink);flex-shrink:0}.modal-content{padding:24px 28px 28px}.modal-content h3{font-size:13px;margin:22px 0 7px}.modal-content p,.modal-content li{font-size:13px;color:#59675f}.modal-content p{margin:0}.modal-content ul{padding-left:20px}.variant-list{display:grid;gap:9px;margin:14px 0 18px}.variant{display:flex;justify-content:space-between;align-items:center;gap:14px;border:1px solid var(--line);border-radius:13px;padding:13px 15px;cursor:pointer}.variant:has(input:checked){border-color:var(--green);background:#f2f7f3}.variant input{accent-color:var(--green)}.variant-label{font-size:13px;font-weight:700}.variant-price{font-weight:800}.modal-disclaimer{background:#f5f6f2;padding:13px 15px;border-radius:12px;margin:18px 0;color:#68736e;font-size:11px}.modal .btn{width:100%}.wa-icon{font-size:17px}
     @media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.navlinks{gap:12px}.trust-item{padding-left:20px}.about-grid{gap:25px}}
     @media(max-width:600px){.wrap{width:min(100% - 28px,1160px)}.nav{min-height:66px}.navlinks a:not(.btn){display:none}.navlinks .btn{padding:10px 13px;font-size:12px}.hero-inner{padding:60px 0 54px}.hero p{font-size:14px}.trust-row{grid-template-columns:1fr}.trust-item{padding:14px 20px}.trust-item span{font-size:11px}main{padding:48px 0}.section-head{display:block}.section-desc{margin-top:14px}.toolbar{align-items:start;flex-direction:column}.search{max-width:none}.grid{grid-template-columns:1fr;gap:13px}.product-art{height:120px}.product-body{padding:18px}.short-desc{min-height:0}.calculator{padding:48px 0}.calculator-card{grid-template-columns:1fr;padding:18px;gap:16px}.about-grid{grid-template-columns:1fr}.about{padding:44px 0}.faq{padding:48px 0}.modal-top{padding:21px 20px 16px}.modal-content{padding:20px}.footer-row{align-items:start;flex-direction:column}}
+  
+    /* Identidade visual Aset Life: biotecnologia e pesquisa molecular */
+    :root{--green:#087447;--green2:#e2f2e9;--dark:#071a13;--gold:#8ed9ae;--line:#dce8df;--shadow:0 18px 48px rgba(5,48,29,.10)}
+    body{background:#f4f8f5}
+    .topbar{position:relative;overflow:hidden;background:linear-gradient(100deg,#06150f,#0b3825 55%,#06150f);color:#c9e8d6;letter-spacing:.13em}
+    .topbar:before{content:"";position:absolute;inset:0;background:url("./assets/hero-biotech-bg.svg") center 42%/cover;opacity:.19;pointer-events:none}
+    header{background:rgba(248,252,249,.94);border-bottom:1px solid rgba(12,91,54,.13);box-shadow:0 8px 30px rgba(6,45,27,.055)}
+    .nav{min-height:82px}
+    .brand{gap:13px}
+    .mark{width:43px;height:43px;border-radius:14px;background:linear-gradient(145deg,#12a463,#075b39);box-shadow:0 6px 16px rgba(5,105,60,.22);position:relative}
+    .mark:after{content:"";position:absolute;inset:5px;border:1px solid rgba(255,255,255,.35);border-radius:10px}
+    .brand-name{color:#092c1d;font-size:15px;letter-spacing:.075em}
+    .brand-sub{color:#638071;letter-spacing:.2em;font-size:9px}
+    .navlinks{gap:25px;color:#526b5d;font-weight:650}
+    .navlinks a{transition:color .2s}
+    .navlinks a:hover{color:#079253}
+    .btn{border-radius:12px;padding:12px 19px;font-weight:750;letter-spacing:.01em;box-shadow:0 4px 12px rgba(5,66,37,.07);transition:transform .2s,box-shadow .2s,background .2s,border-color .2s}
+    .btn:hover{transform:translateY(-2px);box-shadow:0 9px 22px rgba(5,76,43,.16)}
+    .btn-primary{background:linear-gradient(135deg,#0b9b5c,#07643e);color:#fff;border:1px solid rgba(255,255,255,.13)}
+    .btn-primary:hover{background:linear-gradient(135deg,#0ba765,#075b39)}
+    .btn-light{background:rgba(228,246,235,.12);border:1px solid rgba(177,231,197,.28);color:#e5f7eb}
+    .cart-trigger{border-radius:12px}
+    .cart-count{background:#d9f6e5;color:#075b39}
+    .hero-featured{border-bottom:1px solid rgba(115,218,157,.18)}
+    .hero-featured .eyebrow{color:#a7e8bf}
+    .hero-featured .eyebrow:before{background:#65d997}
+    .hero-featured .featured-category{color:#8fe5b0}
+    .hero-featured .featured-copy h1{text-shadow:0 5px 28px rgba(0,0,0,.22)}
+    .hero-featured .btn-primary{background:linear-gradient(135deg,#16b96e,#087347);box-shadow:0 10px 28px rgba(0,132,76,.25)}
+    .hero-featured .btn-light{background:rgba(226,248,234,.1);border-color:rgba(194,239,210,.24);color:#e6f6ec}
+    .featured-controls button{transition:all .2s}
+    .featured-controls button:hover{background:rgba(100,220,150,.18);border-color:#79dca1}
+    .featured-dot.active{background:#76e5a3!important}
+    .trust-row{background:#dcebe1;border-color:#dcebe1}
+    .trust-item{background:linear-gradient(145deg,#fff,#f6fbf7);position:relative}
+    .trust-item:before{content:"";display:block;width:25px;height:2px;background:#19a365;margin-bottom:10px;border-radius:2px}
+    .trust-item strong{color:#123c29;letter-spacing:.01em}
+    main{background:linear-gradient(180deg,#f7faf8,#f1f7f3)}
+    .kicker,.tag{color:#087447}
+    h2{color:#102f20}
+    .search input{border-color:#d8e7dd;box-shadow:0 3px 12px rgba(6,65,36,.035)}
+    .search input:focus{border-color:#15945b;box-shadow:0 0 0 3px rgba(21,148,91,.1)}
+    .product{border-color:#dce9e0;box-shadow:0 7px 24px rgba(5,55,30,.035)}
+    .product:hover{border-color:#9acdb0;box-shadow:0 18px 42px rgba(5,75,40,.12)}
+    .product-art{background-color:#e8f4ec}
+    .product-body{background:linear-gradient(180deg,#fff,#fcfefc)}
+    .product h3{color:#123b28}
+    .product .btn{border-radius:11px}
+    .about{background:linear-gradient(120deg,#e7f2eb,#dcece2);position:relative;overflow:hidden}
+    .about:after,.faq:after{content:"";position:absolute;right:-110px;top:-130px;width:330px;height:330px;border:1px solid rgba(19,137,78,.12);border-radius:50%;box-shadow:0 0 0 35px rgba(19,137,78,.035),0 0 0 70px rgba(19,137,78,.025);pointer-events:none}
+    .about-card{background:rgba(255,255,255,.78);border-color:#cfe2d5;box-shadow:0 12px 32px rgba(6,71,39,.06)}
+    .calculator{background:linear-gradient(180deg,#fff,#f5faf6)}
+    .calculator-card{background:linear-gradient(135deg,#f1f8f3,#e7f2ea);border-color:#d5e7da;box-shadow:0 12px 34px rgba(5,70,37,.055)}
+    .calc-field input,.calc-field select{border-color:#d2e3d8}
+    .calc-field input:focus,.calc-field select:focus{border-color:#13945a;box-shadow:0 0 0 3px rgba(19,148,90,.09)}
+    .calc-result{background:radial-gradient(circle at 100% 0,rgba(40,170,103,.28),transparent 50%),linear-gradient(145deg,#0b3020,#06170f);border:1px solid rgba(119,222,157,.15)}
+    .calc-note{background:#e8f3eb;border:1px solid #d6e8dc}
+    .faq{position:relative;overflow:hidden;background:#f6faf7}
+    .faq-list{border-color:#dce9e0}
+    details{border-color:#dce9e0}
+    summary:hover{color:#087447}
+    summary:after{color:#0b9257}
+    footer{background:radial-gradient(circle at 85% 0,rgba(20,128,75,.28),transparent 36%),linear-gradient(110deg,#06150f,#0b2a1c);border-top:1px solid rgba(116,213,151,.18)}
+    .footer-brand{letter-spacing:.1em}
+    .modal{border:1px solid #d9e9df;box-shadow:0 28px 100px rgba(0,35,18,.3)}
+    .variant:has(input:checked){border-color:#15945b;background:#f0f8f3;box-shadow:0 0 0 2px rgba(21,148,91,.08)}
+    .variant input{accent-color:#0b9257}
+    .close{background:#edf5ef;color:#16452e}
+    .toast{background:linear-gradient(110deg,#0b3825,#071a13);border:1px solid rgba(130,220,164,.18)}
+    @media(max-width:850px){.navlinks{gap:12px}.nav{min-height:74px}}
+    @media(max-width:600px){.nav{min-height:68px}.brand-name{font-size:13px}.mark{width:38px;height:38px}.navlinks .btn{padding:10px 12px}.trust-item:before{margin-bottom:6px}.about:after,.faq:after{opacity:.5}}
+
   </style>
 </head>
 <body>
