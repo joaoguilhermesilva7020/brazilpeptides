@@ -31,76 +31,154 @@
     @media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.navlinks{gap:12px}.trust-item{padding-left:20px}.about-grid{gap:25px}}
     @media(max-width:600px){.wrap{width:min(100% - 28px,1160px)}.nav{min-height:66px}.navlinks a:not(.btn){display:none}.navlinks .btn{padding:10px 13px;font-size:12px}.hero-inner{padding:60px 0 54px}.hero p{font-size:14px}.trust-row{grid-template-columns:1fr}.trust-item{padding:14px 20px}.trust-item span{font-size:11px}main{padding:48px 0}.section-head{display:block}.section-desc{margin-top:14px}.toolbar{align-items:start;flex-direction:column}.search{max-width:none}.grid{grid-template-columns:1fr;gap:13px}.product-art{height:120px}.product-body{padding:18px}.short-desc{min-height:0}.calculator{padding:48px 0}.calculator-card{grid-template-columns:1fr;padding:18px;gap:16px}.about-grid{grid-template-columns:1fr}.about{padding:44px 0}.faq{padding:48px 0}.modal-top{padding:21px 20px 16px}.modal-content{padding:20px}.footer-row{align-items:start;flex-direction:column}}
   
-    /* Identidade visual Aset Life: biotecnologia e pesquisa molecular */
-    :root{--green:#087447;--green2:#e2f2e9;--dark:#071a13;--gold:#8ed9ae;--line:#dce8df;--shadow:0 18px 48px rgba(5,48,29,.10)}
-    body{background:#f4f8f5}
-    .topbar{position:relative;overflow:hidden;background:linear-gradient(100deg,#06150f,#0b3825 55%,#06150f);color:#c9e8d6;letter-spacing:.13em}
-    .topbar:before{content:"";position:absolute;inset:0;background:url("./assets/hero-biotech-bg.svg") center 42%/cover;opacity:.19;pointer-events:none}
-    header{background:rgba(248,252,249,.94);border-bottom:1px solid rgba(12,91,54,.13);box-shadow:0 8px 30px rgba(6,45,27,.055)}
-    .nav{min-height:82px}
-    .brand{gap:13px}
-    .mark{width:43px;height:43px;border-radius:14px;background:linear-gradient(145deg,#12a463,#075b39);box-shadow:0 6px 16px rgba(5,105,60,.22);position:relative}
-    .mark:after{content:"";position:absolute;inset:5px;border:1px solid rgba(255,255,255,.35);border-radius:10px}
-    .brand-name{color:#092c1d;font-size:15px;letter-spacing:.075em}
-    .brand-sub{color:#638071;letter-spacing:.2em;font-size:9px}
-    .navlinks{gap:25px;color:#526b5d;font-weight:650}
-    .navlinks a{transition:color .2s}
-    .navlinks a:hover{color:#079253}
-    .btn{border-radius:12px;padding:12px 19px;font-weight:750;letter-spacing:.01em;box-shadow:0 4px 12px rgba(5,66,37,.07);transition:transform .2s,box-shadow .2s,background .2s,border-color .2s}
-    .btn:hover{transform:translateY(-2px);box-shadow:0 9px 22px rgba(5,76,43,.16)}
-    .btn-primary{background:linear-gradient(135deg,#0b9b5c,#07643e);color:#fff;border:1px solid rgba(255,255,255,.13)}
-    .btn-primary:hover{background:linear-gradient(135deg,#0ba765,#075b39)}
-    .btn-light{background:rgba(228,246,235,.12);border:1px solid rgba(177,231,197,.28);color:#e5f7eb}
-    .cart-trigger{border-radius:12px}
-    .cart-count{background:#d9f6e5;color:#075b39}
-    .hero-featured{border-bottom:1px solid rgba(115,218,157,.18)}
-    .hero-featured .eyebrow{color:#a7e8bf}
-    .hero-featured .eyebrow:before{background:#65d997}
-    .hero-featured .featured-category{color:#8fe5b0}
-    .hero-featured .featured-copy h1{text-shadow:0 5px 28px rgba(0,0,0,.22)}
-    .hero-featured .btn-primary{background:linear-gradient(135deg,#16b96e,#087347);box-shadow:0 10px 28px rgba(0,132,76,.25)}
-    .hero-featured .btn-light{background:rgba(226,248,234,.1);border-color:rgba(194,239,210,.24);color:#e6f6ec}
-    .featured-controls button{transition:all .2s}
-    .featured-controls button:hover{background:rgba(100,220,150,.18);border-color:#79dca1}
-    .featured-dot.active{background:#76e5a3!important}
-    .trust-row{background:#dcebe1;border-color:#dcebe1}
-    .trust-item{background:linear-gradient(145deg,#fff,#f6fbf7);position:relative}
-    .trust-item:before{content:"";display:block;width:25px;height:2px;background:#19a365;margin-bottom:10px;border-radius:2px}
-    .trust-item strong{color:#123c29;letter-spacing:.01em}
-    main{background:linear-gradient(180deg,#f7faf8,#f1f7f3)}
-    .kicker,.tag{color:#087447}
-    h2{color:#102f20}
-    .search input{border-color:#d8e7dd;box-shadow:0 3px 12px rgba(6,65,36,.035)}
-    .search input:focus{border-color:#15945b;box-shadow:0 0 0 3px rgba(21,148,91,.1)}
-    .product{border-color:#dce9e0;box-shadow:0 7px 24px rgba(5,55,30,.035)}
-    .product:hover{border-color:#9acdb0;box-shadow:0 18px 42px rgba(5,75,40,.12)}
-    .product-art{background-color:#e8f4ec}
-    .product-body{background:linear-gradient(180deg,#fff,#fcfefc)}
-    .product h3{color:#123b28}
-    .product .btn{border-radius:11px}
-    .about{background:linear-gradient(120deg,#e7f2eb,#dcece2);position:relative;overflow:hidden}
-    .about:after,.faq:after{content:"";position:absolute;right:-110px;top:-130px;width:330px;height:330px;border:1px solid rgba(19,137,78,.12);border-radius:50%;box-shadow:0 0 0 35px rgba(19,137,78,.035),0 0 0 70px rgba(19,137,78,.025);pointer-events:none}
-    .about-card{background:rgba(255,255,255,.78);border-color:#cfe2d5;box-shadow:0 12px 32px rgba(6,71,39,.06)}
-    .calculator{background:linear-gradient(180deg,#fff,#f5faf6)}
-    .calculator-card{background:linear-gradient(135deg,#f1f8f3,#e7f2ea);border-color:#d5e7da;box-shadow:0 12px 34px rgba(5,70,37,.055)}
-    .calc-field input,.calc-field select{border-color:#d2e3d8}
-    .calc-field input:focus,.calc-field select:focus{border-color:#13945a;box-shadow:0 0 0 3px rgba(19,148,90,.09)}
-    .calc-result{background:radial-gradient(circle at 100% 0,rgba(40,170,103,.28),transparent 50%),linear-gradient(145deg,#0b3020,#06170f);border:1px solid rgba(119,222,157,.15)}
-    .calc-note{background:#e8f3eb;border:1px solid #d6e8dc}
-    .faq{position:relative;overflow:hidden;background:#f6faf7}
-    .faq-list{border-color:#dce9e0}
-    details{border-color:#dce9e0}
-    summary:hover{color:#087447}
-    summary:after{color:#0b9257}
-    footer{background:radial-gradient(circle at 85% 0,rgba(20,128,75,.28),transparent 36%),linear-gradient(110deg,#06150f,#0b2a1c);border-top:1px solid rgba(116,213,151,.18)}
-    .footer-brand{letter-spacing:.1em}
-    .modal{border:1px solid #d9e9df;box-shadow:0 28px 100px rgba(0,35,18,.3)}
-    .variant:has(input:checked){border-color:#15945b;background:#f0f8f3;box-shadow:0 0 0 2px rgba(21,148,91,.08)}
-    .variant input{accent-color:#0b9257}
-    .close{background:#edf5ef;color:#16452e}
-    .toast{background:linear-gradient(110deg,#0b3825,#071a13);border:1px solid rgba(130,220,164,.18)}
-    @media(max-width:850px){.navlinks{gap:12px}.nav{min-height:74px}}
-    @media(max-width:600px){.nav{min-height:68px}.brand-name{font-size:13px}.mark{width:38px;height:38px}.navlinks .btn{padding:10px 12px}.trust-item:before{margin-bottom:6px}.about:after,.faq:after{opacity:.5}}
+
+    /* ASET LIFE — sistema visual integral de biotecnologia */
+    :root{--bg:#f1f7f3;--paper:#ffffff;--ink:#10291d;--muted:#61766a;--line:#d8e8dd;--green:#087a49;--green2:#e0f3e7;--dark:#061b12;--gold:#9be5b7;--radius:22px;--shadow:0 18px 50px rgba(5,54,29,.10)}
+    body{background:#f1f7f3!important;color:#10291d}
+    .topbar{padding:10px 18px!important;background:linear-gradient(90deg,#04160e,#0b5131 50%,#04160e)!important;color:#c9f4d8!important;font-size:10px!important;letter-spacing:.2em!important;text-transform:uppercase;position:relative;isolation:isolate}
+    .topbar:before{content:"";position:absolute;inset:0;background:url("./assets/hero-biotech-bg.svg") center/cover;opacity:.24;z-index:-1}
+    header{background:rgba(5,27,18,.97)!important;border:0!important;border-bottom:1px solid rgba(139,231,174,.2)!important;box-shadow:0 12px 35px rgba(0,24,12,.18)!important}
+    .nav{min-height:88px!important}
+    .brand{gap:14px!important}
+    .mark{width:48px!important;height:48px!important;border-radius:16px!important;background:linear-gradient(145deg,#35d887,#087344)!important;color:#042315!important;box-shadow:0 0 0 5px rgba(78,213,137,.10),0 9px 24px rgba(0,0,0,.2)!important}
+    .mark:after{border-color:rgba(4,40,22,.28)!important}
+    .brand-name{color:#f1fff5!important;font-size:16px!important;letter-spacing:.1em!important}
+    .brand-sub{color:#91c9a7!important;letter-spacing:.24em!important}
+    .navlinks{color:#c1d8ca!important;gap:27px!important}
+    .navlinks a{font-size:12px!important;letter-spacing:.04em}
+    .navlinks a:hover{color:#78e5a3!important}
+    .btn{border-radius:13px!important;padding:13px 20px!important;font-size:12px!important;font-weight:800!important;letter-spacing:.07em!important;text-transform:uppercase;transition:transform .22s,box-shadow .22s,filter .22s!important}
+    .btn:hover{transform:translateY(-3px)!important;filter:brightness(1.08);box-shadow:0 13px 30px rgba(0,91,47,.2)!important}
+    .btn-primary{background:linear-gradient(120deg,#25c878,#087344)!important;color:#032516!important;border:1px solid rgba(175,255,205,.45)!important;box-shadow:0 8px 24px rgba(10,166,87,.2)}
+    .btn-light{background:rgba(175,239,197,.09)!important;border:1px solid rgba(157,235,185,.32)!important;color:#dff9e8!important}
+    .cart-trigger{background:rgba(173,238,194,.1)!important;color:#e4f8eb!important;border:1px solid rgba(157,235,185,.25)!important}
+    .cart-count{background:#8bf0b0!important;color:#06351e!important}
+    .hero{background:#04170f!important}
+    .hero-featured{background-color:#04170f!important;background-image:linear-gradient(90deg,rgba(2,16,10,.90),rgba(3,26,15,.55) 56%,rgba(3,20,12,.18)),url("./assets/hero-biotech-bg.svg")!important;background-size:cover!important;background-position:center!important;border-bottom:1px solid rgba(108,224,151,.24)}
+    .hero-featured .hero-inner{min-height:590px!important;padding-top:60px!important;padding-bottom:58px!important}
+    .featured-layout{grid-template-columns:minmax(0,1.1fr) minmax(350px,.9fr)!important;gap:30px!important}
+    .featured-vial-wrap{min-height:500px!important}
+    .hero-vial{width:390px!important;height:490px!important;transform:rotate(10deg)!important;filter:drop-shadow(0 28px 35px rgba(0,0,0,.55))!important}
+    .hero-vial .vial-name{font-size:14px!important}
+    .hero-featured .eyebrow,.featured-category{color:#8ff0b3!important}
+    .hero-featured .eyebrow:before{background:#64df96!important}
+    .featured-copy h1{font-size:clamp(48px,6.3vw,78px)!important;letter-spacing:-.065em!important;color:#f4fff7!important}
+    .featured-copy p{color:#c1d8ca!important;font-size:16px!important;line-height:1.8!important}
+    .featured-meta strong{color:#9df2ba!important;font-size:27px!important}
+    .featured-meta span:first-child{color:#d5e9dc!important}
+    .featured-price-label{color:#8da99a!important}
+    .featured-controls button{border-color:rgba(159,239,187,.35)!important;background:rgba(3,32,18,.42)!important}
+    .featured-dot.active{background:#75e9a3!important}
+    .hero-note{color:#8fa99a!important}
+    .trust-row{background:#d7e9dd!important;border:0!important;gap:1px!important}
+    .trust-item{background:linear-gradient(145deg,#fafffb,#eaf5ee)!important;padding-top:26px!important;padding-bottom:26px!important}
+    .trust-item:before{content:"";display:block;width:34px;height:3px;background:linear-gradient(90deg,#21c779,#a3efbd);border-radius:9px;margin-bottom:12px}
+    .trust-item strong{color:#123c27!important;font-size:13px!important;letter-spacing:.04em}
+    .trust-item span{color:#698272!important}
+    main{padding:88px 0 96px!important;background:radial-gradient(ellipse at 8% 4%,rgba(52,177,105,.08),transparent 28%),linear-gradient(180deg,#f5faf6,#edf5ef)!important;position:relative}
+    .section-head{margin-bottom:34px!important}
+    .kicker,.tag{color:#07814b!important;letter-spacing:.2em!important}
+    h2{color:#0a2b1a!important;font-size:clamp(34px,4vw,48px)!important;letter-spacing:-.055em!important}
+    .section-desc{color:#61796a!important;line-height:1.8!important}
+    .toolbar{margin:30px 0 25px!important}
+    .search input{border:1px solid #cfe2d5!important;border-radius:14px!important;background:rgba(255,255,255,.86)!important;padding:15px 18px 15px 44px!important;box-shadow:0 8px 24px rgba(8,66,34,.045)!important}
+    .search input:focus{border-color:#27ae6c!important;box-shadow:0 0 0 4px rgba(39,174,108,.11)!important}
+    .result-count{color:#6b8374!important}
+    .grid{gap:23px!important}
+    .product{border:1px solid #d5e7db!important;border-radius:22px!important;background:#fff!important;box-shadow:0 10px 32px rgba(7,59,30,.055)!important;transition:transform .28s,box-shadow .28s,border-color .28s!important}
+    .product:hover{transform:translateY(-7px)!important;border-color:#8bcba4!important;box-shadow:0 24px 54px rgba(5,82,39,.13)!important}
+    .product-art{height:185px!important;background-color:#e4f1e8!important;background-image:linear-gradient(135deg,rgba(238,249,241,.15),rgba(205,233,215,.08)),url("./assets/product-art-bg.png")!important;background-position:center!important;background-size:cover!important}
+    .vial-visual{height:176px!important;width:176px!important;filter:drop-shadow(0 12px 12px rgba(9,51,27,.2))!important}
+    .vial-name{font-size:8px!important;letter-spacing:.025em!important}
+    .product-body{padding:24px!important;background:linear-gradient(180deg,#fff,#fbfefc)!important}
+    .product h3{font-size:23px!important;color:#0c3821!important;letter-spacing:-.045em!important}
+    .short-desc{color:#64796c!important;line-height:1.7!important}
+    .price-row{border-color:#e2eee6!important;padding-top:18px!important}
+    .price-caption{color:#748a7c!important;letter-spacing:.12em;text-transform:uppercase}
+    .price{color:#087b49!important;font-size:21px!important}
+    .product .btn{margin-top:20px!important}
+    .about{padding:88px 0!important;background:radial-gradient(circle at 90% 15%,rgba(43,176,103,.16),transparent 32%),linear-gradient(120deg,#dcefe2,#edf7f0)!important;position:relative;overflow:hidden}
+    .about:before{content:"";position:absolute;inset:0;background:url("./assets/hero-biotech-bg.svg") center/cover;opacity:.10;pointer-events:none}
+    .about-grid{position:relative;z-index:1;gap:64px!important;align-items:center!important}
+    .about p{color:#4f6c5a!important;line-height:1.9!important}
+    .about-card{background:rgba(255,255,255,.76)!important;border:1px solid rgba(112,174,132,.28)!important;border-radius:22px!important;padding:32px!important;box-shadow:0 18px 45px rgba(9,74,37,.08)!important;backdrop-filter:blur(10px)}
+    .about-card strong{color:#0b3b22!important;font-size:17px}
+    .about-card p{color:#607a69!important}
+    .calculator{padding:88px 0!important;background:linear-gradient(180deg,#f9fcfa,#edf6f0)!important}
+    .calculator-card{margin-top:32px!important;padding:32px!important;gap:34px!important;border:1px solid #d1e5d8!important;border-radius:24px!important;background:linear-gradient(130deg,#e8f5ec,#f8fcf9)!important;box-shadow:0 20px 50px rgba(7,71,34,.07)!important}
+    .calc-fields{gap:20px!important}
+    .calc-field label{color:#214b32!important;font-size:12px!important;letter-spacing:.04em}
+    .calc-field input,.calc-field select{border:1px solid #cbded1!important;border-radius:13px!important;padding:15px!important;background:#fff!important}
+    .calc-field input:focus,.calc-field select:focus{border-color:#1eaa64!important;box-shadow:0 0 0 4px rgba(30,170,100,.10)!important}
+    .calc-result{border-radius:20px!important;padding:32px!important;background:radial-gradient(circle at 100% 0,rgba(58,208,125,.26),transparent 48%),linear-gradient(145deg,#0b3b24,#04180e)!important;border:1px solid rgba(133,233,166,.25)}
+    .calc-result .calc-label{color:#9de5b5!important;letter-spacing:.18em!important}
+    .calc-result strong{color:#f2fff6!important}
+    .calc-result p{color:#c1ddcb!important;line-height:1.75!important}
+    .calc-note{background:#e3f1e7!important;border:1px solid #d0e5d6!important;border-radius:14px!important;color:#4c6a57!important;padding:18px!important}
+    .faq{padding:88px 0!important;background:radial-gradient(circle at 95% 5%,rgba(31,158,88,.08),transparent 30%),#f6faf7!important;position:relative;overflow:hidden}
+    .faq-list{margin-top:32px!important;border-top:1px solid #d7e8dc!important}
+    details{padding:23px 0!important;border-color:#d7e8dc!important}
+    summary{color:#143c25!important;font-size:15px!important;letter-spacing:.005em}
+    summary:hover{color:#07834c!important}
+    summary:after{color:#0b9a58!important}
+    details p{color:#63796b!important;line-height:1.8!important}
+    footer{padding:48px 0!important;background:radial-gradient(circle at 80% -20%,rgba(32,171,94,.32),transparent 38%),url("./assets/hero-biotech-bg.svg") center/cover,linear-gradient(110deg,#04170f,#0b3420)!important;border-top:1px solid rgba(119,229,157,.2)}
+    .footer-brand{color:#effff4!important;letter-spacing:.15em!important}
+    .footer-small{color:#9ab8a4!important;line-height:1.8!important}
+    .cart-backdrop,.modal-backdrop{backdrop-filter:blur(8px)}
+    .cart-panel{background:#f8fcf9!important;border-left:1px solid #d2e5d8!important}
+    .cart-head,.cart-footer{border-color:#d9e9de!important}
+    .cart-head h2{color:#103b23!important}
+    .cart-line{border-color:#dfebe3!important}
+    .qty-control{border-color:#d4e5da!important}
+    .qty-control button{background:#e2f2e7!important;color:#087447!important}
+    .cart-total strong{color:#0a3a22!important}
+    .modal{border:1px solid #cfe3d5!important;border-radius:24px!important;box-shadow:0 30px 100px rgba(0,36,17,.32)!important}
+    .modal-top{background:linear-gradient(120deg,#edf8f0,#fff)!important;border-color:#dcebe1!important}
+    .modal-top h2{color:#0c3b22!important}
+    .modal-content h3{color:#17472c!important}
+    .modal-content p,.modal-content li{color:#5d7565!important;line-height:1.75!important}
+    .variant{border-color:#d9e9de!important;border-radius:14px!important;background:#fbfefc!important}
+    .variant:has(input:checked){border-color:#22a967!important;background:#eaf7ee!important;box-shadow:0 0 0 3px rgba(34,169,103,.08)!important}
+    .variant input{accent-color:#0b9857!important}
+    .modal-disclaimer{background:#edf6f0!important;color:#587363!important}
+    .close{background:#e4f2e8!important;color:#155333!important}
+    .toast{background:linear-gradient(110deg,#0a482b,#04180f)!important;border:1px solid rgba(140,233,170,.28)!important}
+    .empty{background:rgba(255,255,255,.7)!important;border-color:#bcd9c6!important;color:#61796a!important}
+    @media(max-width:850px){
+      .nav{min-height:76px!important}.navlinks{gap:10px!important}
+      .featured-layout{grid-template-columns:minmax(0,1fr) minmax(270px,.8fr)!important}
+      .hero-vial{width:310px!important;height:390px!important}
+      .featured-vial-wrap{min-height:400px!important}
+      .grid{gap:16px!important}.product-art{height:155px!important}.vial-visual{width:150px!important;height:150px!important}
+      .about-grid{gap:30px!important}
+    }
+    @media(max-width:760px){
+      .hero-featured .hero-inner{min-height:0!important;padding:34px 0 45px!important}
+      .featured-layout{grid-template-columns:1fr!important;gap:0!important}
+      .featured-vial-wrap{grid-row:1;min-height:275px!important;margin-bottom:5px}
+      .hero-vial{width:220px!important;height:275px!important;transform:rotate(7deg)!important}
+      .hero-vial .vial-name{font-size:9px!important}
+      .featured-copy{min-height:0!important}
+      .featured-copy h1{font-size:clamp(40px,10vw,58px)!important}
+      .featured-copy p{font-size:14px!important}
+      .featured-meta{margin-bottom:18px!important}
+      .hero-actions{gap:9px}
+      .hero-actions .btn{flex:1}
+      .about-grid{grid-template-columns:1fr!important}
+    }
+    @media(max-width:600px){
+      .nav{min-height:68px!important}.mark{width:39px!important;height:39px!important}
+      .brand-name{font-size:12px!important}.brand-sub{font-size:8px!important}
+      .navlinks .btn{padding:10px 11px!important;font-size:10px!important}
+      main,.about,.calculator,.faq{padding-top:56px!important;padding-bottom:60px!important}
+      .trust-item{padding:17px 20px!important}
+      .product-art{height:145px!important}.vial-visual{width:142px!important;height:142px!important}
+      .product-body{padding:20px!important}
+      .calculator-card{padding:18px!important;gap:18px!important}
+      .calc-result{padding:23px!important}
+      .footer-row{gap:16px}
+    }
 
   </style>
 </head>
