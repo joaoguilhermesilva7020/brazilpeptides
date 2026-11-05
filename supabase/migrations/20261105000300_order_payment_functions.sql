@@ -86,7 +86,19 @@ begin
   loop
     v_count := v_count + 1;
     begin
-      if coalesce(v_item->>'quantity', '') !~ '^[0-9]+
+      if jsonb_typeof(v_item) is distinct from 'object' then
+        raise exception 'Item inválido.';
+      end if;
+      if coalesce(v_item->>'quantity', '') !~ '^[0-9]+$' then
+        raise exception 'Quantidade inválida.';
+      end if;
+      v_variant_id := (v_item->>'variant_id')::uuid;
+      v_quantity := (v_item->>'quantity')::integer;
+    exception when others then
+      raise exception 'Item % possui variante ou quantidade inválida.', v_count;
+    end;
+
+    if v_quantity < 1 or v_quantity > 1000 then
       raise exception 'Quantidade inválida no item %.', v_count;
     end if;
 
