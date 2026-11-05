@@ -15,13 +15,13 @@ Esta pasta contém a estrutura do banco e a primeira carga do catálogo. **Nenhu
 - 21 produtos ativos.
 - 37 variantes.
 - 8 categorias.
-- 2 afiliados de exemplo: BP1001 e BP1002.
+- 2 afiliados de exemplo: BP1001 e BP1002, importados **inativos** até serem cadastrados afiliados reais.
 
 A importação preserva os IDs antigos em legacy_id, nomes, descrições, evidências, disclaimers, tamanhos e preços. A categoria atual de cada produto é relacionada pela tabela product_categories; o modelo permite múltiplas categorias no futuro.
 
 ### Estoque e comissões
 O JSON não contém saldo de estoque. Por isso, a carga **não inventa quantidades nem cria saldos de estoque**. Os saldos deverão ser informados após contagem real.
-Os afiliados atuais são importados, mas a taxa/valor de comissão fica em zero até que a regra comercial seja confirmada. Não devem ser geradas comissões reais usando os afiliados de exemplo sem validação.
+Os afiliados BP1001 e BP1002 são exemplos e são importados inativos. A taxa/valor de comissão fica em zero até que a regra comercial seja confirmada.
 
 ## Como aplicar no Supabase
 ### Opção recomendada: Supabase CLI
@@ -48,7 +48,7 @@ Se preferir usar o painel, abra SQL Editor e execute primeiro o conteúdo de 202
 ## Automação GitHub Actions
 O workflow Supabase migrations (manual) é deliberadamente manual (workflow_dispatch). Ele não publica alterações automaticamente a cada push. Antes de executá-lo, configure estes GitHub Actions Secrets no repositório:
 - SUPABASE_ACCESS_TOKEN: token pessoal criado no painel Supabase.
-- SUPABASE_PROJECT_REF: identificador do projeto (Project Settings → General).
+- SUPABASE_PROJECT_REF: xuutmhgjrrsmtropldwh (extraído da URL do projeto informada).
 - SUPABASE_DB_PASSWORD: senha do banco criada ao criar o projeto.
 
 Depois de revisar e mesclar as migrations na branch principal, abra Actions → Supabase migrations (manual) → Run workflow. Nunca grave esses valores no código ou em arquivos do repositório. A senha do banco e o access token não devem ser enviados em mensagens.
