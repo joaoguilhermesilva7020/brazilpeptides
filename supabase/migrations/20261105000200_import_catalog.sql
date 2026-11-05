@@ -45,6 +45,7 @@ begin
       updated_at=now()
     returning id into product_uuid;
 
+    delete from public.product_categories where product_id=product_uuid;
     for cat in select value from jsonb_array_elements(c->'categories') where value->>'name'=p->>'category' loop
       select id into category_uuid from public.categories where name=cat->>'name';
       insert into public.product_categories(product_id,category_id)
@@ -73,7 +74,7 @@ begin
 
   for a in select value from jsonb_array_elements(c->'affiliates') loop
     insert into public.affiliates(legacy_id,name,code,active)
-    values(a->>'id',a->>'name',a->>'id',coalesce((a->>'active')::boolean,true))
+    values(a->>'id',a->>'name',a->>'id',false)
     on conflict(legacy_id) do update set name=excluded.name,code=excluded.code,active=excluded.active,updated_at=now();
   end loop;
 end
