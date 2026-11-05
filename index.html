@@ -20,10 +20,44 @@ footer{padding:42px 0;background:#04170f;color:#c6d9cc;border-top:1px solid rgba
 @media(max-width:900px){.navlinks{gap:13px}.featured-layout{grid-template-columns:1fr .8fr}.hero-vial{width:290px;height:390px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.trust-item{padding-left:22px}.quality-grid{grid-template-columns:1fr}.about-grid{gap:28px}}
 @media(max-width:680px){.wrap{width:calc(100% - 30px)}.nav{min-height:70px}.brand img{width:36px;height:45px}.brand-name{font-size:13px}.brand-sub{font-size:8px}.navlinks{gap:8px}.navlinks a:not(.btn){display:none}.navlinks .btn{padding:10px 12px;font-size:9px}.hero-inner{padding:37px 0 25px}.featured-layout{grid-template-columns:1fr;gap:0}.featured-vial-wrap{grid-row:1;min-height:265px;margin:0}.featured-vial-wrap:before{width:220px;height:220px}.hero-vial{width:205px;height:265px;transform:rotate(7deg)}.hero-vial .vial-name{font-size:8px}.featured-content{padding:8px 0 12px}.featured-copy{min-height:0}.featured-copy h1{font-size:clamp(39px,11vw,57px);margin:9px 0 12px}.featured-copy p{font-size:13px}.featured-meta{margin:15px 0}.featured-meta strong{font-size:21px}.hero-actions .btn{flex:1;padding:12px 10px;font-size:9px}.hero-note{line-height:1.6}.trust-row{grid-template-columns:1fr}.trust-item{padding:15px 20px}.section-head{display:block}.section-desc{margin-top:14px}.grid{grid-template-columns:1fr;gap:15px}.product-art{height:170px}.product-art .vial-visual{width:150px;height:160px}.short-desc{min-height:0}.institutional,.about,.calculator,.faq{padding:62px 0}.quality-main,.quality-side{padding:21px}.quality-main{gap:14px}.quality-icon{width:43px;height:43px;flex-basis:43px}.about-grid{grid-template-columns:1fr}.calculator-card{grid-template-columns:1fr;padding:18px;gap:17px}.calc-result{padding:22px}.toolbar{align-items:stretch;flex-direction:column}.search{max-width:none}.footer-row{align-items:flex-start;flex-direction:column}.modal-top,.modal-content{padding-left:19px;padding-right:19px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+.affiliate-backdrop{position:fixed;inset:0;z-index:1200;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(3,18,11,.72);backdrop-filter:blur(8px)}
+.affiliate-backdrop.open{display:flex;animation:affiliateFade .22s ease-out}
+.affiliate-popup{position:relative;width:min(100%,520px);overflow:hidden;border:1px solid rgba(123,202,151,.35);border-radius:24px;background:linear-gradient(145deg,#102c20 0%,#071b13 70%,#0b3823 100%);color:#f5fff7;box-shadow:0 28px 90px rgba(0,0,0,.42);padding:38px}
+.affiliate-popup:before{content:"";position:absolute;width:270px;height:270px;right:-105px;top:-125px;border:1px solid rgba(91,214,131,.18);border-radius:50%;box-shadow:0 0 0 24px rgba(91,214,131,.035),0 0 0 50px rgba(91,214,131,.025);pointer-events:none}
+.affiliate-popup-kicker{display:inline-flex;align-items:center;gap:8px;color:#8fe0a9;font-size:10px;font-weight:850;letter-spacing:.16em;text-transform:uppercase}
+.affiliate-popup-kicker:before{content:"";width:7px;height:7px;border-radius:50%;background:#62d989;box-shadow:0 0 14px #62d989}
+.affiliate-popup h2{position:relative;margin:17px 0 12px;font-size:clamp(29px,6vw,42px);line-height:1.05;letter-spacing:-.045em;color:#fff}
+.affiliate-popup h2 span{color:#75dc96}
+.affiliate-popup p{position:relative;margin:0;color:#c3d6ca;font-size:14px;line-height:1.75}
+.affiliate-popup-benefit{position:relative;display:flex;gap:12px;align-items:flex-start;margin:22px 0;padding:15px;border:1px solid rgba(143,224,169,.2);border-radius:14px;background:rgba(143,224,169,.07);color:#e6f5e9;font-size:12px;line-height:1.6}
+.affiliate-popup-benefit strong{display:block;color:#fff;font-size:13px;margin-bottom:2px}
+.affiliate-popup-actions{position:relative;display:grid;gap:11px;margin-top:24px}
+.affiliate-popup-cta{display:flex;justify-content:center;align-items:center;gap:9px;min-height:52px;padding:13px 18px;border-radius:12px;background:linear-gradient(100deg,#20a957,#78d98d);color:#062313;font-size:13px;font-weight:850;text-decoration:none;box-shadow:0 10px 28px rgba(37,190,93,.2);transition:transform .2s,filter .2s}
+.affiliate-popup-cta:hover{transform:translateY(-2px);filter:brightness(1.06)}
+.affiliate-popup-dismiss{border:0;background:transparent;color:#a9c0b1;font:inherit;font-size:12px;padding:8px;cursor:pointer}
+.affiliate-popup-close{position:absolute;z-index:2;right:15px;top:15px;width:34px;height:34px;border:1px solid rgba(255,255,255,.15);border-radius:50%;background:rgba(255,255,255,.07);color:#fff;font-size:21px;cursor:pointer}
+@keyframes affiliateFade{from{opacity:0}to{opacity:1}}
+@media(max-width:520px){.affiliate-popup{padding:30px 23px 23px;border-radius:20px}.affiliate-popup h2{max-width:340px}}
+@media(prefers-reduced-motion:reduce){.affiliate-backdrop.open{animation:none}.affiliate-popup-cta{transition:none}}
+
 </style>
 </head>
 
 <body>
+<div class="affiliate-backdrop" id="affiliatePopup" role="dialog" aria-modal="true" aria-labelledby="affiliatePopupTitle" aria-describedby="affiliatePopupDescription">
+  <div class="affiliate-popup">
+    <button class="affiliate-popup-close" id="affiliatePopupClose" type="button" aria-label="Fechar">×</button>
+    <div class="affiliate-popup-kicker">Programa de afiliados · Aset Life Peptides</div>
+    <h2 id="affiliatePopupTitle">Indique. Compartilhe. <span>Ganhe comissões.</span></h2>
+    <p id="affiliatePopupDescription">Faça parte da nossa rede de parceiros. Solicite seu link exclusivo e compartilhe com sua audiência. As compras realizadas por meio do seu link poderão ser identificadas para atribuição de comissões, conforme as condições do programa.</p>
+    <div class="affiliate-popup-benefit"><span aria-hidden="true">✦</span><div><strong>Seu link. Suas indicações.</strong>Fale com nossa equipe pelo WhatsApp para solicitar seu cadastro e conhecer as condições de participação.</div></div>
+    <div class="affiliate-popup-actions">
+      <a class="affiliate-popup-cta" id="affiliatePopupWhatsapp" href="#" target="_blank" rel="noopener">Quero meu link de afiliado <span aria-hidden="true">↗</span></a>
+      <button class="affiliate-popup-dismiss" id="affiliatePopupDismiss" type="button">Agora não, obrigado</button>
+    </div>
+  </div>
+</div>
 <div class="topbar">ASET LIFE PEPTIDES &nbsp;·&nbsp; CIÊNCIA, RASTREABILIDADE E PESQUISA MOLECULAR</div>
 <header><div class="wrap nav">
 <a class="brand" href="#" aria-label="Aset Life Peptides início"><img src="./assets/vial-base.png" alt=""><span><span class="brand-name" id="brandName">ASET LIFE</span><br><span class="brand-sub">PEPTIDES · RESEARCH</span></span></a>
@@ -267,6 +301,35 @@ footer{padding:42px 0;background:#04170f;color:#c6d9cc;border-top:1px solid rgba
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
     search.addEventListener('input', renderProducts);
 
+    function setupAffiliatePopup() {
+      const popup = document.getElementById('affiliatePopup');
+      const closeButton = document.getElementById('affiliatePopupClose');
+      const dismissButton = document.getElementById('affiliatePopupDismiss');
+      const whatsappButton = document.getElementById('affiliatePopupWhatsapp');
+      const storageKey = 'aset_affiliate_popup_seen';
+      if (!popup || !closeButton || !dismissButton || !whatsappButton) return;
+      whatsappButton.href = waUrl('Olá! Tenho interesse em participar do programa de afiliados da Aset Life Peptides. Gostaria de solicitar meu link exclusivo para divulgar e receber comissões pelas vendas realizadas por meio das minhas indicações. Poderiam me informar como funciona o cadastro e as condições do programa?');
+      const closePopup = () => {
+        popup.classList.remove('open');
+        document.body.style.overflow = '';
+        try { sessionStorage.setItem(storageKey, '1'); } catch (_) {}
+      };
+      closeButton.addEventListener('click', closePopup);
+      dismissButton.addEventListener('click', closePopup);
+      popup.addEventListener('click', event => { if (event.target === popup) closePopup(); });
+      document.addEventListener('keydown', event => { if (event.key === 'Escape' && popup.classList.contains('open')) closePopup(); });
+      let alreadySeen = false;
+      try { alreadySeen = sessionStorage.getItem(storageKey) === '1'; } catch (_) {}
+      const phoneIsValid = String(catalog.whatsapp || '').replace(/\\D/g, '').length >= 10;
+      if (!alreadySeen && !currentAffiliateId && phoneIsValid) {
+        window.setTimeout(() => {
+          popup.classList.add('open');
+          document.body.style.overflow = 'hidden';
+          closeButton.focus();
+        }, 900);
+      }
+    }
+
     fetch('./data/catalog.json')
       .then(response => { if (!response.ok) throw new Error('Não foi possível carregar o catálogo'); return response.json(); })
       .then(data => {
@@ -284,6 +347,7 @@ footer{padding:42px 0;background:#04170f;color:#c6d9cc;border-top:1px solid rgba
         });
         renderProducts();
         setupFeaturedProducts();
+        setupAffiliatePopup();
       })
       .catch(error => {
         console.error('Erro ao carregar ou renderizar o catálogo:', error);
