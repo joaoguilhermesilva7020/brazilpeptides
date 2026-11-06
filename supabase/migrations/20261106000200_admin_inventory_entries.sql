@@ -39,7 +39,7 @@ begin
   values (p_variant_id, p_quantity)
   on conflict (variant_id)
   do update set
-    quantity_on_hand = public.inventory_balances.quantity_on_hand + excluded.quantity_on_hand,
+    quantity_on_hand = inventory_balances.quantity_on_hand + excluded.quantity_on_hand,
     updated_at = now()
   returning quantity_on_hand into v_balance;
 
