@@ -50,7 +50,9 @@ export async function verifyTurnstileToken(
   });
   if (!response.ok) return false;
   const result = await response.json();
-  return result?.success === true;
+  return result?.success === true &&
+    result?.hostname === "joaoguilhermesilva7020.github.io" &&
+    result?.action === "checkout";
 }
 
 export function createOrderHandler(
@@ -81,7 +83,7 @@ export function createOrderHandler(
         return Response.json({ error: "Conclua a verificação de segurança." }, { status: 400, headers });
       }
 
-      const verified = await verifyToken(body.turnstile_token, req.headers.get("CF-Connecting-IP"));
+      const verified = await verifyToken(body.turnstile_token, null);
       if (!verified) {
         return Response.json({ error: "Verificação de segurança inválida. Tente novamente." }, { status: 403, headers });
       }
