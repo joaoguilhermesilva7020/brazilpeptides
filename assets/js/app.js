@@ -292,25 +292,46 @@
 
     const calcProductAmount = document.getElementById("calcProductAmount");
     const calcWaterVolume = document.getElementById("calcWaterVolume");
+    const calcDoseAmount = document.getElementById("calcDoseAmount");
     function formatCalc(value, maximumFractionDigits = 6) {
       return new Intl.NumberFormat("pt-BR", { maximumFractionDigits }).format(value);
     }
     function updateCalculator() {
       const productAmount = Number(calcProductAmount.value);
       const waterVolume = Number(calcWaterVolume.value);
+      const doseAmount = Number(calcDoseAmount.value);
       const validProduct = calcProductAmount.value !== "" && Number.isFinite(productAmount) && productAmount > 0;
       const validVolume = calcWaterVolume.value !== "" && Number.isFinite(waterVolume) && waterVolume > 0;
+      const validDose = calcDoseAmount.value !== "" && Number.isFinite(doseAmount) && doseAmount > 0;
+      const concentrationResult = document.getElementById("calcConcentrationResult");
+      const concentrationConverted = document.getElementById("calcConverted");
+      const doseVolumeResult = document.getElementById("calcDoseVolumeResult");
+      const doseMicroliters = document.getElementById("calcDoseMicroliters");
+
       if (!validProduct || !validVolume) {
-        document.getElementById("calcConcentrationResult").textContent = "Informe valores positivos para o produto e o volume.";
-      } else {
-        const mgMl = productAmount / waterVolume;
-        document.getElementById("calcConcentrationResult").textContent =
-          formatCalc(mgMl) + " mg/mL";
-        document.getElementById("calcConverted").textContent =
-          formatCalc(mgMl * 1000) + " mcg/mL";
+        concentrationResult.textContent = "—";
+        concentrationConverted.textContent = "Informe valores positivos para a quantidade do frasco e o volume.";
+        doseVolumeResult.textContent = "—";
+        doseMicroliters.textContent = "A conversão ficará disponível após calcular a concentração.";
+        return;
       }
+
+      const mgMl = productAmount / waterVolume;
+      concentrationResult.textContent = formatCalc(mgMl) + " mg/mL";
+      concentrationConverted.textContent = formatCalc(mgMl * 1000) + " mcg/mL";
+
+      if (!validDose) {
+        doseVolumeResult.textContent = "—";
+        doseMicroliters.textContent = "Informe uma quantidade de referência positiva em mg.";
+        return;
+      }
+
+      const volumeMl = doseAmount / mgMl;
+      const volumeMicroliters = volumeMl * 1000;
+      doseVolumeResult.textContent = formatCalc(volumeMl) + " mL";
+      doseMicroliters.textContent = formatCalc(volumeMicroliters, 3) + " µL";
     }
-    [calcProductAmount, calcWaterVolume].forEach(field => {
+    [calcProductAmount, calcWaterVolume, calcDoseAmount].forEach(field => {
       field.addEventListener("input", updateCalculator);
       field.addEventListener("change", updateCalculator);
     });
