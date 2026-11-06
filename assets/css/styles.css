@@ -189,3 +189,21 @@ main{background:#fff}
   .product h3{font-size:20px}
   .variant-count{max-width:95px;font-size:9px}
 }
+
+
+/* PR B — revisão do pedido antes do registro e envio ao WhatsApp */
+.checkout-review{margin:0 0 20px;padding:15px;border:1px solid #d8e7dd;border-radius:13px;background:#f3f8f4}
+.checkout-review-heading,.checkout-review-total{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.checkout-review-heading strong{color:#173d29;font-size:13px}
+.checkout-review-heading span{color:#6e8274;font-size:10px;font-weight:750}
+.checkout-review-items{display:grid;gap:10px;margin-top:12px}
+.checkout-review-line{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-top:10px;border-top:1px solid #dfeae2}
+.checkout-review-line>div{display:grid;gap:4px;min-width:0}
+.checkout-review-line strong{color:#234b34;font-size:11px;line-height:1.4;overflow-wrap:anywhere}
+.checkout-review-line span{color:#718176;font-size:10px;line-height:1.5}
+.checkout-review-line>b{flex:0 0 auto;color:#173d29;font-size:11px;font-variant-numeric:tabular-nums}
+.checkout-review-total{margin-top:13px;padding-top:12px;border-top:1px solid #cbdccf}
+.checkout-review-total span{color:#617568;font-size:11px;font-weight:700}
+.checkout-review-total strong{color:#126b40;font-size:19px;font-variant-numeric:tabular-nums}
+.checkout-review-note{margin:10px 0 0;color:#718176;font-size:10px;line-height:1.6}
+@media(max-width:480px){.checkout-review{padding:13px}.checkout-review-total strong{font-size:18px}}
