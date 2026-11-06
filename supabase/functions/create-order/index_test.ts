@@ -43,6 +43,18 @@ Deno.test("Turnstile rejects unsuccessful or failed verification responses", asy
   assert(!unavailable, "siteverify HTTP failure must be rejected");
 });
 
+Deno.test("Turnstile rejects a valid token issued for another hostname", async () => {
+  const ok = await verifyTurnstileToken("token", null, "secret", async () =>
+    Response.json({ success: true, hostname: "attacker.example", action: "checkout" }));
+  assert(!ok, "wrong hostname must be rejected");
+});
+
+Deno.test("Turnstile rejects a token with the wrong action", async () => {
+  const ok = await verifyTurnstileToken("token", null, "secret", async () =>
+    Response.json({ success: true, hostname: "joaoguilhermesilva7020.github.io", action: "other" }));
+  assert(!ok, "wrong action must be rejected");
+});
+
 Deno.test("missing challenge token is rejected before Supabase client creation", async () => {
   let created = false;
   const handler = createOrderHandler(
