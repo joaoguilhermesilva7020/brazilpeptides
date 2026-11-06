@@ -164,3 +164,28 @@ main{background:#fff}
 #calculadora .calc-fields .calc-presets[hidden]{display:none!important}
 #calculadora .calc-presets-mcg{margin-top:4px!important}
 @media(max-width:420px){#calculadora .calc-reference-input{grid-template-columns:1fr}#calculadora .calc-reference-input select{width:100%}}
+
+
+/* PR A — filtros de categoria e acabamento responsivo do catálogo */
+.category-filters{display:flex;flex-wrap:wrap;gap:9px;margin:-7px 0 25px}
+.category-filter{appearance:none;border:1px solid #d5e3d9;border-radius:999px;background:#fff;color:#42604d;padding:9px 15px;font:inherit;font-size:11px;font-weight:750;line-height:1.2;cursor:pointer;transition:background .18s,border-color .18s,color .18s}
+.category-filter:hover{border-color:#16834f;color:#12643e;background:#f4faf6}
+.category-filter.is-active{border-color:#16834f;background:#16834f;color:#fff}
+.category-filter:focus-visible,.product .btn:focus-visible,.variant input:focus-visible{outline:3px solid rgba(22,131,79,.28);outline-offset:3px}
+.product-category-list{display:flex;flex-wrap:wrap;gap:6px;min-height:18px}
+.product-category-label{display:inline-flex;align-items:center;border-radius:5px;background:#edf6ef;color:#28734a;padding:4px 7px;font-size:8px;font-weight:800;letter-spacing:.07em;text-transform:uppercase}
+.variant-count{color:#718176;font-size:10px;font-weight:700;text-align:right;max-width:115px}
+@media(max-width:680px){
+  .category-filters{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;padding:2px 1px 10px;margin-right:-15px;scrollbar-width:thin}
+  .category-filter{flex:0 0 auto;min-height:38px}
+  .product-category-list{min-height:0}
+  .modal-backdrop{align-items:flex-end;padding:8px}
+  .modal{width:100%;max-height:calc(100dvh - 16px);border-radius:18px 18px 12px 12px}
+  .modal-top{position:sticky;top:0;z-index:2;background:#f5faf6}
+  .modal-content{padding-top:18px;padding-bottom:max(22px,env(safe-area-inset-bottom))}
+}
+@media(max-width:380px){
+  .product-body{padding:15px}
+  .product h3{font-size:20px}
+  .variant-count{max-width:95px;font-size:9px}
+}
