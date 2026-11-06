@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#061b12"><meta name="description" content="Aset Life Peptides — catálogo informativo, pesquisa molecular e documentação analítica por lote."><title>Aset Life Peptides — Pesquisa Molecular</title><link rel="stylesheet" href="./assets/css/styles.css?v=calculator-mcg-1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#061b12"><meta name="description" content="Aset Life Peptides — catálogo informativo, pesquisa molecular e documentação analítica por lote."><title>Aset Life Peptides — Pesquisa Molecular</title><link rel="stylesheet" href="./assets/css/styles.css?v=catalog-ui-1">
 </head>
 
 <body>
@@ -35,7 +35,8 @@
 </div></div></section>
 <div class="trust-row"><div class="trust-item"><strong>Catálogo organizado</strong><span>Informações e apresentações por produto</span></div><div class="trust-item"><strong>Rastreabilidade por lote</strong><span>Documentação analítica HPLC para consulta</span></div><div class="trust-item"><strong>Atendimento especializado</strong><span>Contato direto com a equipe Aset Life</span></div></div>
 <main id="catalogo"><div class="wrap"><div class="section-head"><div><div class="kicker">Biblioteca molecular</div><h2>Explore o catálogo</h2></div><p class="section-desc">Consulte descrições, contexto científico e apresentações disponíveis.</p></div>
-<div class="toolbar"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><input id="search" type="search" placeholder="Buscar molécula, categoria ou aplicação..." aria-label="Buscar produto"></label><span class="result-count" id="resultCount"></span></div>
+<div class="toolbar"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><input id="search" type="search" placeholder="Buscar molécula, categoria ou aplicação..." aria-label="Buscar produto"></label><span class="result-count" id="resultCount" aria-live="polite"></span></div>
+<div class="category-filters" id="categoryFilters" aria-label="Filtrar produtos por categoria"></div>
 <div class="grid" id="productGrid"><div class="empty">Carregando catálogo…</div></div></div></main>
 <section class="institutional" id="qualidade"><div class="wrap"><div class="kicker">Qualidade analítica & rastreabilidade</div><h2>Transparência que começa na análise.</h2><p class="institutional-intro">Aset Life Peptides valoriza a documentação técnica e a rastreabilidade dos produtos. Disponibilizamos laudos de análise por lote, incluindo cromatografia líquida de alta eficiência (HPLC), para consulta da documentação correspondente ao lote.</p>
 <div class="quality-grid"><div class="quality-main"><div class="quality-icon">⌁</div><div><h3>Laudos HPLC por lote</h3><p>A documentação analítica permite consultar o perfil cromatográfico e os dados apresentados no relatório específico de cada lote. A análise deve ser interpretada conforme o método, a amostra e os critérios descritos no próprio documento.</p><div class="quality-points"><div class="quality-point"><b>✓</b><span>Documentação vinculada ao lote correspondente</span></div><div class="quality-point"><b>✓</b><span>Consulta do relatório analítico aplicável ao produto</span></div><div class="quality-point"><b>✓</b><span>Transparência sobre dados e limites do ensaio</span></div></div></div></div>
@@ -57,8 +58,6 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div class="cart-backdrop" id="cartBackdrop" role="dialog" aria-modal="true" aria-labelledby="cartTitle"><section class="cart-panel"><div class="cart-head"><h2 id="cartTitle">Seu carrinho</h2><button class="close" id="closeCart" aria-label="Fechar carrinho">×</button></div><div class="cart-items" id="cartItems"><div class="cart-empty">Seu carrinho está vazio.</div></div><div class="cart-footer"><div class="cart-total"><span>Total estimado</span><strong id="cartTotal">R$ 0,00</strong></div><button class="btn btn-primary" id="checkoutWhatsapp" type="button" disabled>Finalizar pelo WhatsApp ↗</button><p class="cart-hint">A equipe confirmará disponibilidade e condições.</p></div></section></div>
 <div class="modal-backdrop" id="productModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal"><div class="modal-top"><div><div class="kicker" id="modalCategory">CATÁLOGO</div><h2 id="modalTitle">Produto</h2></div><button class="close" id="closeModal" aria-label="Fechar">×</button></div><div class="modal-content" id="modalContent"></div></div></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./assets/js/supabase-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./assets/js/supabase-config.js"></script>
 <script src="./assets/js/app.js"></script>
