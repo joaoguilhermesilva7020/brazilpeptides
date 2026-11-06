@@ -6,50 +6,107 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
-  if (req.method !== "POST") {
-    return Response.json({ error: "Método não permitido." }, { status: 405, headers: corsHeaders });
-  }
+type ConfirmPaymentClient = {
+  auth: {
+    getUser: () => Promise<{
+      data: { user: unknown | null };
+      error: unknown | null;
+    }>;
+  };
+  rpc: (
+    functionName: string,
+    args: Record<string, unknown>,
+  ) => Promise<{ data: unknown; error: { message: string } | null }>;
+};
 
-  const authorization = req.headers.get("Authorization");
-  if (!authorization?.startsWith("Bearer ")) {
-    return Response.json({ error: "Autenticação obrigatória." }, { status: 401, headers: corsHeaders });
-  }
+type ConfirmPaymentClientFactory = (
+  url: string,
+  anonKey: string,
+  options: {
+    global: { headers: { Authorization: string } };
+    auth: { persistSession: false; autoRefreshToken: false };
+  },
+) => ConfirmPaymentClient;
 
-  try {
-    const body = await req.json();
-    if (typeof body?.order_id !== "string") {
-      return Response.json({ error: "ID do pedido inválido." }, { status: 400, headers: corsHeaders });
+/**
+ * Builds the HTTP handler with an injectable Supabase client factory.
+ * This keeps request/auth/RPC behavior testable without production credentials
+ * or changes to production database state.
+ */
+export function createConfirmPaymentHandler(
+  createSupabaseClient: ConfirmPaymentClientFactory,
+) {
+  return async (req: Request): Promise<Response> => {
+    if (req.method === "OPTIONS") {
+      return new Response("ok", { headers: corsHeaders });
     }
 
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_ANON_KEY")!,
-      {
-        global: { headers: { Authorization: authorization } },
-        auth: { persistSession: false, autoRefreshToken: false },
-      },
-    );
-
-    const { data: userData, error: userError } = await supabase.auth.getUser();
-    if (userError || !userData.user) {
-      return Response.json({ error: "Sessão inválida ou expirada." }, { status: 401, headers: corsHeaders });
+    if (req.method !== "POST") {
+      return Response.json(
+        { error: "Método não permitido." },
+        { status: 405, headers: corsHeaders },
+      );
     }
 
-    const { data, error } = await supabase.rpc("confirm_order_payment", {
-      p_order_id: body.order_id,
-      p_payment_reference: body.payment_reference ?? null,
-      p_notes: body.notes ?? null,
-    });
-
-    if (error) {
-      const status = error.message.includes("administrador") ? 403 : 400;
-      return Response.json({ error: error.message }, { status, headers: corsHeaders });
+    const authorization = req.headers.get("Authorization");
+    if (!authorization?.startsWith("Bearer ")) {
+      return Response.json(
+        { error: "Autenticação obrigatória." },
+        { status: 401, headers: corsHeaders },
+      );
     }
 
-    return Response.json({ data }, { status: 200, headers: corsHeaders });
-  } catch (_error) {
-    return Response.json({ error: "Não foi possível confirmar o pagamento." }, { status: 400, headers: corsHeaders });
-  }
-});
+    try {
+      const body = await req.json();
+      if (typeof body?.order_id !== "string") {
+        return Response.json(
+          { error: "ID do pedido inválido." },
+          { status: 400, headers: corsHeaders },
+        );
+      }
+
+      const supabase = createSupabaseClient(
+        Deno.env.get("SUPABASE_URL")!,
+        Deno.env.get("SUPABASE_ANON_KEY")!,
+        {
+          global: { headers: { Authorization: authorization } },
+          auth: { persistSession: false, autoRefreshToken: false },
+        },
+      );
+
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      if (userError || !userData.user) {
+        return Response.json(
+          { error: "Sessão inválida ou expirada." },
+          { status: 401, headers: corsHeaders },
+        );
+      }
+
+      const { data, error } = await supabase.rpc("confirm_order_payment", {
+        p_order_id: body.order_id,
+        p_payment_reference: body.payment_reference ?? null,
+        p_notes: body.notes ?? null,
+      });
+
+      if (error) {
+        const status = error.message.includes("administrador") ? 403 : 400;
+        return Response.json(
+          { error: error.message },
+          { status, headers: corsHeaders },
+        );
+      }
+
+      return Response.json({ data }, { status: 200, headers: corsHeaders });
+    } catch (_error) {
+      return Response.json(
+        { error: "Não foi possível confirmar o pagamento." },
+        { status: 400, headers: corsHeaders },
+      );
+    }
+  };
+}
+
+if (import.meta.main) {
+  const createSupabaseClient = createClient as unknown as ConfirmPaymentClientFactory;
+  Deno.serve(createConfirmPaymentHandler(createSupabaseClient));
+}
