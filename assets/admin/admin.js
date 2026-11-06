@@ -9,7 +9,7 @@
 
   const client = window.supabase.createClient(config.url, config.anonKey);
   const $ = (id) => document.getElementById(id);
-  const state = { orders: [], selectedOrder: null, isAdmin: false };
+  const state = { orders: [], selectedOrder: null, isAdmin: false, inventory: [], inventoryLoaded: false };
   const statusLabels = {
     pending_payment: 'Aguardando pagamento', paid: 'Pago', processing: 'Em processamento',
     completed: 'Concluído', cancelled: 'Cancelado', payment_issue: 'Problema no pagamento', refunded: 'Reembolsado'
@@ -76,6 +76,8 @@
     await client.auth.signOut();
     state.isAdmin = false;
     state.orders = [];
+    state.inventory = [];
+    state.inventoryLoaded = false;
     $('dashboardView').classList.add('hidden');
     $('loginView').classList.remove('hidden');
     $('password').value = '';
@@ -140,6 +142,78 @@
     });
   }
 
+  async function loadInventory() {
+    $('refreshButton').disabled = true;
+    setFeedback('dashboardFeedback', 'Atualizando estoque…', true);
+    try {
+      const { data, error } = await client
+        .from('product_variants')
+        .select('id,name,sku,active,product:products(name),inventory_balances(quantity_on_hand,low_stock_threshold)')
+        .order('name', { ascending: true });
+      if (error) throw error;
+      state.inventory = data || [];
+      state.inventoryLoaded = true;
+      renderInventory();
+      setFeedback('dashboardFeedback', '', true);
+    } catch (error) {
+      setFeedback('dashboardFeedback', error.message || 'Erro ao carregar estoque.');
+      $('inventoryBody').innerHTML = '<tr><td colspan="5" class="empty-cell">Não foi possível carregar o estoque.</td></tr>';
+    } finally {
+      $('refreshButton').disabled = false;
+    }
+  }
+
+  function balanceFor(variant) {
+    const balance = Array.isArray(variant.inventory_balances)
+      ? variant.inventory_balances[0]
+      : variant.inventory_balances;
+    return balance || null;
+  }
+
+  function renderInventory() {
+    const current = $('inventoryVariant').value;
+    const options = state.inventory.map(variant => {
+      const productName = variant.product?.name || 'Produto';
+      return '<option value="' + escapeHtml(variant.id) + '">' +
+        escapeHtml(productName + ' — ' + variant.name + (variant.sku ? ' (' + variant.sku + ')' : '') + (variant.active ? '' : ' [inativa]')) +
+        '</option>';
+    }).join('');
+    $('inventoryVariant').innerHTML = '<option value="">Selecione uma variante</option>' + options;
+    if (current && state.inventory.some(item => item.id === current)) $('inventoryVariant').value = current;
+
+    $('inventoryBody').innerHTML = state.inventory.length ? state.inventory.map(variant => {
+      const balance = balanceFor(variant);
+      const quantity = balance ? Number(balance.quantity_on_hand) : 0;
+      const threshold = balance ? Number(balance.low_stock_threshold ?? 3) : 3;
+      let situation = 'Sem saldo cadastrado';
+      let className = 'stock-state';
+      if (quantity === 0 && balance) situation = 'Sem estoque';
+      else if (quantity > 0 && quantity <= threshold) { situation = 'Estoque baixo'; className += ' low'; }
+      else if (quantity > threshold) { situation = 'Disponível'; className += ' ok'; }
+      return '<tr>' +
+        '<td><strong>' + escapeHtml(variant.product?.name || 'Produto') + '</strong></td>' +
+        '<td>' + escapeHtml(variant.name) + (variant.active ? '' : '<span class="subline">Variante inativa</span>') + '</td>' +
+        '<td>' + escapeHtml(variant.sku || '—') + '</td>' +
+        '<td><strong>' + escapeHtml(quantity) + '</strong></td>' +
+        '<td><span class="' + className + '">' + escapeHtml(situation) + '</span></td>' +
+      '</tr>';
+    }).join('') : '<tr><td colspan="5" class="empty-cell">Nenhuma variante encontrada.</td></tr>';
+  }
+
+  function showPanel(panel) {
+    const inventory = panel === 'inventory';
+    $('ordersPanel').classList.toggle('hidden', inventory);
+    $('inventoryPanel').classList.toggle('hidden', !inventory);
+    $('dashboardTitle').textContent = inventory ? 'Estoque' : 'Pedidos';
+    $('dashboardSubtitle').textContent = inventory
+      ? 'Consulte os saldos e registre entradas reais de mercadoria.'
+      : 'Consulte os pedidos e confira os pagamentos recebidos.';
+    $('ordersButton').classList.toggle('active-tab', !inventory);
+    $('inventoryButton').classList.toggle('active-tab', inventory);
+    setFeedback('dashboardFeedback', '');
+    if (inventory && !state.inventoryLoaded) loadInventory();
+  }
+
   function openOrder(id) {
     const order = state.orders.find(item => item.id === id);
     if (!order) return;
@@ -183,13 +257,45 @@
     $('orderDialog').showModal();
   }
 
+  $('inventoryForm').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!state.isAdmin) return;
+    const variantId = $('inventoryVariant').value;
+    const quantity = Number($('inventoryQuantity').value);
+    if (!variantId || !Number.isInteger(quantity) || quantity < 1 || quantity > 100000) {
+      setFeedback('inventoryFeedback', 'Selecione uma variante e informe uma quantidade inteira válida.');
+      return;
+    }
+
+    const button = $('inventorySubmit');
+    button.disabled = true;
+    setFeedback('inventoryFeedback', 'Registrando entrada…', true);
+    try {
+      const { data, error } = await client.rpc('register_inventory_entry', {
+        p_variant_id: variantId,
+        p_quantity: quantity,
+        p_notes: $('inventoryNotes').value.trim() || null
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      $('inventoryQuantity').value = '';
+      $('inventoryNotes').value = '';
+      await loadInventory();
+      setFeedback('inventoryFeedback', 'Entrada registrada. Novo saldo: ' + data.quantity_on_hand + ' unidades.', true);
+    } catch (error) {
+      setFeedback('inventoryFeedback', error.message || 'Não foi possível registrar a entrada.');
+    } finally {
+      button.disabled = false;
+    }
+  });
+
   $('confirmForm').addEventListener('submit', async (event) => {
     event.preventDefault();
     const order = state.selectedOrder;
     if (!order || !state.isAdmin) return;
     const button = $('confirmButton');
     const accepted = window.confirm(
-      'Confirma que o pagamento do pedido #' + order.order_number + ' foi recebido?\\n\\n' +
+      'Confirma que o pagamento do pedido #' + order.order_number + ' foi recebido?\n\n' +
       'A confirmação altera o pedido para PAGO e baixa o estoque das variantes automaticamente.'
     );
     if (!accepted) return;
@@ -234,7 +340,12 @@
   $('orderDialog').addEventListener('click', (event) => {
     if (event.target === $('orderDialog')) $('orderDialog').close();
   });
-  $('refreshButton').addEventListener('click', loadOrders);
+  $('refreshButton').addEventListener('click', () => {
+    if (!$('inventoryPanel').classList.contains('hidden')) loadInventory();
+    else loadOrders();
+  });
+  $('ordersButton').addEventListener('click', () => showPanel('orders'));
+  $('inventoryButton').addEventListener('click', () => showPanel('inventory'));
   $('orderSearch').addEventListener('input', renderOrders);
   $('statusFilter').addEventListener('change', renderOrders);
 
