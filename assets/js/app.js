@@ -224,8 +224,8 @@
         '<div class="checkout-form-backdrop" id="checkoutFormBackdrop" role="dialog" aria-modal="true" aria-labelledby="checkoutFormTitle">' +
           '<form class="checkout-form-card" id="checkoutCustomerForm">' +
             '<div class="checkout-form-head"><div><div class="checkout-form-kicker">Finalização do pedido</div><h2 class="checkout-form-title" id="checkoutFormTitle">Seus dados</h2></div><button class="close" type="button" id="checkoutFormClose" aria-label="Fechar">×</button></div>' +
-            '<p class="checkout-form-description">Preencha seus dados para registrar o pedido e continuar pelo WhatsApp.</p>
-            <section class="checkout-review" id="checkoutReview" aria-label="Revisão do pedido"></section>' +
+            '<p class="checkout-form-description">Preencha seus dados para registrar o pedido e continuar pelo WhatsApp.</p>' +
+            '<section class="checkout-review" id="checkoutReview" aria-label="Revisão do pedido"></section>' +
             '<div class="checkout-form-fields">' +
               '<div class="checkout-form-field"><label for="checkoutCustomerName">Nome completo</label><input id="checkoutCustomerName" name="customer_name" type="text" autocomplete="name" maxlength="120" placeholder="Digite seu nome completo" required></div>' +
               '<div class="checkout-form-field"><label for="checkoutCustomerPhone">Telefone com DDD</label><input id="checkoutCustomerPhone" name="customer_phone" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="15" placeholder="(00) 00000-0000" aria-describedby="checkoutPhoneHelp" required><span class="checkout-form-help" id="checkoutPhoneHelp">Informe um telefone com DDD.</span></div>' +
