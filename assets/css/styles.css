@@ -38,3 +38,76 @@ footer{padding:42px 0;background:#04170f;color:#c6d9cc;border-top:1px solid rgba
 @media(max-width:520px){.affiliate-popup{padding:30px 23px 23px;border-radius:20px}.affiliate-popup h2{max-width:340px}}
 @media(prefers-reduced-motion:reduce){.affiliate-backdrop.open{animation:none}.affiliate-popup-cta{transition:none}}
 
+
+
+/* Visual refresh: clean white palette, accent outlines and simple cart buttons */
+:root{
+  --forest:#163b2b;
+  --forest2:#24583e;
+  --emerald:#16834f;
+  --mint:#d7f0df;
+  --paper:#ffffff;
+  --canvas:#ffffff;
+  --ink:#17251d;
+  --muted:#68756d;
+  --line:#d6e5da;
+  --soft:#f5faf6;
+  --shadow:none;
+}
+body{background:#fff;color:#17251d}
+.topbar{background:#fff;color:#5e7465;border-bottom:1px solid #e0e9e2}
+header{background:rgba(255,255,255,.97);border-bottom:1px solid #dce8df;box-shadow:none}
+.brand{color:#173b2a}
+.brand-sub{color:#718679}
+.navlinks{color:#40574a}
+.navlinks a:hover{color:#16834f}
+.btn-primary{background:#16834f;color:#fff;border-color:#16834f;box-shadow:none}
+.btn-primary:hover{background:#116b40;box-shadow:none}
+.btn-light{background:#fff;color:#173b2a;border-color:#cbdccf}
+.cart-trigger{background:#fff;color:#173b2a;border-color:#cbdccf}
+.cart-count{background:#16834f;color:#fff}
+main{background:#fff}
+.section-head h2,.section-head p{color:#17251d}
+.kicker{color:#16834f}
+.grid{gap:20px}
+.product{
+  border:1.5px solid #16834f;
+  border-radius:12px;
+  background:#fff;
+  box-shadow:none;
+  transition:border-color .2s,background .2s;
+}
+.product:hover{
+  transform:none;
+  border-color:#0f623b;
+  box-shadow:none;
+  background:#fcfffd;
+}
+.product-art{background:#fff}
+.product-art:after{background:linear-gradient(135deg,rgba(255,255,255,.18),rgba(255,255,255,.04))}
+.product-body{background:#fff}
+.product h3{color:#17251d}
+.tag{color:#16834f}
+.short-desc{color:#68756d}
+.price-row{border-top:1px solid #e5ece7}
+.price-caption{color:#75847a}
+.price{color:#16834f}
+.product .btn{
+  background:#16834f;
+  color:#fff;
+  border:1px solid #16834f;
+  border-radius:8px;
+  box-shadow:none;
+}
+.product .btn:hover{background:#116b40;box-shadow:none;transform:translateY(-1px)}
+.trust-row{background:#e6efe8;border-bottom-color:#dce8df}
+.trust-item{background:#fff}
+.about{background:#f7faf8}
+.faq{background:#fff}
+.calculator{background:#fff}
+.calculator-card{background:#fff;box-shadow:none}
+.empty{border-color:#b9d7c2;background:#fff}
+@media(max-width:680px){
+  .product{border-radius:10px}
+  .product-body{padding:17px}
+}
