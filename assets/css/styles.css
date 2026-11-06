@@ -132,7 +132,7 @@ main{background:#fff}
 
 /* Interface interativa de seleção e escala proporcional da calculadora */
 .calc-presets{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
-.calc-presets button{border:1px solid #d6e3da;background:#f7faf8;color:#315b43;border-radius:8px;padding:7px 11px;font:600 11px/1.2 inherit;cursor:pointer;transition:background .18s,border-color .18s,color .18s}
+.calc-presets button{border:1px solid #d6e3da;background:#f7faf8;color:#315b43;border-radius:8px;padding:7px 11px;font-family:inherit;font-size:11px;font-weight:600;line-height:1.2;cursor:pointer;transition:background .18s,border-color .18s,color .18s}
 .calc-presets button:hover,.calc-presets button.is-active{background:#e5f1e8;border-color:#3e8058;color:#17452c}
 .calc-volume-visual{margin-top:18px;padding:20px;border:1px solid #d8e5dc;border-radius:14px;background:linear-gradient(145deg,#fbfdfb,#f3f8f4)}
 .calc-volume-top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
