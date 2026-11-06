@@ -48,6 +48,7 @@ function Get-AccessToken([string]$Email, [string]$Label, [string]$AnonKey) {
     }
 }
 
+
 function Invoke-FunctionRequest(
     [string]$Name,
     [string]$ExpectedFragment,
@@ -56,6 +57,7 @@ function Invoke-FunctionRequest(
     [string]$AnonKey
 ) {
     $headers = @{ apikey = $AnonKey }
+
     if (-not [string]::IsNullOrWhiteSpace($Token)) {
         $headers.Authorization = "Bearer $Token"
     }
@@ -68,29 +70,60 @@ function Invoke-FunctionRequest(
     $responseText = ""
 
     try {
-        $response = Invoke-WebRequest -UseBasicParsing -Method Post -Uri $functionUrl -Headers $headers -ContentType "application/json" -Body $body
+        $response = Invoke-WebRequest `
+            -UseBasicParsing `
+            -Method Post `
+            -Uri $functionUrl `
+            -Headers $headers `
+            -ContentType "application/json" `
+            -Body $body `
+            -ErrorAction Stop
+
         $status = [int]$response.StatusCode
         $responseText = [string]$response.Content
     }
     catch {
         $httpResponse = $_.Exception.Response
+
         if ($null -eq $httpResponse) {
             throw "Falha de rede no teste '$Name': $($_.Exception.Message)"
         }
 
         $status = [int]$httpResponse.StatusCode
-        if ($httpResponse -is [System.Net.Http.HttpResponseMessage]) {
-            $responseText = $httpResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult()
-        }
-        elseif ($httpResponse.GetResponseStream()) {
-            $reader = [System.IO.StreamReader]::new($httpResponse.GetResponseStream())
-            try { $responseText = $reader.ReadToEnd() } finally { $reader.Dispose() }
+        $responseStream = $httpResponse.GetResponseStream()
+
+        if ($null -ne $responseStream) {
+            $reader = New-Object System.IO.StreamReader($responseStream)
+
+            try {
+                $responseText = $reader.ReadToEnd()
+            }
+            finally {
+                $reader.Dispose()
+                $responseStream.Dispose()
+            }
         }
     }
 
     $passed = ($status -eq $ExpectedStatus)
+
     if ($passed -and -not [string]::IsNullOrWhiteSpace($ExpectedFragment)) {
-        $passed = $responseText.Contains($ExpectedFragment)
+        $normalizedResponse = [regex]::Replace(
+            [string]$responseText,
+            '[^\p{L}\p{N}]',
+            ''
+        )
+
+        $normalizedExpected = [regex]::Replace(
+            [string]$ExpectedFragment,
+            '[^\p{L}\p{N}]',
+            ''
+        )
+
+        $passed = $normalizedResponse.IndexOf(
+            $normalizedExpected,
+            [System.StringComparison]::OrdinalIgnoreCase
+        ) -ge 0
     }
 
     if ($passed) {
@@ -99,9 +132,14 @@ function Invoke-FunctionRequest(
     }
 
     Write-Host "[FAIL] $Name (esperado HTTP $ExpectedStatus; recebido HTTP $status)" -ForegroundColor Red
+
     if (-not [string]::IsNullOrWhiteSpace($responseText)) {
         Write-Host "Resposta: $responseText"
     }
+    else {
+        Write-Host "Resposta HTTP sem corpo legível."
+    }
+
     throw "O teste '$Name' falhou."
 }
 
@@ -127,7 +165,7 @@ Invoke-FunctionRequest -Name "Token inválido" -ExpectedStatus 401 -Token "inval
 
 # A real admin JWT must pass auth/admin checks and reach the RPC.
 # The deliberately nonexistent UUID makes the RPC return 400 before any write.
-Invoke-FunctionRequest -Name "JWT de administrador chega à RPC" -ExpectedStatus 400 -ExpectedFragment "Pedido não encontrado" -Token $adminToken -AnonKey $anonKey
+Invoke-FunctionRequest -Name "JWT de administrador chega à RPC" -ExpectedStatus 400 -ExpectedFragment "Pedido não encontrado." -Token $adminToken -AnonKey $anonKey
 
 $nonAdminEmail = Read-Host "E-mail de um usuário Auth que NÃO esteja em public.admin_users (Enter para pular)"
 if (-not [string]::IsNullOrWhiteSpace($nonAdminEmail)) {
