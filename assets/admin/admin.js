@@ -189,7 +189,7 @@
     if (!order || !state.isAdmin) return;
     const button = $('confirmButton');
     const accepted = window.confirm(
-      'Confirma que o pagamento do pedido #' + order.order_number + foi recebido?\n\n' +
+      'Confirma que o pagamento do pedido #' + order.order_number + ' foi recebido?\\n\\n' +
       'A confirmação altera o pedido para PAGO e baixa o estoque das variantes automaticamente.'
     );
     if (!accepted) return;
