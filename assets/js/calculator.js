@@ -5,20 +5,34 @@
     const productInput = root.querySelector("#calcProductAmount");
     const liquidInput = root.querySelector("#calcWaterVolume");
     const referenceInput = root.querySelector("#calcDoseAmount");
-    if (!productInput || !liquidInput || !referenceInput) return;
+    const unitSelect = root.querySelector("#calcDoseUnit");
+    if (!productInput || !liquidInput || !referenceInput || !unitSelect) return;
     root.dataset.calculatorReady = "true";
 
     const get = id => root.querySelector("#" + id);
     const format = (value, digits = 6) => new Intl.NumberFormat("pt-BR", { maximumFractionDigits: digits }).format(value);
     const standardAmounts = [0.5, 1, 2, 5, 10];
 
+    function syncPresetVisibility() {
+      const unit = unitSelect.value;
+      root.querySelectorAll(".calc-presets[data-target='calcDoseAmount']").forEach(group => {
+        const visible = group.dataset.unit === unit;
+        group.hidden = !visible;
+        if (visible) group.querySelectorAll("button").forEach(button => {
+          button.classList.toggle("is-active", referenceInput.value !== "" && Number(button.dataset.value) === Number(referenceInput.value));
+        });
+      });
+      referenceInput.placeholder = unit === "mcg" ? "Informe em microgramas" : "Informe em mg";
+    }
+
     function update() {
       const product = Number(productInput.value);
       const liquid = Number(liquidInput.value);
-      const reference = Number(referenceInput.value);
+      const referenceEntered = Number(referenceInput.value);
+      const referenceMg = unitSelect.value === "mcg" ? referenceEntered / 1000 : referenceEntered;
       const validProduct = productInput.value !== "" && Number.isFinite(product) && product > 0;
       const validLiquid = liquidInput.value !== "" && Number.isFinite(liquid) && liquid > 0;
-      const validReference = referenceInput.value !== "" && Number.isFinite(reference) && reference > 0;
+      const validReference = referenceInput.value !== "" && Number.isFinite(referenceEntered) && referenceEntered > 0;
       const concentration = get("calcConcentrationResult");
       const concentrationDetail = get("calcConverted");
       const volumeResult = get("calcDoseVolumeResult");
@@ -45,12 +59,12 @@
       concentrationDetail.textContent = format(mgMl * 1000) + " mcg/mL";
       let calculatedVolume = null;
       if (validReference) {
-        calculatedVolume = reference / mgMl;
+        calculatedVolume = referenceMg / mgMl;
         volumeResult.textContent = format(calculatedVolume) + " mL";
         microliters.textContent = format(calculatedVolume * 1000, 3) + " µL";
       } else {
         volumeResult.textContent = "—";
-        microliters.textContent = "Digite ou selecione uma quantidade de referência em mg.";
+        microliters.textContent = "Digite ou selecione uma quantidade de referência.";
       }
 
       if (calculatedVolume !== null && Number.isFinite(calculatedVolume)) {
@@ -72,28 +86,46 @@
       }).join("");
     }
 
-    root.querySelectorAll(".calc-presets button").forEach(button => {
+    root.querySelectorAll(".calc-presets[data-target='calcProductAmount'] button, .calc-presets[data-target='calcWaterVolume'] button").forEach(button => {
       button.addEventListener("click", () => {
         const group = button.closest(".calc-presets");
-        const target = group && root.querySelector("#" + group.dataset.target);
+        const target = root.querySelector("#" + group.dataset.target);
         if (!target) return;
         target.value = button.dataset.value;
         group.querySelectorAll("button").forEach(item => item.classList.toggle("is-active", item === button));
-        target.dispatchEvent(new Event("input", { bubbles: true }));
+        update();
+      });
+    });
+
+    root.querySelectorAll(".calc-presets[data-target='calcDoseAmount'] button").forEach(button => {
+      button.addEventListener("click", () => {
+        const group = button.closest(".calc-presets");
+        unitSelect.value = group.dataset.unit;
+        referenceInput.value = button.dataset.value;
+        syncPresetVisibility();
         update();
       });
     });
 
     [productInput, liquidInput, referenceInput].forEach(input => {
       input.addEventListener("input", () => {
-        const group = root.querySelector('.calc-presets[data-target="' + input.id + '"]');
-        if (group) group.querySelectorAll("button").forEach(button => {
-          button.classList.toggle("is-active", input.value !== "" && Number(button.dataset.value) === Number(input.value));
-        });
+        if (input === referenceInput) syncPresetVisibility();
+        else {
+          const group = root.querySelector('.calc-presets[data-target="' + input.id + '"]');
+          if (group) group.querySelectorAll("button").forEach(button => {
+            button.classList.toggle("is-active", input.value !== "" && Number(button.dataset.value) === Number(input.value));
+          });
+        }
         update();
       });
       input.addEventListener("change", update);
     });
+    unitSelect.addEventListener("change", () => {
+      referenceInput.value = "";
+      syncPresetVisibility();
+      update();
+    });
+    syncPresetVisibility();
     update();
   }
 
