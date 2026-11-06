@@ -12,12 +12,14 @@ function request(
   method = "POST",
   body?: unknown,
   authorization = "Bearer test-access-token",
+  origin?: string,
 ): Request {
   return new Request("http://localhost/functions/v1/confirm-payment", {
     method,
     headers: {
       ...(authorization ? { Authorization: authorization } : {}),
       "Content-Type": "application/json",
+      ...(origin ? { Origin: origin } : {}),
     },
     ...(body === undefined ? {} : { body: JSON.stringify(body) }),
   });
@@ -60,8 +62,27 @@ Deno.test("OPTIONS returns CORS preflight response without creating a client", a
 
   const response = await handler(request("OPTIONS"));
   assert(response.status === 200, "expected HTTP 200");
-  assert(response.headers.get("Access-Control-Allow-Origin") === "*", "missing CORS origin");
+  assert(response.headers.get("Access-Control-Allow-Origin") === null, "originless request must not receive wildcard CORS");
   assert(!created, "preflight must not create a Supabase client");
+});
+
+
+Deno.test("approved site origin receives an explicit CORS allow-origin header", async () => {
+  const handler = createConfirmPaymentHandler(fakeFactory());
+  const response = await handler(request("OPTIONS", undefined, "Bearer test-access-token", "https://joaoguilhermesilva7020.github.io"));
+  assert(response.status === 200, "expected HTTP 200");
+  assert(response.headers.get("Access-Control-Allow-Origin") === "https://joaoguilhermesilva7020.github.io", "approved origin was not echoed");
+});
+
+Deno.test("unapproved origin is rejected before authentication or RPC", async () => {
+  let created = false;
+  const handler = createConfirmPaymentHandler((_url, _key, _config) => {
+    created = true;
+    throw new Error("client must not be created");
+  });
+  const response = await handler(request("POST", { order_id: "order-test" }, "Bearer test-access-token", "https://evil.example"));
+  assert(response.status === 403, "expected HTTP 403");
+  assert(!created, "unapproved origin must be rejected before client creation");
 });
 
 Deno.test("non-POST methods are rejected", async () => {
