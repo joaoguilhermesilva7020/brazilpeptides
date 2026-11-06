@@ -111,3 +111,6 @@ main{background:#fff}
   .product{border-radius:10px}
   .product-body{padding:17px}
 }
+
+/* Calculadora de concentração e conversão matemática de referência */
+.calculator-card{grid-template-columns:minmax(0,1fr) minmax(280px,.9fr);align-items:stretch}.calc-results{display:grid;gap:12px}.calc-results .calc-result{min-height:145px}.calc-dose-result{background:radial-gradient(circle at 100% 0,rgba(71,205,125,.2),transparent 45%),linear-gradient(145deg,#123e2b,#062015)}.calc-note{max-width:100%}@media(max-width:760px){.calculator-card{grid-template-columns:1fr}.calc-results{grid-template-columns:1fr}.calc-results .calc-result{min-height:125px}}
