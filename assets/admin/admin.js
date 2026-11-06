@@ -443,6 +443,7 @@
   });
   $('refreshButton').addEventListener('click', () => {
     if (!$('inventoryPanel').classList.contains('hidden')) loadInventory();
+    else if (!$('affiliatesPanel').classList.contains('hidden')) loadAffiliates();
     else loadOrders();
   });
   $('ordersButton').addEventListener('click', () => showPanel('orders'));
