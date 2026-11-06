@@ -201,6 +201,7 @@
         if (turnstileWidgetId !== null) window.turnstile.reset(turnstileWidgetId);
         else turnstileWidgetId = window.turnstile.render('#checkoutTurnstile', {
           sitekey: siteKey,
+          action: 'checkout',
           callback: token => { turnstileToken = token; help.textContent = 'Verificação concluída.'; submit.disabled = false; },
           'expired-callback': () => { turnstileToken = ''; help.textContent = 'Verificação expirada. Confirme novamente.'; submit.disabled = true; },
           'error-callback': () => { turnstileToken = ''; help.textContent = 'Falha na verificação. Tente novamente.'; submit.disabled = true; }
@@ -305,7 +306,7 @@
           if (turnstileWidgetId !== null && window.turnstile) window.turnstile.reset(turnstileWidgetId);
           alert(error.message || 'Falha ao registrar o pedido. Tente novamente.');
         } finally {
-          submitButton.disabled = false;
+          submitButton.disabled = !turnstileToken;
           submitButton.textContent = originalLabel;
           checkoutButton.disabled = cart.size === 0;
         }
