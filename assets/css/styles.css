@@ -157,3 +157,10 @@ main{background:#fff}
 #calculadora .calc-ruler-ticks{display:flex!important;justify-content:space-between!important;margin-top:9px!important;color:#718176!important;font-size:10px!important}
 #calculadora .calc-reference-table{grid-column:1/-1!important}
 @media(max-width:600px){#calculadora .calc-fields .calc-presets button{min-height:38px!important;padding:9px 12px!important}#calculadora .calc-volume-visual{padding:16px!important}}
+
+/* Campo de quantidade com unidade selecionável */
+#calculadora .calc-reference-input{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+#calculadora .calc-reference-input select{min-width:138px;border:1px solid #cadfd1;border-radius:11px;padding:12px;background:#fff;color:#173a26;font:inherit;font-size:12px;cursor:pointer}
+#calculadora .calc-fields .calc-presets[hidden]{display:none!important}
+#calculadora .calc-presets-mcg{margin-top:4px!important}
+@media(max-width:420px){#calculadora .calc-reference-input{grid-template-columns:1fr}#calculadora .calc-reference-input select{width:100%}}

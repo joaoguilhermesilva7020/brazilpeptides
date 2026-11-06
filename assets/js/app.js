@@ -291,15 +291,7 @@
     });
 
 
-      });
-    });
-    [calcProductAmount, calcWaterVolume, calcDoseAmount].forEach(field => {
-      field.addEventListener("input", () => {
-        const group = document.querySelector('.calc-presets[data-target="' + field.id + '"]');
-        if (group) group.querySelectorAll("button").forEach(button => button.classList.toggle("is-active", Number(button.dataset.value) === Number(field.value) && field.value !== ""));
-      });
-    });
-    updateCalculator();
+
 
     function closeModal() { modal.classList.remove('open'); document.body.style.overflow = ''; }
     document.getElementById('closeModal').addEventListener('click', closeModal);
