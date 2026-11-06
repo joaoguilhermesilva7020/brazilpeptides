@@ -1,0 +1,31 @@
+name: Confirm payment Edge Function tests
+
+on:
+  pull_request:
+    paths:
+      - "supabase/functions/confirm-payment/**"
+      - ".github/workflows/confirm-payment-tests.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "supabase/functions/confirm-payment/**"
+      - ".github/workflows/confirm-payment-tests.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Run isolated confirm-payment tests
+        run: deno test --allow-env supabase/functions/confirm-payment/index_test.ts
