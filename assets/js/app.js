@@ -151,80 +151,147 @@
     document.getElementById('openCart').addEventListener('click', openCart);
     document.getElementById('closeCart').addEventListener('click', closeCart);
     cartBackdrop.addEventListener('click', e => { if (e.target === cartBackdrop) closeCart(); });
-    document.getElementById('checkoutWhatsapp').addEventListener('click', async () => {
+    function formatBrazilPhone(value) {
+      const digits = String(value || '').replace(/\D/g, '').slice(0, 11);
+      if (digits.length <= 2) return digits ? '(' + digits : '';
+      if (digits.length <= 6) return '(' + digits.slice(0, 2) + ') ' + digits.slice(2);
+      if (digits.length <= 10) return '(' + digits.slice(0, 2) + ') ' + digits.slice(2, 6) + '-' + digits.slice(6);
+      return '(' + digits.slice(0, 2) + ') ' + digits.slice(2, 7) + '-' + digits.slice(7);
+    }
+
+    function ensureCheckoutForm() {
+      if (document.getElementById('checkoutFormBackdrop')) return;
+      const style = document.createElement('style');
+      style.textContent = '.checkout-form-backdrop{position:fixed;inset:0;z-index:1300;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(2,15,9,.72);backdrop-filter:blur(7px)}.checkout-form-backdrop.open{display:flex}.checkout-form-card{width:min(100%,480px);padding:28px;border:1px solid #d7e8dc;border-radius:20px;background:#fbfefc;box-shadow:0 28px 90px rgba(0,0,0,.32)}.checkout-form-head{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:8px}.checkout-form-kicker{color:#07804b;font-size:10px;font-weight:850;letter-spacing:.18em;text-transform:uppercase}.checkout-form-title{margin:6px 0 0;color:#103b25;font-size:25px;line-height:1.2;letter-spacing:-.04em}.checkout-form-description{margin:8px 0 22px;color:#6b7f72;font-size:12px;line-height:1.7}.checkout-form-fields{display:grid;gap:15px}.checkout-form-field{display:grid;gap:6px}.checkout-form-field label{color:#234b34;font-size:11px;font-weight:800}.checkout-form-field input,.checkout-form-field select{width:100%;min-height:48px;padding:12px 14px;border:1px solid #cadfd1;border-radius:10px;background:#fff;color:#173a26;font:inherit;font-size:13px;outline:none}.checkout-form-field input:focus,.checkout-form-field select:focus{border-color:#23a765;box-shadow:0 0 0 3px rgba(35,167,101,.1)}.checkout-form-help{color:#829287;font-size:10px}.checkout-form-actions{display:flex;gap:10px;margin-top:22px}.checkout-form-actions button{flex:1;min-height:46px}.checkout-form-cancel{border:1px solid #d5e4da;border-radius:11px;background:#fff;color:#456452;font-size:11px;font-weight:800;cursor:pointer}@media(max-width:480px){.checkout-form-card{padding:23px 19px}.checkout-form-actions{flex-direction:column-reverse}}';
+      document.head.appendChild(style);
+      document.body.insertAdjacentHTML('beforeend',
+        '<div class="checkout-form-backdrop" id="checkoutFormBackdrop" role="dialog" aria-modal="true" aria-labelledby="checkoutFormTitle">' +
+          '<form class="checkout-form-card" id="checkoutCustomerForm">' +
+            '<div class="checkout-form-head"><div><div class="checkout-form-kicker">Finalização do pedido</div><h2 class="checkout-form-title" id="checkoutFormTitle">Seus dados</h2></div><button class="close" type="button" id="checkoutFormClose" aria-label="Fechar">×</button></div>' +
+            '<p class="checkout-form-description">Preencha seus dados para registrar o pedido e continuar pelo WhatsApp.</p>' +
+            '<div class="checkout-form-fields">' +
+              '<div class="checkout-form-field"><label for="checkoutCustomerName">Nome completo</label><input id="checkoutCustomerName" name="customer_name" type="text" autocomplete="name" maxlength="120" placeholder="Digite seu nome completo" required></div>' +
+              '<div class="checkout-form-field"><label for="checkoutCustomerPhone">Telefone com DDD</label><input id="checkoutCustomerPhone" name="customer_phone" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="15" placeholder="(00) 00000-0000" aria-describedby="checkoutPhoneHelp" required><span class="checkout-form-help" id="checkoutPhoneHelp">Informe um telefone com DDD.</span></div>' +
+              '<div class="checkout-form-field"><label for="checkoutPaymentMethod">Forma de pagamento</label><select id="checkoutPaymentMethod" name="payment_method" required><option value="" selected disabled>Selecione uma opção</option><option value="pix">PIX</option><option value="transfer">Transferência bancária</option><option value="cash">Dinheiro</option><option value="other">Outro</option></select></div>' +
+            '</div>' +
+            '<div class="checkout-form-actions"><button class="checkout-form-cancel" type="button" id="checkoutFormCancel">Voltar ao carrinho</button><button class="btn btn-primary" type="submit" id="checkoutFormSubmit">Continuar pelo WhatsApp ↗</button></div>' +
+          '</form>' +
+        '</div>'
+      );
+
+      const backdrop = document.getElementById('checkoutFormBackdrop');
+      const form = document.getElementById('checkoutCustomerForm');
+      const phoneInput = document.getElementById('checkoutCustomerPhone');
+      const closeForm = () => {
+        backdrop.classList.remove('open');
+        document.body.style.overflow = cartBackdrop.classList.contains('open') ? 'hidden' : '';
+        form.reset();
+      };
+      phoneInput.addEventListener('input', () => {
+        phoneInput.value = formatBrazilPhone(phoneInput.value);
+      });
+      document.getElementById('checkoutFormClose').addEventListener('click', closeForm);
+      document.getElementById('checkoutFormCancel').addEventListener('click', closeForm);
+      backdrop.addEventListener('click', event => {
+        if (event.target === backdrop) closeForm();
+      });
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && backdrop.classList.contains('open')) closeForm();
+      });
+
+      form.addEventListener('submit', async event => {
+        event.preventDefault();
+        if (!form.reportValidity()) return;
+        const customerName = document.getElementById('checkoutCustomerName').value.trim();
+        const customerPhone = phoneInput.value.trim();
+        const phoneDigits = customerPhone.replace(/\D/g, '');
+        const paymentSelect = document.getElementById('checkoutPaymentMethod');
+        const paymentMethod = paymentSelect.value;
+        const paymentChoice = paymentSelect.options[paymentSelect.selectedIndex].textContent;
+        if (customerName.length < 3) {
+          alert('Informe o nome completo do cliente.');
+          return;
+        }
+        if (phoneDigits.length !== 10 && phoneDigits.length !== 11) {
+          alert('Informe um telefone válido com DDD (10 ou 11 dígitos).');
+          phoneInput.focus();
+          return;
+        }
+
+        const items = [...cart.values()];
+        if (!items.length) {
+          closeForm();
+          return;
+        }
+        if (items.some(item => !item.variantId)) {
+          alert('Uma apresentação do carrinho não possui vínculo com o catálogo. Atualize a página e tente novamente.');
+          return;
+        }
+
+        const checkoutButton = document.getElementById('checkoutWhatsapp');
+        const submitButton = document.getElementById('checkoutFormSubmit');
+        const originalLabel = submitButton.textContent;
+        const whatsappWindow = window.open('about:blank', '_blank');
+        submitButton.disabled = true;
+        checkoutButton.disabled = true;
+        submitButton.textContent = 'Registrando pedido...';
+
+        try {
+          const response = await fetch(window.ASET_SUPABASE_CONFIG.url + '/functions/v1/create-order', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'apikey': window.ASET_SUPABASE_CONFIG.anonKey
+            },
+            body: JSON.stringify({
+              customer_name: customerName,
+              customer_phone: customerPhone,
+              payment_method: paymentMethod,
+              affiliate_ref: currentAffiliateId || null,
+              items: items.map(item => ({ variant_id: item.variantId, quantity: item.qty }))
+            })
+          });
+          const result = await response.json();
+          if (!response.ok || !result.data || !result.data.order_id) {
+            throw new Error(result.error || 'Não foi possível registrar o pedido.');
+          }
+
+          const order = result.data;
+          const lines = items.map(item => '• ' + item.name + ' — ' + item.size + ' | Qtd: ' + item.qty + ' | ' + money(item.price * item.qty));
+          const affiliateLine = currentAffiliateId ? '\nREF: ' + currentAffiliateId : '';
+          const message = 'Olá! Meu pedido foi registrado no site.\n\nPedido nº: ' + order.order_number +
+            '\n' + lines.join('\n') + '\n\nTotal registrado: ' + money(order.total) +
+            '\nPagamento: ' + paymentChoice.toUpperCase() + affiliateLine +
+            '\n\nAguardo as orientações para pagamento e confirmação.';
+          const destination = waUrl(message);
+          if (whatsappWindow) whatsappWindow.location.href = destination;
+          else window.location.href = destination;
+          cart.clear();
+          renderCart();
+          closeForm();
+          closeCart();
+        } catch (error) {
+          if (whatsappWindow) whatsappWindow.close();
+          alert(error.message || 'Falha ao registrar o pedido. Tente novamente.');
+        } finally {
+          submitButton.disabled = false;
+          submitButton.textContent = originalLabel;
+          checkoutButton.disabled = cart.size === 0;
+        }
+      });
+    }
+
+    document.getElementById('checkoutWhatsapp').addEventListener('click', () => {
       if (!cart.size) return;
       if (!catalog.whatsapp || catalog.whatsapp.replace(/\D/g, '').length < 10) {
         alert('O WhatsApp da loja não está configurado. Entre em contato com o suporte.');
         return;
       }
-
-      const customerName = window.prompt('Informe seu nome completo:');
-      if (!customerName || !customerName.trim()) return;
-      const customerPhone = window.prompt('Informe seu telefone com DDD:');
-      if (!customerPhone || customerPhone.replace(/\D/g, '').length < 10) return;
-      const paymentChoice = (window.prompt('Forma de pagamento: PIX, transferência, dinheiro ou outro.', 'PIX') || '').trim().toLowerCase();
-      const paymentMap = { pix: 'pix', 'transferência': 'transfer', transferencia: 'transfer', dinheiro: 'cash', cash: 'cash', outro: 'other', other: 'other' };
-      const paymentMethod = paymentMap[paymentChoice];
-      if (!paymentMethod) {
-        alert('Forma de pagamento inválida. Informe PIX, transferência, dinheiro ou outro.');
-        return;
-      }
-
-      const items = [...cart.values()];
-      if (items.some(item => !item.variantId)) {
-        alert('Uma apresentação do carrinho não possui vínculo com o catálogo. Atualize a página e tente novamente.');
-        return;
-      }
-
-      const checkoutButton = document.getElementById('checkoutWhatsapp');
-      const originalLabel = checkoutButton.textContent;
-      const whatsappWindow = window.open('about:blank', '_blank');
-      checkoutButton.disabled = true;
-      checkoutButton.textContent = 'Registrando pedido...';
-
-      try {
-        const response = await fetch(window.ASET_SUPABASE_CONFIG.url + '/functions/v1/create-order', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'apikey': window.ASET_SUPABASE_CONFIG.anonKey
-          },
-          body: JSON.stringify({
-            customer_name: customerName.trim(),
-            customer_phone: customerPhone,
-            payment_method: paymentMethod,
-            affiliate_ref: currentAffiliateId || null,
-            items: items.map(item => ({ variant_id: item.variantId, quantity: item.qty }))
-          })
-        });
-        const result = await response.json();
-        if (!response.ok || !result.data || !result.data.order_id) {
-          throw new Error(result.error || 'Não foi possível registrar o pedido.');
-        }
-
-        const order = result.data;
-        const lines = items.map(item => '• ' + item.name + ' — ' + item.size + ' | Qtd: ' + item.qty + ' | ' + money(item.price * item.qty));
-        const affiliateLine = currentAffiliateId ? '\nREF: ' + currentAffiliateId : '';
-        const message = 'Olá! Meu pedido foi registrado no site.\n\nPedido nº: ' + order.order_number +
-          '\n' + lines.join('\n') + '\n\nTotal registrado: ' + money(order.total) +
-          '\nPagamento: ' + paymentChoice.toUpperCase() + affiliateLine +
-          '\n\nAguardo as orientações para pagamento e confirmação.';
-        const destination = waUrl(message);
-        if (whatsappWindow) {
-          whatsappWindow.location.href = destination;
-        } else {
-          window.location.href = destination;
-        }
-        cart.clear();
-        renderCart();
-        closeCart();
-      } catch (error) {
-        if (whatsappWindow) whatsappWindow.close();
-        alert(error.message || 'Falha ao registrar o pedido. Tente novamente.');
-      } finally {
-        checkoutButton.disabled = cart.size === 0;
-        checkoutButton.textContent = originalLabel;
-      }
+      ensureCheckoutForm();
+      const backdrop = document.getElementById('checkoutFormBackdrop');
+      backdrop.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      document.getElementById('checkoutCustomerName').focus();
     });
 
     const calcProductAmount = document.getElementById("calcProductAmount");
