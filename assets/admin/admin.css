@@ -88,3 +88,10 @@ input:focus,select:focus,textarea:focus{border-color:#8eb99a;box-shadow:0 0 0 3p
 .toast.show{opacity:1}
 @media(max-width:820px){.inventory-form-grid{grid-template-columns:1fr 1fr}.inventory-form-grid .field-wide:last-child{grid-column:1/-1}}
 @media(max-width:720px){.admin-shell{width:min(100% - 24px,1180px);padding-top:16px}.admin-header{margin-bottom:28px;padding-bottom:20px}.dashboard-top{align-items:flex-start;flex-direction:column}.dashboard-actions{justify-content:flex-start}.stats{grid-template-columns:1fr;gap:9px}.stats article{padding:14px 16px}.stats strong{font-size:23px}.orders-toolbar{flex-direction:column}.orders-toolbar input,.orders-toolbar select{max-width:none}.login-card{padding:25px 20px}.detail-grid{grid-template-columns:1fr}.order-dialog{padding:18px}.inventory-form-grid{grid-template-columns:1fr}.inventory-form-grid .field-wide:last-child{grid-column:auto}}
+
+.affiliate-stats{grid-template-columns:repeat(3,1fr)}
+.affiliate-table{min-width:1050px}
+.affiliate-table td:last-child{white-space:nowrap}
+.affiliate-details{margin-top:28px}
+.affiliate-orders-table{min-width:850px}
+@media(max-width:720px){.affiliate-stats{grid-template-columns:1fr}}
