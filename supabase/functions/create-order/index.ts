@@ -1,21 +1,43 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
+const allowedOrigins = new Set([
+  "https://joaoguilhermesilva7020.github.io",
+]);
+
+function corsHeadersFor(req: Request): Headers {
+  const headers = new Headers({
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Vary": "Origin",
+  });
+  const origin = req.headers.get("Origin");
+  if (origin && allowedOrigins.has(origin)) headers.set("Access-Control-Allow-Origin", origin);
+  return headers;
+}
+
+function hasAllowedOrigin(req: Request): boolean {
+  const origin = req.headers.get("Origin");
+  return !origin || allowedOrigins.has(origin);
+}
 
 Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+  const headers = corsHeadersFor(req);
+  if (!hasAllowedOrigin(req)) {
+    return Response.json({ error: "Origem não autorizada." }, { status: 403 });
+  }
+  if (req.method === "OPTIONS") return new Response("ok", { headers });
   if (req.method !== "POST") {
-    return Response.json({ error: "Método não permitido." }, { status: 405, headers: corsHeaders });
+    return Response.json({ error: "Método não permitido." }, { status: 405, headers });
   }
 
   try {
-    const body = await req.json();
-    if (!body || typeof body !== "object" || !Array.isArray(body.items)) {
-      return Response.json({ error: "Dados do pedido inválidos." }, { status: 400, headers: corsHeaders });
+    const rawBody = await req.text();
+    if (rawBody.length > 16_384) {
+      return Response.json({ error: "Requisição muito grande." }, { status: 413, headers });
+    }
+    const body = JSON.parse(rawBody);
+    if (!body || typeof body !== "object" || Array.isArray(body) || !Array.isArray(body.items)) {
+      return Response.json({ error: "Dados do pedido inválidos." }, { status: 400, headers });
     }
 
     const supabase = createClient(
@@ -40,11 +62,11 @@ Deno.serve(async (req) => {
     });
 
     if (error) {
-      return Response.json({ error: error.message }, { status: 400, headers: corsHeaders });
+      return Response.json({ error: error.message }, { status: 400, headers });
     }
 
-    return Response.json({ data }, { status: 201, headers: corsHeaders });
+    return Response.json({ data }, { status: 201, headers });
   } catch (_error) {
-    return Response.json({ error: "Não foi possível processar o pedido." }, { status: 400, headers: corsHeaders });
+    return Response.json({ error: "Não foi possível processar o pedido." }, { status: 400, headers });
   }
 });
