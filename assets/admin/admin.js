@@ -9,7 +9,7 @@
 
   const client = window.supabase.createClient(config.url, config.anonKey);
   const $ = (id) => document.getElementById(id);
-  const state = { orders: [], selectedOrder: null, isAdmin: false, inventory: [], inventoryLoaded: false };
+  const state = { orders: [], selectedOrder: null, isAdmin: false, inventory: [], inventoryLoaded: false, affiliates: [], affiliateOrders: [], affiliateCommissions: [], affiliatesLoaded: false };
   const statusLabels = {
     pending_payment: 'Aguardando pagamento', paid: 'Pago', processing: 'Em processamento',
     completed: 'Concluído', cancelled: 'Cancelado', payment_issue: 'Problema no pagamento', refunded: 'Reembolsado'
@@ -78,6 +78,10 @@
     state.orders = [];
     state.inventory = [];
     state.inventoryLoaded = false;
+    state.affiliatesLoaded = false;
+    state.affiliates = [];
+    state.affiliateOrders = [];
+    state.affiliateCommissions = [];
     $('dashboardView').classList.add('hidden');
     $('loginView').classList.remove('hidden');
     $('password').value = '';
@@ -202,16 +206,113 @@
 
   function showPanel(panel) {
     const inventory = panel === 'inventory';
-    $('ordersPanel').classList.toggle('hidden', inventory);
+    const affiliates = panel === 'affiliates';
+    $('ordersPanel').classList.toggle('hidden', inventory || affiliates);
     $('inventoryPanel').classList.toggle('hidden', !inventory);
-    $('dashboardTitle').textContent = inventory ? 'Estoque' : 'Pedidos';
+    $('affiliatesPanel').classList.toggle('hidden', !affiliates);
+    $('dashboardTitle').textContent = inventory ? 'Estoque' : affiliates ? 'Afiliados' : 'Pedidos';
     $('dashboardSubtitle').textContent = inventory
       ? 'Consulte os saldos e registre entradas reais de mercadoria.'
-      : 'Consulte os pedidos e confira os pagamentos recebidos.';
-    $('ordersButton').classList.toggle('active-tab', !inventory);
+      : affiliates
+        ? 'Acompanhe pedidos atribuídos, faturamento e comissões.'
+        : 'Consulte os pedidos e confira os pagamentos recebidos.';
+    $('ordersButton').classList.toggle('active-tab', !inventory && !affiliates);
     $('inventoryButton').classList.toggle('active-tab', inventory);
+    $('affiliatesButton').classList.toggle('active-tab', affiliates);
     setFeedback('dashboardFeedback', '');
     if (inventory && !state.inventoryLoaded) loadInventory();
+    if (affiliates && !state.affiliatesLoaded) loadAffiliates();
+  }
+
+  
+  async function loadAffiliates() {
+    $('refreshButton').disabled = true;
+    setFeedback('dashboardFeedback', 'Atualizando afiliados…', true);
+    try {
+      const [affiliateResult, orderResult, commissionResult] = await Promise.all([
+        client.from('affiliates').select('id,legacy_id,name,code,active,commission_type,commission_value').order('name', { ascending: true }),
+        client.from('orders').select('id,order_number,customer_name,created_at,status,payment_status,subtotal,total,affiliate_id,affiliate_ref').not('affiliate_id', 'is', null).order('created_at', { ascending: false }),
+        client.from('affiliate_commissions').select('id,affiliate_id,order_id,base_amount,commission_amount,status,paid_at,created_at')
+      ]);
+      if (affiliateResult.error) throw affiliateResult.error;
+      if (orderResult.error) throw orderResult.error;
+      if (commissionResult.error) throw commissionResult.error;
+      state.affiliates = affiliateResult.data || [];
+      state.affiliateOrders = orderResult.data || [];
+      state.affiliateCommissions = commissionResult.data || [];
+      state.affiliatesLoaded = true;
+      renderAffiliates();
+      setFeedback('dashboardFeedback', '', true);
+    } catch (error) {
+      setFeedback('dashboardFeedback', error.message || 'Erro ao carregar afiliados.');
+      $('affiliatesBody').innerHTML = '<tr><td colspan="7" class="empty-cell">Não foi possível carregar os afiliados.</td></tr>';
+    } finally {
+      $('refreshButton').disabled = false;
+    }
+  }
+
+  function renderAffiliates() {
+    const totals = state.affiliates.reduce((acc, affiliate) => {
+      const orders = state.affiliateOrders.filter(order => order.affiliate_id === affiliate.id);
+      const paid = orders.filter(order => order.payment_status === 'confirmed');
+      acc.orders += orders.length;
+      acc.revenue += paid.reduce((sum, order) => sum + Number(order.total || 0), 0);
+      return acc;
+    }, { orders: 0, revenue: 0 });
+    const commissionsTotal = state.affiliateCommissions.reduce((sum, item) => sum + Number(item.commission_amount || 0), 0);
+    $('affiliateOrdersStat').textContent = totals.orders;
+    $('affiliateRevenueStat').textContent = money(totals.revenue);
+    $('affiliateCommissionStat').textContent = money(commissionsTotal);
+
+    const query = $('affiliateSearch').value.trim().toLocaleLowerCase('pt-BR');
+    const filter = $('affiliateFilter').value;
+    const affiliates = state.affiliates.filter(affiliate => {
+      const matches = [affiliate.name, affiliate.code, affiliate.legacy_id].join(' ').toLocaleLowerCase('pt-BR').includes(query);
+      return matches && (filter === 'all' || (filter === 'active' ? affiliate.active : !affiliate.active));
+    });
+    $('affiliatesBody').innerHTML = affiliates.length ? affiliates.map(affiliate => {
+      const orders = state.affiliateOrders.filter(order => order.affiliate_id === affiliate.id);
+      const paid = orders.filter(order => order.payment_status === 'confirmed');
+      const pending = orders.filter(order => order.payment_status === 'pending');
+      const revenue = paid.reduce((sum, order) => sum + Number(order.total || 0), 0);
+      const commissions = state.affiliateCommissions.filter(item => item.affiliate_id === affiliate.id);
+      const commissionTotal = commissions.reduce((sum, item) => sum + Number(item.commission_amount || 0), 0);
+      const status = affiliate.active ? '<span class="status confirmed">Ativo</span>' : '<span class="status other">Inativo</span>';
+      return '<tr>' +
+        '<td><strong>' + escapeHtml(affiliate.name) + '</strong><span class="subline">' + escapeHtml(affiliate.code) + '</span></td>' +
+        '<td>' + status + '</td>' +
+        '<td>' + orders.length + '</td><td>' + paid.length + '</td><td>' + pending.length + '</td>' +
+        '<td><strong>' + escapeHtml(money(revenue)) + '</strong></td>' +
+        '<td><strong>' + escapeHtml(money(commissionTotal)) + '</strong><span class="subline">' + commissions.length + ' registro(s)</span></td>' +
+        '<td><button class="view-button" type="button" data-affiliate-id="' + escapeHtml(affiliate.id) + '">Detalhes</button></td>' +
+      '</tr>';
+    }).join('') : '<tr><td colspan="8" class="empty-cell">Nenhum afiliado corresponde ao filtro.</td></tr>';
+    $('affiliatesBody').querySelectorAll('[data-affiliate-id]').forEach(button => {
+      button.addEventListener('click', () => renderAffiliateDetails(button.dataset.affiliateId));
+    });
+  }
+
+  function renderAffiliateDetails(affiliateId) {
+    const affiliate = state.affiliates.find(item => item.id === affiliateId);
+    if (!affiliate) return;
+    const orders = state.affiliateOrders.filter(order => order.affiliate_id === affiliateId);
+    const commissions = state.affiliateCommissions.filter(item => item.affiliate_id === affiliateId);
+    const byOrder = new Map(commissions.map(item => [item.order_id, item]));
+    const commissionLabels = { pending: 'Pendente', approved: 'Aprovada', paid: 'Paga', cancelled: 'Cancelada' };
+    $('affiliateDetailsTitle').textContent = 'Pedidos de ' + affiliate.name + ' (' + affiliate.code + ')';
+    $('affiliateOrdersBody').innerHTML = orders.length ? orders.map(order => {
+      const commission = byOrder.get(order.id);
+      const orderStatus = paymentLabels[order.payment_status] || order.payment_status;
+      const commissionStatus = commission ? (commissionLabels[commission.status] || commission.status) : 'Sem comissão';
+      return '<tr><td><strong>#' + escapeHtml(order.order_number) + '</strong></td>' +
+        '<td>' + escapeHtml(order.customer_name) + '</td>' +
+        '<td>' + escapeHtml(date(order.created_at)) + '</td>' +
+        '<td>' + escapeHtml(orderStatus) + '</td>' +
+        '<td>' + escapeHtml(money(order.total)) + '</td>' +
+        '<td>' + escapeHtml(commission ? money(commission.commission_amount) : '—') + '</td>' +
+        '<td>' + escapeHtml(commissionStatus) + '</td></tr>';
+    }).join('') : '<tr><td colspan="7" class="empty-cell">Este afiliado ainda não possui pedidos atribuídos.</td></tr>';
+    $('affiliateDetails').classList.remove('hidden');
   }
 
   function openOrder(id) {
@@ -346,6 +447,9 @@
   });
   $('ordersButton').addEventListener('click', () => showPanel('orders'));
   $('inventoryButton').addEventListener('click', () => showPanel('inventory'));
+  $('affiliatesButton').addEventListener('click', () => showPanel('affiliates'));
+  $('affiliateSearch').addEventListener('input', renderAffiliates);
+  $('affiliateFilter').addEventListener('change', renderAffiliates);
   $('orderSearch').addEventListener('input', renderOrders);
   $('statusFilter').addEventListener('change', renderOrders);
 
