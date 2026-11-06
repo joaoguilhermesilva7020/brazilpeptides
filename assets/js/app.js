@@ -207,6 +207,7 @@
         });
         submit.disabled = !turnstileToken;
       };
+      window.mountCheckoutTurnstile = mountTurnstile;
       const closeForm = () => {
         backdrop.classList.remove('open');
         document.body.style.overflow = cartBackdrop.classList.contains('open') ? 'hidden' : '';
@@ -320,7 +321,7 @@
       ensureCheckoutForm();
       const backdrop = document.getElementById('checkoutFormBackdrop');
       backdrop.classList.add('open');
-      mountTurnstile();
+      window.mountCheckoutTurnstile();
       document.body.style.overflow = 'hidden';
       document.getElementById('checkoutCustomerName').focus();
     });
