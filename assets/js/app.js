@@ -172,7 +172,6 @@
             '<div class="checkout-form-fields">' +
               '<div class="checkout-form-field"><label for="checkoutCustomerName">Nome completo</label><input id="checkoutCustomerName" name="customer_name" type="text" autocomplete="name" maxlength="120" placeholder="Digite seu nome completo" required></div>' +
               '<div class="checkout-form-field"><label for="checkoutCustomerPhone">Telefone com DDD</label><input id="checkoutCustomerPhone" name="customer_phone" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="15" placeholder="(00) 00000-0000" aria-describedby="checkoutPhoneHelp" required><span class="checkout-form-help" id="checkoutPhoneHelp">Informe um telefone com DDD.</span></div>' +
-              '<div class="checkout-form-field"><label for="checkoutPaymentMethod">Forma de pagamento</label><select id="checkoutPaymentMethod" name="payment_method" required><option value="" selected disabled>Selecione uma opção</option><option value="pix">PIX</option><option value="transfer">Transferência bancária</option><option value="cash">Dinheiro</option><option value="other">Outro</option></select></div>' +
             '</div>' +
             '<div class="checkout-form-actions"><button class="checkout-form-cancel" type="button" id="checkoutFormCancel">Voltar ao carrinho</button><button class="btn btn-primary" type="submit" id="checkoutFormSubmit">Continuar pelo WhatsApp ↗</button></div>' +
           '</form>' +
@@ -205,9 +204,6 @@
         const customerName = document.getElementById('checkoutCustomerName').value.trim();
         const customerPhone = phoneInput.value.trim();
         const phoneDigits = customerPhone.replace(/\D/g, '');
-        const paymentSelect = document.getElementById('checkoutPaymentMethod');
-        const paymentMethod = paymentSelect.value;
-        const paymentChoice = paymentSelect.options[paymentSelect.selectedIndex].textContent;
         if (customerName.length < 3) {
           alert('Informe o nome completo do cliente.');
           return;
@@ -246,7 +242,7 @@
             body: JSON.stringify({
               customer_name: customerName,
               customer_phone: customerPhone,
-              payment_method: paymentMethod,
+              payment_method: 'other',
               affiliate_ref: currentAffiliateId || null,
               items: items.map(item => ({ variant_id: item.variantId, quantity: item.qty }))
             })
@@ -261,7 +257,7 @@
           const affiliateLine = currentAffiliateId ? '\nREF: ' + currentAffiliateId : '';
           const message = 'Olá! Meu pedido foi registrado no site.\n\nPedido nº: ' + order.order_number +
             '\n' + lines.join('\n') + '\n\nTotal registrado: ' + money(order.total) +
-            '\nPagamento: ' + paymentChoice.toUpperCase() + affiliateLine +
+            affiliateLine +
             '\n\nAguardo as orientações para pagamento e confirmação.';
           const destination = waUrl(message);
           if (whatsappWindow) whatsappWindow.location.href = destination;
