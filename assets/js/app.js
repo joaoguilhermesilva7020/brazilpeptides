@@ -293,6 +293,7 @@
     const calcProductAmount = document.getElementById("calcProductAmount");
     const calcWaterVolume = document.getElementById("calcWaterVolume");
     const calcDoseAmount = document.getElementById("calcDoseAmount");
+    const standardReferenceAmounts = [0.5, 1, 2, 5, 10];
     function formatCalc(value, maximumFractionDigits = 6) {
       return new Intl.NumberFormat("pt-BR", { maximumFractionDigits }).format(value);
     }
@@ -307,12 +308,14 @@
       const concentrationConverted = document.getElementById("calcConverted");
       const doseVolumeResult = document.getElementById("calcDoseVolumeResult");
       const doseMicroliters = document.getElementById("calcDoseMicroliters");
+      const referenceRows = document.getElementById("calcReferenceRows");
 
       if (!validProduct || !validVolume) {
         concentrationResult.textContent = "—";
         concentrationConverted.textContent = "Informe valores positivos para a quantidade do frasco e o volume.";
         doseVolumeResult.textContent = "—";
-        doseMicroliters.textContent = "A conversão ficará disponível após calcular a concentração.";
+        doseMicroliters.textContent = "A conversão personalizada ficará disponível após calcular a concentração.";
+        referenceRows.innerHTML = '<tr><td colspan="2">Informe a quantidade do frasco e o volume de líquido.</td></tr>';
         return;
       }
 
@@ -320,16 +323,19 @@
       concentrationResult.textContent = formatCalc(mgMl) + " mg/mL";
       concentrationConverted.textContent = formatCalc(mgMl * 1000) + " mcg/mL";
 
-      if (!validDose) {
+      if (validDose) {
+        const volumeMl = doseAmount / mgMl;
+        doseVolumeResult.textContent = formatCalc(volumeMl) + " mL";
+        doseMicroliters.textContent = formatCalc(volumeMl * 1000, 3) + " µL";
+      } else {
         doseVolumeResult.textContent = "—";
-        doseMicroliters.textContent = "Informe uma quantidade de referência positiva em mg.";
-        return;
+        doseMicroliters.textContent = "Digite uma quantidade personalizada em mg para ver a equivalência matemática.";
       }
 
-      const volumeMl = doseAmount / mgMl;
-      const volumeMicroliters = volumeMl * 1000;
-      doseVolumeResult.textContent = formatCalc(volumeMl) + " mL";
-      doseMicroliters.textContent = formatCalc(volumeMicroliters, 3) + " µL";
+      referenceRows.innerHTML = standardReferenceAmounts.map(amount => {
+        const volumeMl = amount / mgMl;
+        return '<tr><td>' + formatCalc(amount) + ' mg</td><td>' + formatCalc(volumeMl) + ' mL <span>(' + formatCalc(volumeMl * 1000, 3) + ' µL)</span></td></tr>';
+      }).join("");
     }
     [calcProductAmount, calcWaterVolume, calcDoseAmount].forEach(field => {
       field.addEventListener("input", updateCalculator);
