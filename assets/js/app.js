@@ -7,6 +7,8 @@
     let selectedProduct = null;
     let currentAffiliate = null;
     let currentAffiliateId = '';
+    let turnstileToken = '';
+    let turnstileWidgetId = null;
     const AFFILIATE_STORAGE_KEY = 'bp_affiliate_id';
 
     function captureAffiliate() {
@@ -162,7 +164,7 @@
     function ensureCheckoutForm() {
       if (document.getElementById('checkoutFormBackdrop')) return;
       const style = document.createElement('style');
-      style.textContent = '.checkout-form-backdrop{position:fixed;inset:0;z-index:1300;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(2,15,9,.72);backdrop-filter:blur(7px)}.checkout-form-backdrop.open{display:flex}.checkout-form-card{width:min(100%,480px);padding:28px;border:1px solid #d7e8dc;border-radius:20px;background:#fbfefc;box-shadow:0 28px 90px rgba(0,0,0,.32)}.checkout-form-head{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:8px}.checkout-form-kicker{color:#07804b;font-size:10px;font-weight:850;letter-spacing:.18em;text-transform:uppercase}.checkout-form-title{margin:6px 0 0;color:#103b25;font-size:25px;line-height:1.2;letter-spacing:-.04em}.checkout-form-description{margin:8px 0 22px;color:#6b7f72;font-size:12px;line-height:1.7}.checkout-form-fields{display:grid;gap:15px}.checkout-form-field{display:grid;gap:6px}.checkout-form-field label{color:#234b34;font-size:11px;font-weight:800}.checkout-form-field input,.checkout-form-field select{width:100%;min-height:48px;padding:12px 14px;border:1px solid #cadfd1;border-radius:10px;background:#fff;color:#173a26;font:inherit;font-size:13px;outline:none}.checkout-form-field input:focus,.checkout-form-field select:focus{border-color:#23a765;box-shadow:0 0 0 3px rgba(35,167,101,.1)}.checkout-form-help{color:#829287;font-size:10px}.checkout-form-actions{display:flex;gap:10px;margin-top:22px}.checkout-form-actions button{flex:1;min-height:46px}.checkout-form-cancel{border:1px solid #d5e4da;border-radius:11px;background:#fff;color:#456452;font-size:11px;font-weight:800;cursor:pointer}@media(max-width:480px){.checkout-form-card{padding:23px 19px}.checkout-form-actions{flex-direction:column-reverse}}';
+      style.textContent = '.checkout-form-backdrop{position:fixed;inset:0;z-index:1300;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(2,15,9,.72);backdrop-filter:blur(7px)}.checkout-form-backdrop.open{display:flex}.checkout-form-card{width:min(100%,480px);padding:28px;border:1px solid #d7e8dc;border-radius:20px;background:#fbfefc;box-shadow:0 28px 90px rgba(0,0,0,.32)}.checkout-form-head{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:8px}.checkout-form-kicker{color:#07804b;font-size:10px;font-weight:850;letter-spacing:.18em;text-transform:uppercase}.checkout-form-title{margin:6px 0 0;color:#103b25;font-size:25px;line-height:1.2;letter-spacing:-.04em}.checkout-form-description{margin:8px 0 22px;color:#6b7f72;font-size:12px;line-height:1.7}.checkout-form-fields{display:grid;gap:15px}.checkout-turnstile{margin-top:18px;min-height:66px}.checkout-turnstile iframe{max-width:100%}.checkout-form-field{display:grid;gap:6px}.checkout-form-field label{color:#234b34;font-size:11px;font-weight:800}.checkout-form-field input,.checkout-form-field select{width:100%;min-height:48px;padding:12px 14px;border:1px solid #cadfd1;border-radius:10px;background:#fff;color:#173a26;font:inherit;font-size:13px;outline:none}.checkout-form-field input:focus,.checkout-form-field select:focus{border-color:#23a765;box-shadow:0 0 0 3px rgba(35,167,101,.1)}.checkout-form-help{color:#829287;font-size:10px}.checkout-form-actions{display:flex;gap:10px;margin-top:22px}.checkout-form-actions button{flex:1;min-height:46px}.checkout-form-cancel{border:1px solid #d5e4da;border-radius:11px;background:#fff;color:#456452;font-size:11px;font-weight:800;cursor:pointer}@media(max-width:480px){.checkout-form-card{padding:23px 19px}.checkout-form-actions{flex-direction:column-reverse}}';
       document.head.appendChild(style);
       document.body.insertAdjacentHTML('beforeend',
         '<div class="checkout-form-backdrop" id="checkoutFormBackdrop" role="dialog" aria-modal="true" aria-labelledby="checkoutFormTitle">' +
@@ -173,6 +175,7 @@
               '<div class="checkout-form-field"><label for="checkoutCustomerName">Nome completo</label><input id="checkoutCustomerName" name="customer_name" type="text" autocomplete="name" maxlength="120" placeholder="Digite seu nome completo" required></div>' +
               '<div class="checkout-form-field"><label for="checkoutCustomerPhone">Telefone com DDD</label><input id="checkoutCustomerPhone" name="customer_phone" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="15" placeholder="(00) 00000-0000" aria-describedby="checkoutPhoneHelp" required><span class="checkout-form-help" id="checkoutPhoneHelp">Informe um telefone com DDD.</span></div>' +
             '</div>' +
+            '<div class="checkout-turnstile"><div id="checkoutTurnstile"></div><span class="checkout-form-help" id="checkoutTurnstileHelp">Verificação de segurança necessária para continuar.</span></div>' +
             '<div class="checkout-form-actions"><button class="checkout-form-cancel" type="button" id="checkoutFormCancel">Voltar ao carrinho</button><button class="btn btn-primary" type="submit" id="checkoutFormSubmit">Continuar pelo WhatsApp ↗</button></div>' +
           '</form>' +
         '</div>'
@@ -181,10 +184,34 @@
       const backdrop = document.getElementById('checkoutFormBackdrop');
       const form = document.getElementById('checkoutCustomerForm');
       const phoneInput = document.getElementById('checkoutCustomerPhone');
+      const mountTurnstile = () => {
+        const siteKey = String(window.ASET_SUPABASE_CONFIG.turnstileSiteKey || '').trim();
+        const help = document.getElementById('checkoutTurnstileHelp');
+        const submit = document.getElementById('checkoutFormSubmit');
+        if (!siteKey) {
+          help.textContent = 'Checkout temporariamente indisponível: falta configurar a chave pública Turnstile.';
+          submit.disabled = true;
+          return;
+        }
+        if (!window.turnstile) {
+          help.textContent = 'Não foi possível carregar a verificação de segurança. Atualize a página.';
+          submit.disabled = true;
+          return;
+        }
+        if (turnstileWidgetId !== null) window.turnstile.reset(turnstileWidgetId);
+        else turnstileWidgetId = window.turnstile.render('#checkoutTurnstile', {
+          sitekey: siteKey,
+          callback: token => { turnstileToken = token; help.textContent = 'Verificação concluída.'; submit.disabled = false; },
+          'expired-callback': () => { turnstileToken = ''; help.textContent = 'Verificação expirada. Confirme novamente.'; submit.disabled = true; },
+          'error-callback': () => { turnstileToken = ''; help.textContent = 'Falha na verificação. Tente novamente.'; submit.disabled = true; }
+        });
+        submit.disabled = !turnstileToken;
+      };
       const closeForm = () => {
         backdrop.classList.remove('open');
         document.body.style.overflow = cartBackdrop.classList.contains('open') ? 'hidden' : '';
         form.reset();
+        turnstileToken = '';
       };
       phoneInput.addEventListener('input', () => {
         phoneInput.value = formatBrazilPhone(phoneInput.value);
@@ -214,6 +241,10 @@
           return;
         }
 
+        if (!turnstileToken) {
+          alert('Conclua a verificação de segurança antes de continuar.');
+          return;
+        }
         const items = [...cart.values()];
         if (!items.length) {
           closeForm();
@@ -243,6 +274,7 @@
               customer_name: customerName,
               customer_phone: customerPhone,
               payment_method: 'other',
+              turnstile_token: turnstileToken,
               affiliate_ref: currentAffiliateId || null,
               items: items.map(item => ({ variant_id: item.variantId, quantity: item.qty }))
             })
@@ -268,6 +300,8 @@
           closeCart();
         } catch (error) {
           if (whatsappWindow) whatsappWindow.close();
+          turnstileToken = '';
+          if (turnstileWidgetId !== null && window.turnstile) window.turnstile.reset(turnstileWidgetId);
           alert(error.message || 'Falha ao registrar o pedido. Tente novamente.');
         } finally {
           submitButton.disabled = false;
@@ -286,6 +320,7 @@
       ensureCheckoutForm();
       const backdrop = document.getElementById('checkoutFormBackdrop');
       backdrop.classList.add('open');
+      mountTurnstile();
       document.body.style.overflow = 'hidden';
       document.getElementById('checkoutCustomerName').focus();
     });
