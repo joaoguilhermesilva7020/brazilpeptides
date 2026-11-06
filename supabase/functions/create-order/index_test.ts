@@ -21,22 +21,22 @@ function fakeFactory(onRpc?: () => void) {
   });
 }
 
-Deno.test("Turnstile sends secret, response token and trusted platform IP to siteverify", async () => {
+Deno.test("Turnstile sends the secret and response token to siteverify", async () => {
   let submitted = "";
-  const ok = await verifyTurnstileToken("challenge-token", "203.0.113.8", "secret-value", async (_url, init) => {
+  const ok = await verifyTurnstileToken("challenge-token", null, "secret-value", async (_url, init) => {
     submitted = String(init?.body || "");
-    return Response.json({ success: true });
+    return Response.json({ success: true, hostname: "joaoguilhermesilva7020.github.io", action: "checkout" });
   });
   const params = new URLSearchParams(submitted);
   assert(ok, "valid Turnstile response should pass");
   assert(params.get("secret") === "secret-value", "secret was not sent");
   assert(params.get("response") === "challenge-token", "token was not sent");
-  assert(params.get("remoteip") === "203.0.113.8", "Cloudflare client IP was not forwarded");
+  assert(params.get("remoteip") === null, "untrusted client IP header must not be forwarded");
 });
 
 Deno.test("Turnstile rejects unsuccessful or failed verification responses", async () => {
   const rejected = await verifyTurnstileToken("bad-token", null, "secret", async () =>
-    Response.json({ success: false }));
+    Response.json({ success: false, hostname: "joaoguilhermesilva7020.github.io", action: "checkout" }));
   const unavailable = await verifyTurnstileToken("token", null, "secret", async () =>
     new Response("unavailable", { status: 503 }));
   assert(!rejected, "unsuccessful challenge must be rejected");
