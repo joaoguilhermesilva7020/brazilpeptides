@@ -309,13 +309,19 @@
       const doseVolumeResult = document.getElementById("calcDoseVolumeResult");
       const doseMicroliters = document.getElementById("calcDoseMicroliters");
       const referenceRows = document.getElementById("calcReferenceRows");
+      const rulerValue = document.getElementById("calcRulerValue");
+      const rulerFill = document.getElementById("calcRulerFill");
+      const rulerCaption = document.getElementById("calcRulerCaption");
 
       if (!validProduct || !validVolume) {
         concentrationResult.textContent = "—";
-        concentrationConverted.textContent = "Informe valores positivos para a quantidade do frasco e o volume.";
+        concentrationConverted.textContent = "Informe valores positivos para a quantidade total e o volume.";
         doseVolumeResult.textContent = "—";
         doseMicroliters.textContent = "A conversão personalizada ficará disponível após calcular a concentração.";
-        referenceRows.innerHTML = '<tr><td colspan="2">Informe a quantidade do frasco e o volume de líquido.</td></tr>';
+        referenceRows.innerHTML = '<tr><td colspan="2">Informe a quantidade total e o volume.</td></tr>';
+        rulerValue.textContent = "—";
+        rulerFill.style.width = "0%";
+        rulerCaption.textContent = "Selecione os valores para visualizar a equivalência matemática.";
         return;
       }
 
@@ -323,13 +329,25 @@
       concentrationResult.textContent = formatCalc(mgMl) + " mg/mL";
       concentrationConverted.textContent = formatCalc(mgMl * 1000) + " mcg/mL";
 
+      let selectedVolume = null;
       if (validDose) {
-        const volumeMl = doseAmount / mgMl;
-        doseVolumeResult.textContent = formatCalc(volumeMl) + " mL";
-        doseMicroliters.textContent = formatCalc(volumeMl * 1000, 3) + " µL";
+        selectedVolume = doseAmount / mgMl;
+        doseVolumeResult.textContent = formatCalc(selectedVolume) + " mL";
+        doseMicroliters.textContent = formatCalc(selectedVolume * 1000, 3) + " µL";
       } else {
         doseVolumeResult.textContent = "—";
-        doseMicroliters.textContent = "Digite uma quantidade personalizada em mg para ver a equivalência matemática.";
+        doseMicroliters.textContent = "Digite ou selecione uma quantidade de referência em mg.";
+      }
+
+      if (selectedVolume !== null && Number.isFinite(selectedVolume) && selectedVolume >= 0) {
+        const ratio = Math.max(0, Math.min(100, selectedVolume / waterVolume * 100));
+        rulerValue.textContent = formatCalc(selectedVolume) + " mL";
+        rulerFill.style.width = ratio + "%";
+        rulerCaption.textContent = formatCalc(ratio, 2) + "% do volume total informado (escala visual proporcional).";
+      } else {
+        rulerValue.textContent = "—";
+        rulerFill.style.width = "0%";
+        rulerCaption.textContent = "Selecione uma quantidade de referência para atualizar a escala.";
       }
 
       referenceRows.innerHTML = standardReferenceAmounts.map(amount => {
@@ -340,6 +358,21 @@
     [calcProductAmount, calcWaterVolume, calcDoseAmount].forEach(field => {
       field.addEventListener("input", updateCalculator);
       field.addEventListener("change", updateCalculator);
+    });
+    document.querySelectorAll(".calc-presets button").forEach(button => {
+      button.addEventListener("click", () => {
+        const group = button.closest(".calc-presets");
+        const target = document.getElementById(group.dataset.target);
+        target.value = button.dataset.value;
+        group.querySelectorAll("button").forEach(item => item.classList.toggle("is-active", item === button));
+        updateCalculator();
+      });
+    });
+    [calcProductAmount, calcWaterVolume, calcDoseAmount].forEach(field => {
+      field.addEventListener("input", () => {
+        const group = document.querySelector('.calc-presets[data-target="' + field.id + '"]');
+        if (group) group.querySelectorAll("button").forEach(button => button.classList.toggle("is-active", Number(button.dataset.value) === Number(field.value) && field.value !== ""));
+      });
     });
     updateCalculator();
 
