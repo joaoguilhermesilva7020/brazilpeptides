@@ -36,6 +36,7 @@
           <span class="user-email" id="adminEmail"></span>
           <button class="button secondary" id="ordersButton" type="button">Pedidos</button>
           <button class="button secondary" id="inventoryButton" type="button">Estoque</button>
+          <button class="button secondary" id="affiliatesButton" type="button">Afiliados</button>
           <button class="button secondary" id="refreshButton" type="button">Atualizar</button>
           <button class="button ghost" id="logoutButton" type="button">Sair</button>
         </div>
@@ -91,6 +92,35 @@
             <thead><tr><th>Produto</th><th>Variante</th><th>SKU</th><th>Saldo atual</th><th>Situação</th></tr></thead>
             <tbody id="inventoryBody"><tr><td colspan="5" class="empty-cell">Carregando estoque…</td></tr></tbody>
           </table>
+        </div>
+      </section>
+      <section id="affiliatesPanel" class="hidden">
+        <div class="inventory-intro">
+          <div><div class="eyebrow">DESEMPENHO COMERCIAL</div><h2>Desempenho dos afiliados</h2><p>Vendas atribuídas pelos códigos de afiliado e comissões já registradas no sistema.</p></div>
+        </div>
+        <div class="stats affiliate-stats">
+          <article><span>Pedidos atribuídos</span><strong id="affiliateOrdersStat">—</strong></article>
+          <article><span>Faturamento de pedidos pagos</span><strong id="affiliateRevenueStat">—</strong></article>
+          <article><span>Comissões registradas</span><strong id="affiliateCommissionStat">—</strong></article>
+        </div>
+        <div class="orders-toolbar">
+          <input id="affiliateSearch" type="search" placeholder="Buscar afiliado por nome ou código..." aria-label="Buscar afiliado">
+          <select id="affiliateFilter" aria-label="Filtrar afiliados"><option value="all">Todos os afiliados</option><option value="active">Ativos</option><option value="inactive">Inativos</option></select>
+        </div>
+        <div class="orders-table-wrap">
+          <table class="orders-table affiliate-table">
+            <thead><tr><th>Afiliado</th><th>Status</th><th>Pedidos</th><th>Pagos</th><th>Pendentes</th><th>Faturamento pago</th><th>Comissões</th></tr></thead>
+            <tbody id="affiliatesBody"><tr><td colspan="7" class="empty-cell">Carregando afiliados…</td></tr></tbody>
+          </table>
+        </div>
+        <div id="affiliateDetails" class="affiliate-details hidden">
+          <div class="detail-section-title" id="affiliateDetailsTitle">Pedidos do afiliado</div>
+          <div class="orders-table-wrap">
+            <table class="orders-table affiliate-orders-table">
+              <thead><tr><th>Pedido</th><th>Cliente</th><th>Data</th><th>Status</th><th>Total</th><th>Comissão</th><th>Situação</th></tr></thead>
+              <tbody id="affiliateOrdersBody"></tbody>
+            </table>
+          </div>
         </div>
       </section>
       <p class="feedback page-feedback" id="dashboardFeedback" role="status"></p>
