@@ -5,6 +5,7 @@
     let catalog = { brand: 'Aset Life', whatsapp: '', products: [] };
     const supabaseClient = window.supabase.createClient(window.ASET_SUPABASE_CONFIG.url, window.ASET_SUPABASE_CONFIG.anonKey);
     let selectedProduct = null;
+    let activeCategory = 'Todas';
     let currentAffiliate = null;
     let currentAffiliateId = '';
     const AFFILIATE_STORAGE_KEY = 'bp_affiliate_id';
@@ -80,23 +81,64 @@
     });
     document.getElementById('heroPrev').addEventListener('click', () => { changeFeatured(-1); restartFeaturedTimer(); });
     document.getElementById('heroNext').addEventListener('click', () => { changeFeatured(1); restartFeaturedTimer(); });
+    function productCategories(product) {
+      const categories = Array.isArray(product.categories) ? product.categories : [];
+      return [...new Set(categories.length ? categories : [product.category || 'Catálogo'])];
+    }
+
+    function renderCategoryFilters() {
+      const container = document.getElementById('categoryFilters');
+      if (!container) return;
+      const categories = [...new Set((catalog.products || [])
+        .filter(product => product.active !== false)
+        .flatMap(productCategories))]
+        .sort((a, b) => a.localeCompare(b, 'pt-BR'));
+      if (activeCategory !== 'Todas' && !categories.includes(activeCategory)) activeCategory = 'Todas';
+      const options = ['Todas', ...categories];
+      container.innerHTML = options.map(category =>
+        '<button type="button" class="category-filter' + (category === activeCategory ? ' is-active' : '') +
+        '" data-category="' + safeText(category) + '" aria-pressed="' + (category === activeCategory ? 'true' : 'false') + '">' +
+        safeText(category) + '</button>'
+      ).join('');
+      container.querySelectorAll('[data-category]').forEach(button => {
+        button.addEventListener('click', () => {
+          activeCategory = button.dataset.category;
+          renderCategoryFilters();
+          renderProducts();
+        });
+      });
+    }
+
     function renderProducts() {
       const query = search.value.trim().toLocaleLowerCase('pt-BR');
-      const products = (catalog.products || []).filter(p => p.active !== false && [p.name,p.category,p.shortDescription,p.description].join(' ').toLocaleLowerCase('pt-BR').includes(query));
-      document.getElementById('resultCount').textContent = products.length + (products.length === 1 ? ' produto' : ' produtos');
-      if (!products.length) { grid.innerHTML = '<div class="empty">Nenhum produto encontrado. Tente outro termo de busca.</div>'; return; }
-      grid.innerHTML = products.map(p => {
-        const min = productMinPrice(p);
+      const products = (catalog.products || []).filter(product => {
+        if (product.active === false) return false;
+        const categories = productCategories(product);
+        const searchable = [product.name, ...categories, product.shortDescription, product.description, product.uses]
+          .join(' ').toLocaleLowerCase('pt-BR');
+        const matchesQuery = searchable.includes(query);
+        const matchesCategory = activeCategory === 'Todas' || categories.includes(activeCategory);
+        return matchesQuery && matchesCategory;
+      });
+      document.getElementById('resultCount').textContent = products.length + (products.length === 1 ? ' produto encontrado' : ' produtos encontrados');
+      if (!products.length) {
+        grid.innerHTML = '<div class="empty">Nenhum produto encontrado com esses critérios. Tente outra busca ou selecione “Todas”.</div>';
+        return;
+      }
+      grid.innerHTML = products.map(product => {
+        const min = productMinPrice(product);
         const priceText = min === null ? 'Consulte' : 'A partir de ' + money(min);
-        return '<article class="product"><div class="product-art"><div class="vial-visual"><img src="./assets/vial-base.png" alt="Frasco Aset Life Peptides"><span class="vial-name">' + safeText(p.name) + '</span></div></div><div class="product-body"><div class="tag">' + safeText(p.category || 'Catálogo') + '</div><h3>' + safeText(p.name) + '</h3><p class="short-desc">' + safeText(p.shortDescription || 'Abra para consultar os detalhes do produto.') + '</p><div class="price-row"><div><div class="price-caption">VALORES</div><div class="price">' + priceText + '</div></div><span class="tag">' + (p.variants || []).length + ' tamanhos</span></div><button class="btn btn-primary" type="button" data-product="' + safeText(p.id) + '">Ver detalhes ↗</button></div></article>';
+        const categoryLabels = productCategories(product).slice(0, 2).map(category => '<span class="product-category-label">' + safeText(category) + '</span>').join('');
+        const variantCount = (product.variants || []).length;
+        return '<article class="product"><div class="product-art"><div class="vial-visual"><img src="./assets/vial-base.png" alt="Frasco ilustrativo de ' + safeText(product.name) + '"><span class="vial-name">' + safeText(product.name) + '</span></div></div><div class="product-body"><div class="product-category-list">' + categoryLabels + '</div><h3>' + safeText(product.name) + '</h3><p class="short-desc">' + safeText(product.shortDescription || 'Abra para consultar os detalhes do produto.') + '</p><div class="price-row"><div><div class="price-caption">A PARTIR DE</div><div class="price">' + priceText + '</div></div><span class="variant-count">' + variantCount + (variantCount === 1 ? ' apresentação' : ' apresentações') + '</span></div><button class="btn btn-primary" type="button" data-product="' + safeText(product.id) + '">Ver detalhes ↗</button></div></article>';
       }).join('');
-      grid.querySelectorAll('[data-product]').forEach(btn => btn.addEventListener('click', () => openProduct(btn.dataset.product)));
+      grid.querySelectorAll('[data-product]').forEach(button => button.addEventListener('click', () => openProduct(button.dataset.product)));
     }
     function openProduct(id) {
       const p = (catalog.products || []).find(item => item.id === id);
       if (!p) return;
       selectedProduct = p;
-      document.getElementById('modalCategory').textContent = p.category || 'CATÁLOGO';
+      document.getElementById('modalCategory').textContent = productCategories(p).join(' · ') || 'CATÁLOGO';
       document.getElementById('modalTitle').textContent = p.name;
       const variants = (p.variants || []);
       const variantHtml = variants.length ? '<h3>Escolha uma apresentação</h3><div class="variant-list">' + variants.map((v,i) => '<label class="variant"><span style="display:flex;align-items:center;gap:10px"><input type="radio" name="variant" value="' + i + '" ' + (i===0?'checked':'') + '><span class="variant-label">' + safeText(v.size) + '</span></span><span class="variant-price">' + money(v.price) + '</span></label>').join('') + '</div>' : '<p>Consulte a equipe para informações sobre apresentações.</p>';
@@ -386,6 +428,7 @@
           ? waUrl('Olá! Gostaria de mais informações sobre o catálogo.')
           : '#catalogo';
       }
+      renderCategoryFilters();
       renderProducts();
       setupFeaturedProducts();
       setupAffiliatePopup();
