@@ -31,29 +31,68 @@
 
     <section class="dashboard hidden" id="dashboardView">
       <div class="dashboard-top">
-        <div><div class="eyebrow">GESTÃO DE PEDIDOS</div><h1>Pedidos</h1><p>Consulte os pedidos e confira os pagamentos recebidos.</p></div>
-        <div class="dashboard-actions"><span class="user-email" id="adminEmail"></span><button class="button secondary" id="refreshButton" type="button">Atualizar</button><button class="button ghost" id="logoutButton" type="button">Sair</button></div>
+        <div><div class="eyebrow">GESTÃO DA LOJA</div><h1 id="dashboardTitle">Pedidos</h1><p id="dashboardSubtitle">Consulte os pedidos e confira os pagamentos recebidos.</p></div>
+        <div class="dashboard-actions">
+          <span class="user-email" id="adminEmail"></span>
+          <button class="button secondary" id="ordersButton" type="button">Pedidos</button>
+          <button class="button secondary" id="inventoryButton" type="button">Estoque</button>
+          <button class="button secondary" id="refreshButton" type="button">Atualizar</button>
+          <button class="button ghost" id="logoutButton" type="button">Sair</button>
+        </div>
       </div>
-      <div class="stats" id="stats">
-        <article><span>Total de pedidos</span><strong id="statTotal">—</strong></article>
-        <article><span>Aguardando pagamento</span><strong id="statPending">—</strong></article>
-        <article><span>Pagamentos confirmados</span><strong id="statPaid">—</strong></article>
+
+      <div id="ordersPanel">
+        <div class="stats" id="stats">
+          <article><span>Total de pedidos</span><strong id="statTotal">—</strong></article>
+          <article><span>Aguardando pagamento</span><strong id="statPending">—</strong></article>
+          <article><span>Pagamentos confirmados</span><strong id="statPaid">—</strong></article>
+        </div>
+        <div class="orders-toolbar">
+          <input id="orderSearch" type="search" placeholder="Buscar pedido, cliente ou telefone..." aria-label="Buscar pedido">
+          <select id="statusFilter" aria-label="Filtrar pedidos">
+            <option value="all">Todos os pedidos</option>
+            <option value="pending">Aguardando pagamento</option>
+            <option value="confirmed">Pagamento confirmado</option>
+            <option value="other">Outros status</option>
+          </select>
+        </div>
+        <div class="orders-table-wrap">
+          <table class="orders-table">
+            <thead><tr><th>Pedido</th><th>Cliente</th><th>Data</th><th>Total</th><th>Status</th><th></th></tr></thead>
+            <tbody id="ordersBody"><tr><td colspan="6" class="empty-cell">Carregando pedidos…</td></tr></tbody>
+          </table>
+        </div>
       </div>
-      <div class="orders-toolbar">
-        <input id="orderSearch" type="search" placeholder="Buscar pedido, cliente ou telefone..." aria-label="Buscar pedido">
-        <select id="statusFilter" aria-label="Filtrar pedidos">
-          <option value="all">Todos os pedidos</option>
-          <option value="pending">Aguardando pagamento</option>
-          <option value="confirmed">Pagamento confirmado</option>
-          <option value="other">Outros status</option>
-        </select>
-      </div>
-      <div class="orders-table-wrap">
-        <table class="orders-table">
-          <thead><tr><th>Pedido</th><th>Cliente</th><th>Data</th><th>Total</th><th>Status</th><th></th></tr></thead>
-          <tbody id="ordersBody"><tr><td colspan="6" class="empty-cell">Carregando pedidos…</td></tr></tbody>
-        </table>
-      </div>
+
+      <section id="inventoryPanel" class="hidden">
+        <div class="inventory-intro">
+          <div><div class="eyebrow">CONTROLE DE INVENTÁRIO</div><h2>Estoque por variante</h2><p>Registre somente quantidades que realmente entraram no estoque. O saldo é atualizado e o movimento fica registrado no histórico.</p></div>
+        </div>
+        <form id="inventoryForm" class="inventory-form">
+          <div class="inventory-form-grid">
+            <div class="field-wide">
+              <label for="inventoryVariant">Produto / variante</label>
+              <select id="inventoryVariant" required><option value="">Carregando variantes…</option></select>
+            </div>
+            <div>
+              <label for="inventoryQuantity">Quantidade recebida</label>
+              <input id="inventoryQuantity" type="number" min="1" max="100000" step="1" inputmode="numeric" required placeholder="Ex.: 10">
+            </div>
+            <div class="field-wide">
+              <label for="inventoryNotes">Observação (opcional)</label>
+              <input id="inventoryNotes" type="text" maxlength="500" placeholder="Ex.: Entrada de mercadoria / lote interno">
+            </div>
+          </div>
+          <button class="button primary" id="inventorySubmit" type="submit">Registrar entrada no estoque</button>
+          <p class="feedback" id="inventoryFeedback" role="status"></p>
+        </form>
+        <div class="orders-table-wrap inventory-table-wrap">
+          <table class="orders-table inventory-table">
+            <thead><tr><th>Produto</th><th>Variante</th><th>SKU</th><th>Saldo atual</th><th>Situação</th></tr></thead>
+            <tbody id="inventoryBody"><tr><td colspan="5" class="empty-cell">Carregando estoque…</td></tr></tbody>
+          </table>
+        </div>
+      </section>
       <p class="feedback page-feedback" id="dashboardFeedback" role="status"></p>
     </section>
   </main>
