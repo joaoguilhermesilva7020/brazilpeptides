@@ -2,36 +2,27 @@
     const grid = document.getElementById('productGrid');
     const modal = document.getElementById('productModal');
     const search = document.getElementById('search');
-    let catalog = { brand: 'Brazil Peptides', whatsapp: '', products: [] };
+    let catalog = { brand: 'Aset Life', whatsapp: '', products: [] };
+    const supabaseClient = window.supabase.createClient(window.ASET_SUPABASE_CONFIG.url, window.ASET_SUPABASE_CONFIG.anonKey);
     let selectedProduct = null;
     let currentAffiliate = null;
     let currentAffiliateId = '';
     const AFFILIATE_STORAGE_KEY = 'bp_affiliate_id';
 
-    function findAffiliate(id) {
-      const normalized = String(id || '').trim().toUpperCase();
-      return (catalog.affiliates || []).find(a => a.active !== false && String(a.id || '').trim().toUpperCase() === normalized) || null;
-    }
     function captureAffiliate() {
       const params = new URLSearchParams(window.location.search);
-      const referralId = (params.get('ref') || params.get('affiliate') || '').trim();
-      if (referralId) {
-        currentAffiliateId = referralId;
-        currentAffiliate = findAffiliate(referralId);
-        if (currentAffiliate) {
-          currentAffiliateId = currentAffiliate.id;
-          try { localStorage.setItem(AFFILIATE_STORAGE_KEY, currentAffiliate.id); } catch (_) {}
-        }
-        return;
-      }
+      const referralId = (params.get('ref') || params.get('affiliate') || '').trim().toUpperCase();
       try {
-        const savedId = localStorage.getItem(AFFILIATE_STORAGE_KEY);
-        currentAffiliate = savedId ? findAffiliate(savedId) : null;
-        currentAffiliateId = currentAffiliate ? currentAffiliate.id : '';
+        if (referralId) {
+          currentAffiliateId = referralId;
+          localStorage.setItem(AFFILIATE_STORAGE_KEY, referralId);
+        } else {
+          currentAffiliateId = (localStorage.getItem(AFFILIATE_STORAGE_KEY) || '').trim().toUpperCase();
+        }
       } catch (_) {
-        currentAffiliate = null;
-        currentAffiliateId = '';
+        currentAffiliateId = referralId;
       }
+      currentAffiliate = currentAffiliateId ? { id: currentAffiliateId } : null;
     }
 
     function money(value) {
@@ -130,7 +121,7 @@
       const key = String(product.id) + '::' + String(variant.size);
       const existing = cart.get(key);
       if (existing) existing.qty += 1;
-      else cart.set(key, { id: product.id, name: product.name, size: variant.size, price: Number(variant.price), qty: 1 });
+      else cart.set(key, { id: product.id, variantId: variant.id, name: product.name, size: variant.size, price: Number(variant.price), qty: 1 });
       renderCart();
       toastEl.textContent = product.name + ' adicionado ao carrinho';
       toastEl.classList.add('show');
@@ -160,15 +151,80 @@
     document.getElementById('openCart').addEventListener('click', openCart);
     document.getElementById('closeCart').addEventListener('click', closeCart);
     cartBackdrop.addEventListener('click', e => { if (e.target === cartBackdrop) closeCart(); });
-    document.getElementById('checkoutWhatsapp').addEventListener('click', () => {
+    document.getElementById('checkoutWhatsapp').addEventListener('click', async () => {
       if (!cart.size) return;
-      if (!catalog.whatsapp || catalog.whatsapp.replace(/\D/g, '').length < 10) { alert('Configure o número de WhatsApp em data/catalog.json antes de publicar o site.'); return; }
+      if (!catalog.whatsapp || catalog.whatsapp.replace(/\D/g, '').length < 10) {
+        alert('O WhatsApp da loja não está configurado. Entre em contato com o suporte.');
+        return;
+      }
+
+      const customerName = window.prompt('Informe seu nome completo:');
+      if (!customerName || !customerName.trim()) return;
+      const customerPhone = window.prompt('Informe seu telefone com DDD:');
+      if (!customerPhone || customerPhone.replace(/\D/g, '').length < 10) return;
+      const paymentChoice = (window.prompt('Forma de pagamento: PIX, transferência, dinheiro ou outro.', 'PIX') || '').trim().toLowerCase();
+      const paymentMap = { pix: 'pix', 'transferência': 'transfer', transferencia: 'transfer', dinheiro: 'cash', cash: 'cash', outro: 'other', other: 'other' };
+      const paymentMethod = paymentMap[paymentChoice];
+      if (!paymentMethod) {
+        alert('Forma de pagamento inválida. Informe PIX, transferência, dinheiro ou outro.');
+        return;
+      }
+
       const items = [...cart.values()];
-      const total = items.reduce((sum, item) => sum + item.price * item.qty, 0);
-      const lines = items.map(item => '• ' + item.name + ' — ' + item.size + ' | Qtd: ' + item.qty + ' | ' + money(item.price * item.qty));
-      const affiliateLine = currentAffiliateId ? '\nREF: ' + currentAffiliateId : '';
-      const message = 'Olá! Gostaria de concluir meu pedido:\n\n' + lines.join('\n') + '\n\nTotal estimado: ' + money(total) + affiliateLine + '\n\nPoderiam confirmar disponibilidade e próximos passos?';
-      window.open(waUrl(message), '_blank', 'noopener,noreferrer');
+      if (items.some(item => !item.variantId)) {
+        alert('Uma apresentação do carrinho não possui vínculo com o catálogo. Atualize a página e tente novamente.');
+        return;
+      }
+
+      const checkoutButton = document.getElementById('checkoutWhatsapp');
+      const originalLabel = checkoutButton.textContent;
+      const whatsappWindow = window.open('about:blank', '_blank');
+      checkoutButton.disabled = true;
+      checkoutButton.textContent = 'Registrando pedido...';
+
+      try {
+        const response = await fetch(window.ASET_SUPABASE_CONFIG.url + '/functions/v1/create-order', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': window.ASET_SUPABASE_CONFIG.anonKey
+          },
+          body: JSON.stringify({
+            customer_name: customerName.trim(),
+            customer_phone: customerPhone,
+            payment_method: paymentMethod,
+            affiliate_ref: currentAffiliateId || null,
+            items: items.map(item => ({ variant_id: item.variantId, quantity: item.qty }))
+          })
+        });
+        const result = await response.json();
+        if (!response.ok || !result.data || !result.data.order_id) {
+          throw new Error(result.error || 'Não foi possível registrar o pedido.');
+        }
+
+        const order = result.data;
+        const lines = items.map(item => '• ' + item.name + ' — ' + item.size + ' | Qtd: ' + item.qty + ' | ' + money(item.price * item.qty));
+        const affiliateLine = currentAffiliateId ? '\nREF: ' + currentAffiliateId : '';
+        const message = 'Olá! Meu pedido foi registrado no site.\n\nPedido nº: ' + order.order_number +
+          '\n' + lines.join('\n') + '\n\nTotal registrado: ' + money(order.total) +
+          '\nPagamento: ' + paymentChoice.toUpperCase() + affiliateLine +
+          '\n\nAguardo as orientações para pagamento e confirmação.';
+        const destination = waUrl(message);
+        if (whatsappWindow) {
+          whatsappWindow.location.href = destination;
+        } else {
+          window.location.href = destination;
+        }
+        cart.clear();
+        renderCart();
+        closeCart();
+      } catch (error) {
+        if (whatsappWindow) whatsappWindow.close();
+        alert(error.message || 'Falha ao registrar o pedido. Tente novamente.');
+      } finally {
+        checkoutButton.disabled = cart.size === 0;
+        checkoutButton.textContent = originalLabel;
+      }
     });
 
     const calcProductAmount = document.getElementById("calcProductAmount");
@@ -232,27 +288,71 @@
       }
     }
 
-    fetch('./data/catalog.json')
-      .then(response => { if (!response.ok) throw new Error('Não foi possível carregar o catálogo'); return response.json(); })
-      .then(data => {
-        catalog = { ...catalog, ...data };
-        captureAffiliate();
-        const brand = catalog.brand || 'Brazil Peptides';
-        document.getElementById('brandName').textContent = brand.toUpperCase();
-        document.getElementById('footerBrand').textContent = brand.toUpperCase();
-        document.title = brand + ' — Catálogo';
-        const links = ['footerWhatsapp'];
-        links.forEach(id => {
-          const link = document.getElementById(id);
-          link.href = catalog.whatsapp && catalog.whatsapp.replace(/\D/g,'').length >= 10 ? waUrl('Olá! Gostaria de mais informações sobre o catálogo.') : '#catalogo';
-          if (!catalog.whatsapp) link.title = 'Configure o WhatsApp em data/catalog.json';
-        });
-        renderProducts();
-        setupFeaturedProducts();
-        setupAffiliatePopup();
-      })
-      .catch(error => {
-        console.error('Erro ao carregar ou renderizar o catálogo:', error);
-        grid.innerHTML = '<div class="empty">Não foi possível exibir o catálogo. Verifique o arquivo data/catalog.json e o console do navegador para identificar o erro.</div>';
-      });
+    async function loadCatalogFromSupabase() {
+      const [settingsResult, productsResult] = await Promise.all([
+        supabaseClient.from('site_settings').select('key,value').in('key', ['brand', 'whatsapp']),
+        supabaseClient.from('products')
+          .select('id,legacy_id,name,short_description,description,uses,evidence,disclaimer,active,sort_order,product_categories(category:categories(name,sort_order)),product_variants(id,name,price,active,sort_order)')
+          .eq('active', true)
+          .order('sort_order', { ascending: true })
+      ]);
+
+      if (settingsResult.error) throw settingsResult.error;
+      if (productsResult.error) throw productsResult.error;
+
+      const settings = Object.fromEntries((settingsResult.data || []).map(item => [item.key, item.value]));
+      catalog = {
+        brand: settings.brand || 'Aset Life',
+        whatsapp: String(settings.whatsapp || ''),
+        products: (productsResult.data || []).map(product => {
+          const categories = (product.product_categories || [])
+            .map(item => item.category)
+            .filter(Boolean)
+            .sort((a, b) => Number(a.sort_order) - Number(b.sort_order))
+            .map(item => item.name);
+          const variants = (product.product_variants || [])
+            .filter(variant => variant.active)
+            .sort((a, b) => Number(a.sort_order) - Number(b.sort_order))
+            .map(variant => ({
+              id: variant.id,
+              size: variant.name,
+              price: Number(variant.price)
+            }));
+          return {
+            id: product.id,
+            legacyId: product.legacy_id,
+            name: product.name,
+            active: product.active,
+            category: categories[0] || 'Catálogo',
+            categories,
+            shortDescription: product.short_description || '',
+            description: product.description || '',
+            uses: product.uses || '',
+            evidence: product.evidence || '',
+            disclaimer: product.disclaimer || '',
+            variants
+          };
+        })
+      };
+
+      captureAffiliate();
+      const brand = catalog.brand || 'Aset Life';
+      document.getElementById('brandName').textContent = brand.toUpperCase();
+      document.getElementById('footerBrand').textContent = brand.toUpperCase();
+      document.title = brand + ' — Catálogo';
+      const footerLink = document.getElementById('footerWhatsapp');
+      if (footerLink) {
+        footerLink.href = catalog.whatsapp.replace(/\D/g, '').length >= 10
+          ? waUrl('Olá! Gostaria de mais informações sobre o catálogo.')
+          : '#catalogo';
+      }
+      renderProducts();
+      setupFeaturedProducts();
+      setupAffiliatePopup();
+    }
+
+    loadCatalogFromSupabase().catch(error => {
+      console.error('Erro ao carregar o catálogo do Supabase:', error);
+      grid.innerHTML = '<div class="empty">Não foi possível carregar o catálogo. Atualize a página ou tente novamente mais tarde.</div>';
+    });
   
