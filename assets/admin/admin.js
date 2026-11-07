@@ -207,21 +207,27 @@
   function showPanel(panel) {
     const inventory = panel === 'inventory';
     const affiliates = panel === 'affiliates';
-    $('ordersPanel').classList.toggle('hidden', inventory || affiliates);
+    const validation = panel === 'validation';
+    $('ordersPanel').classList.toggle('hidden', inventory || affiliates || validation);
     $('inventoryPanel').classList.toggle('hidden', !inventory);
     $('affiliatesPanel').classList.toggle('hidden', !affiliates);
-    $('dashboardTitle').textContent = inventory ? 'Estoque' : affiliates ? 'Afiliados' : 'Pedidos';
+    $('validationPanel').classList.toggle('hidden', !validation);
+    $('dashboardTitle').textContent = inventory ? 'Estoque' : affiliates ? 'Afiliados' : validation ? 'Autenticidade' : 'Pedidos';
     $('dashboardSubtitle').textContent = inventory
       ? 'Consulte os saldos e registre entradas reais de mercadoria.'
       : affiliates
         ? 'Acompanhe pedidos atribuídos, faturamento e comissões.'
-        : 'Consulte os pedidos e confira os pagamentos recebidos.';
-    $('ordersButton').classList.toggle('active-tab', !inventory && !affiliates);
+        : validation
+          ? 'Gere, importe e acompanhe os códigos de autenticidade dos produtos.'
+          : 'Consulte os pedidos e confira os pagamentos recebidos.';
+    $('ordersButton').classList.toggle('active-tab', !inventory && !affiliates && !validation);
     $('inventoryButton').classList.toggle('active-tab', inventory);
     $('affiliatesButton').classList.toggle('active-tab', affiliates);
+    $('validationButton').classList.toggle('active-tab', validation);
     setFeedback('dashboardFeedback', '');
     if (inventory && !state.inventoryLoaded) loadInventory();
     if (affiliates && !state.affiliatesLoaded) loadAffiliates();
+    if (validation) document.dispatchEvent(new Event('aset:validation-open'));
   }
 
   
@@ -444,11 +450,13 @@
   $('refreshButton').addEventListener('click', () => {
     if (!$('inventoryPanel').classList.contains('hidden')) loadInventory();
     else if (!$('affiliatesPanel').classList.contains('hidden')) loadAffiliates();
+    else if (!$('validationPanel').classList.contains('hidden')) document.dispatchEvent(new Event('aset:validation-refresh'));
     else loadOrders();
   });
   $('ordersButton').addEventListener('click', () => showPanel('orders'));
   $('inventoryButton').addEventListener('click', () => showPanel('inventory'));
   $('affiliatesButton').addEventListener('click', () => showPanel('affiliates'));
+  $('validationButton').addEventListener('click', () => showPanel('validation'));
   $('affiliateSearch').addEventListener('input', renderAffiliates);
   $('affiliateFilter').addEventListener('change', renderAffiliates);
   $('orderSearch').addEventListener('input', renderOrders);

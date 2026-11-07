@@ -14,3 +14,6 @@ verify_jwt = false
 
 [functions.confirm-payment]
 verify_jwt = true
+
+[functions.validate-product-code]
+verify_jwt = false

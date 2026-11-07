@@ -95,3 +95,17 @@ input:focus,select:focus,textarea:focus{border-color:#8eb99a;box-shadow:0 0 0 3p
 .affiliate-details{margin-top:28px}
 .affiliate-orders-table{min-width:850px}
 @media(max-width:720px){.affiliate-stats{grid-template-columns:1fr}}
+
+
+/* Gestão de autenticidade */
+.auth-code-form{padding:18px 20px 20px;margin-bottom:18px;background:linear-gradient(145deg,#112b20,#0c1e16);border:1px solid var(--line);border-radius:14px}
+.auth-code-form h3{font-size:16px;margin-bottom:7px}
+.auth-code-form p{color:var(--muted);font-size:12px;line-height:1.6;margin:0 0 12px}
+.auth-code-form-grid{display:grid;grid-template-columns:1.5fr .8fr;gap:14px;align-items:end}
+.auth-code-form label{margin-top:12px}
+.auth-code-form .button{margin-top:16px}
+.auth-code-generated{margin:18px 0;padding:16px;background:#071a12;border:1px solid #315b40;border-radius:12px}
+.auth-code-generated textarea{min-height:150px;font-family:ui-monospace,monospace;font-size:12px;line-height:1.7}
+.auth-code-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.auth-code-table{min-width:1100px}
+@media(max-width:720px){.auth-code-form-grid{grid-template-columns:1fr}.auth-code-actions .button{flex:1}}

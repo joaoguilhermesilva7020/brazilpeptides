@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#071b13">
   <meta name="robots" content="noindex,nofollow">
   <title>Painel administrativo | Aset Life</title>
-  <link rel="stylesheet" href="./assets/admin/admin.css">
+  <link rel="stylesheet" href="./assets/admin/admin.css?v=auth-validation-1">
 </head>
 <body>
   <main class="admin-shell">
@@ -37,6 +37,7 @@
           <button class="button secondary" id="ordersButton" type="button">Pedidos</button>
           <button class="button secondary" id="inventoryButton" type="button">Estoque</button>
           <button class="button secondary" id="affiliatesButton" type="button">Afiliados</button>
+          <button class="button secondary" id="validationButton" type="button">Autenticidade</button>
           <button class="button secondary" id="refreshButton" type="button">Atualizar</button>
           <button class="button ghost" id="logoutButton" type="button">Sair</button>
         </div>
@@ -123,6 +124,18 @@
           </div>
         </div>
       </section>
+      <section id="validationPanel" class="hidden">
+        <div class="inventory-intro"><div><div class="eyebrow">RASTREABILIDADE DE PRODUTOS</div><h2>Códigos de autenticidade</h2><p>Gere códigos exclusivos para imprimir nas embalagens ou importe códigos já produzidos. O código original só é exibido uma vez após a geração; o banco armazena apenas seu hash.</p></div></div>
+        <div class="auth-code-form">
+          <div class="auth-code-form-grid"><div><label for="authCodeVariant">Produto / apresentação</label><select id="authCodeVariant" required><option value="">Carregando apresentações…</option></select></div><div><label for="authCodeLot">Lote (opcional)</label><input id="authCodeLot" type="text" maxlength="80" placeholder="Ex.: LOTE-2026-01"></div></div>
+          <form id="generateCodesForm"><h3>Gerar códigos automaticamente</h3><p>Cria códigos no formato ASL-XXXX-XXXX-XXXX-XXXX, com 80 bits aleatórios.</p><div class="auth-code-form-grid"><div><label for="authCodeQuantity">Quantidade de códigos</label><input id="authCodeQuantity" type="number" min="1" max="500" value="50" required></div><div><button class="button primary" id="generateCodesButton" type="submit">Gerar e cadastrar</button></div></div></form>
+        </div>
+        <div class="auth-code-form"><form id="importCodesForm"><h3>Importar códigos existentes</h3><p>Cole um código por linha. Também aceitamos listas separadas por vírgula ou ponto e vírgula. Cada código precisa ter de 16 a 40 caracteres alfanuméricos após remover espaços e separadores.</p><label for="importCodesText">Lista de códigos</label><textarea id="importCodesText" rows="5" maxlength="40000" placeholder="ASL-ABCD-EFGH-JKLM-NPQR"></textarea><button class="button secondary" id="importCodesButton" type="submit">Importar e cadastrar códigos</button></form></div>
+        <div id="generatedCodesPanel" class="auth-code-generated hidden"><h3>Códigos gerados — salve agora</h3><p>Por segurança, o texto original não poderá ser recuperado depois que você sair desta tela.</p><textarea id="generatedCodesText" readonly></textarea><div class="auth-code-actions"><button class="button secondary" id="copyGeneratedCodes" type="button">Copiar códigos</button><button class="button primary" id="downloadGeneratedCodes" type="button">Baixar CSV para impressão</button></div></div>
+        <p class="feedback" id="validationAdminFeedback" role="status"></p>
+        <div class="detail-section-title">Códigos cadastrados (até 500 mais recentes)</div>
+        <div class="orders-table-wrap"><table class="orders-table auth-code-table"><thead><tr><th>Código</th><th>Produto</th><th>Apresentação</th><th>Lote</th><th>Consultas</th><th>Primeira consulta</th><th>Última consulta</th><th>Status</th></tr></thead><tbody id="authCodesBody"><tr><td colspan="8" class="empty-cell">Carregando códigos…</td></tr></tbody></table></div>
+      </section>
       <p class="feedback page-feedback" id="dashboardFeedback" role="status"></p>
     </section>
   </main>
@@ -145,6 +158,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./assets/js/supabase-config.js"></script>
-  <script src="./assets/admin/admin.js"></script>
+  <script src="./assets/admin/admin.js?v=auth-validation-1"></script>
+  <script src="./assets/admin/validation-admin.js?v=auth-validation-1"></script>
 </body>
 </html>
