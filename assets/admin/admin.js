@@ -206,11 +206,11 @@
 
   function showPanel(panel) {
     const inventory = panel === 'inventory';
-    const affiliates = panel === 'affiliates';
+    const affiliates = panel === 'affiliates';\n    const validation = panel === 'validation';
     $('ordersPanel').classList.toggle('hidden', inventory || affiliates);
     $('inventoryPanel').classList.toggle('hidden', !inventory);
-    $('affiliatesPanel').classList.toggle('hidden', !affiliates);
-    $('dashboardTitle').textContent = inventory ? 'Estoque' : affiliates ? 'Afiliados' : 'Pedidos';
+    $('affiliatesPanel').classList.toggle('hidden', !affiliates);\n    $('validationPanel').classList.toggle('hidden', !validation);
+    $('dashboardTitle').textContent = inventory ? 'Estoque' : affiliates ? 'Afiliados' : validation ? 'Autenticidade' : 'Pedidos';
     $('dashboardSubtitle').textContent = inventory
       ? 'Consulte os saldos e registre entradas reais de mercadoria.'
       : affiliates
@@ -218,10 +218,10 @@
         : 'Consulte os pedidos e confira os pagamentos recebidos.';
     $('ordersButton').classList.toggle('active-tab', !inventory && !affiliates);
     $('inventoryButton').classList.toggle('active-tab', inventory);
-    $('affiliatesButton').classList.toggle('active-tab', affiliates);
+    $('affiliatesButton').classList.toggle('active-tab', affiliates);\n    $('validationButton').classList.toggle('active-tab', validation);
     setFeedback('dashboardFeedback', '');
     if (inventory && !state.inventoryLoaded) loadInventory();
-    if (affiliates && !state.affiliatesLoaded) loadAffiliates();
+    if (affiliates && !state.affiliatesLoaded) loadAffiliates();\n    if (validation) document.dispatchEvent(new Event('aset:validation-open'));
   }
 
   
@@ -448,7 +448,7 @@
   });
   $('ordersButton').addEventListener('click', () => showPanel('orders'));
   $('inventoryButton').addEventListener('click', () => showPanel('inventory'));
-  $('affiliatesButton').addEventListener('click', () => showPanel('affiliates'));
+  $('affiliatesButton').addEventListener('click', () => showPanel('affiliates'));\n  $('validationButton').addEventListener('click', () => showPanel('validation'));
   $('affiliateSearch').addEventListener('input', renderAffiliates);
   $('affiliateFilter').addEventListener('change', renderAffiliates);
   $('orderSearch').addEventListener('input', renderOrders);
