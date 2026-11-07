@@ -2,6 +2,7 @@
 begin;
 create schema if not exists extensions;
 create extension if not exists pgcrypto with schema extensions;
+alter extension pgcrypto set schema extensions;
 create table if not exists public.product_auth_codes (
   id uuid primary key default gen_random_uuid(),
   code_hash text not null unique,
