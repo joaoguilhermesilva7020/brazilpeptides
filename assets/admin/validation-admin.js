@@ -7,6 +7,7 @@
   const state = { variants: [], codes: [], isAdmin: false };
   const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+  const compareText = (a, b) => String(a ?? '').localeCompare(String(b ?? ''), 'pt-BR', { sensitivity: 'base' });
   const date = (value) => value ? new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(value)) : '—';
   function feedback(message, success = false) {
     $('validationAdminFeedback').textContent = message || '';
@@ -28,7 +29,8 @@
   async function loadVariants() {
     const { data, error } = await client.from('product_variants').select('id,name,active,product:products(name,active)').order('name', { ascending: true });
     if (error) throw error;
-    state.variants = (data || []).filter(item => item.active && item.product?.active);
+    state.variants = (data || []).filter(item => item.active && item.product?.active)
+      .sort((a, b) => compareText(a.product?.name, b.product?.name) || compareText(a.name, b.name));
     $('authCodeVariant').innerHTML = '<option value="">Selecione produto e apresentação</option>' +
       state.variants.map(item => '<option value="' + escapeHtml(item.id) + '">' + escapeHtml(item.product.name + ' — ' + item.name) + '</option>').join('');
   }
