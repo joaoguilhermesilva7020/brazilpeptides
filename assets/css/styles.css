@@ -232,13 +232,14 @@ main{background:#fff}
   .footer-contact{padding:17px}
   .footer-links{gap:12px 18px}
 }
-\n
+
+
 /* Validação de autenticidade Aset Life */
 .product-validation{padding:76px 0;background:linear-gradient(145deg,#f4f8f5,#eaf2ec)}
 .validation-card{max-width:760px;margin:28px auto 0;padding:clamp(22px,4vw,38px);background:#fff;border:1px solid #dce8df;border-radius:20px;box-shadow:0 18px 55px rgba(18,57,35,.08)}
 .validation-card>p{color:#64766a;line-height:1.7;font-size:14px}
 .validation-form{display:flex;gap:10px;margin-top:22px}
-.validation-form input{flex:1;min-width:0;padding:15px 16px;border:1px solid #cbd9cf;border-radius:10px;font:600 14px inherit;letter-spacing:.06em;text-transform:uppercase}
+.validation-form input{flex:1;min-width:0;padding:15px 16px;border:1px solid #cbd9cf;border-radius:10px;font:inherit;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
 .validation-form button{white-space:nowrap}
 .validation-feedback{min-height:20px;margin:12px 0 0;color:#8a5b22;font-size:12px}
 .validation-result{margin-top:18px;padding:20px;border:1px solid #d9e6dc;border-radius:13px;background:#fbfdfb}
