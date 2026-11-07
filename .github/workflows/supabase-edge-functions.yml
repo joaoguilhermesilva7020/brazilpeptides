@@ -28,16 +28,16 @@ jobs:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
         run: |
-          supabase functions deploy create-order --project-ref "$SUPABASE_PROJECT_REF" --no-verify-jwt
+          supabase functions deploy create-order --remote="$SUPABASE_PROJECT_REF" --yes --no-verify-jwt
       - name: Deploy confirm-payment
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
         run: |
-          supabase functions deploy confirm-payment --project-ref "$SUPABASE_PROJECT_REF"
+          supabase functions deploy confirm-payment --remote="$SUPABASE_PROJECT_REF" --yes
       - name: Deploy validate-product-code
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
         run: |
-          supabase functions deploy validate-product-code --project-ref "$SUPABASE_PROJECT_REF" --no-verify-jwt
+          supabase functions deploy validate-product-code --remote="$SUPABASE_PROJECT_REF" --yes --no-verify-jwt
