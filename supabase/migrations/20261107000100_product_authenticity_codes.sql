@@ -51,7 +51,7 @@ begin
   if v_distinct <> cardinality(p_codes) then raise exception 'A lista contém códigos repetidos.'; end if;
   foreach v_code in array p_codes loop
     v_normalized := regexp_replace(upper(trim(v_code)), '[^A-Z0-9]', '', 'g');
-    if v_normalized !~ '^ASL[A-Z0-9]{16}$' then
+    if v_normalized !~ '^[A-Z0-9]{16,40}$' then
       raise exception 'Formato inválido. Use ASL-XXXX-XXXX-XXXX-XXXX (16 caracteres aleatórios).';
     end if;
     insert into public.product_auth_codes(code_hash, code_suffix, product_id, variant_id, lot_code, created_by)
@@ -77,7 +77,7 @@ declare
   v_variant_name text;
 begin
   v_normalized := regexp_replace(upper(trim(coalesce(p_code, ''))), '[^A-Z0-9]', '', 'g');
-  if v_normalized !~ '^ASL[A-Z0-9]{16}$' then return jsonb_build_object('valid', false); end if;
+  if v_normalized !~ '^[A-Z0-9]{16,40}$' then return jsonb_build_object('valid', false); end if;
   select * into v_code from public.product_auth_codes
   where code_hash = encode(extensions.digest(v_normalized, 'sha256'), 'hex') and active = true
   for update;
