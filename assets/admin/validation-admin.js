@@ -13,9 +13,8 @@
     $('validationAdminFeedback').style.color = success ? '#aee0bc' : '';
   }
   function makeCode() {
-    const bytes = new Uint8Array(12); crypto.getRandomValues(bytes);
-    const raw = Array.from(bytes, byte => alphabet[byte & 31]).join('');
-    return 'ASL-' + raw.match(/.{4}/g).join('-');
+    const bytes = new Uint8Array(10); crypto.getRandomValues(bytes);
+    return Array.from(bytes, byte => alphabet[byte & 31]).join('');
   }
   function normalizeCodes(text) { return text.split(/[\r\n,;]+/).map(value => value.trim()).filter(Boolean); }
   async function ensureAdmin() {
