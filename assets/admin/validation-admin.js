@@ -7,7 +7,7 @@
   const state = { variants: [], codes: [], isAdmin: false };
   const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
-  const compareText = (a, b) => String(a ?? '').localeCompare(String(b ?? ''), 'pt-BR', { sensitivity: 'base' });
+  const compareText = (a, b) => String(a ?? '').localeCompare(String(b ?? ''), 'pt-BR', { sensitivity: 'base', numeric: true });
   const date = (value) => value ? new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(value)) : '—';
   function feedback(message, success = false) {
     $('validationAdminFeedback').textContent = message || '';
@@ -48,7 +48,13 @@
       .select('id,code_suffix,lot_code,active,validation_count,first_validated_at,last_validated_at,created_at,product:products(name),variant:product_variants(name)')
       .order('created_at', { ascending: false }).limit(500);
     if (error) throw error;
-    state.codes = data || []; renderCodes();
+    state.codes = (data || []).slice().sort((a, b) =>
+      compareText(a.product?.name, b.product?.name) ||
+      compareText(a.variant?.name, b.variant?.name) ||
+      compareText(a.lot_code, b.lot_code) ||
+      compareText(a.code_suffix, b.code_suffix)
+    );
+    renderCodes();
   }
   async function openPanel() {
     if (!state.isAdmin) await ensureAdmin();
