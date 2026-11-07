@@ -13,7 +13,7 @@
     $('validationAdminFeedback').style.color = success ? '#aee0bc' : '';
   }
   function makeCode() {
-    const bytes = new Uint8Array(16); crypto.getRandomValues(bytes);
+    const bytes = new Uint8Array(12); crypto.getRandomValues(bytes);
     const raw = Array.from(bytes, byte => alphabet[byte & 31]).join('');
     return 'ASL-' + raw.match(/.{4}/g).join('-');
   }
