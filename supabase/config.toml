@@ -14,4 +14,6 @@ verify_jwt = false
 
 [functions.confirm-payment]
 verify_jwt = true
-\n[functions.validate-product-code]\nverify_jwt = false\n
+
+[functions.validate-product-code]
+verify_jwt = false
