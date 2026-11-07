@@ -1,4 +1,4 @@
--- Accept compact 12-character authenticity codes while preserving existing 16-40 character codes.
+-- Accept compact 10-character alphanumeric authenticity codes while preserving previously issued longer codes.
 begin;
 create or replace function public.admin_create_product_auth_codes(p_variant_id uuid, p_codes text[], p_lot_code text default null)
 returns jsonb language plpgsql security definer set search_path = ''
@@ -18,8 +18,103 @@ begin
   if v_distinct <> cardinality(p_codes) then raise exception 'A lista contém códigos repetidos.'; end if;
   foreach v_code in array p_codes loop
     v_normalized := regexp_replace(upper(trim(v_code)), '[^A-Z0-9]', '', 'g');
-    if v_normalized !~ '^[A-Z0-9]{12,40}$' then
-      raise exception 'Formato inválido. Use ASL-XXXX-XXXX-XXXX (12 caracteres aleatórios) ou um código existente de 16 a 40 caracteres.';
+    if v_normalized !~ '^[A-Z0-9]{10,40}
+    end if;
+    insert into public.product_auth_codes(code_hash, code_suffix, product_id, variant_id, lot_code, created_by)
+    values (encode(extensions.digest(v_normalized, 'sha256'), 'hex'), right(v_normalized, 4), v_product_id, p_variant_id, v_lot, auth.uid());
+    v_count := v_count + 1;
+  end loop;
+  return jsonb_build_object('created', v_count);
+exception when unique_violation then raise exception 'Um ou mais códigos já existem no sistema. Nenhum código desta operação foi importado.';
+end;
+$$;
+revoke all on function public.admin_create_product_auth_codes(uuid, text[], text) from public, anon;
+grant execute on function public.admin_create_product_auth_codes(uuid, text[], text) to authenticated;
+
+create or replace function public.validate_product_auth_code(p_code text)
+returns jsonb language plpgsql security definer set search_path = ''
+as $$
+declare
+  v_normalized text; v_code public.product_auth_codes%rowtype; v_product_name text; v_variant_name text;
+begin
+  v_normalized := regexp_replace(upper(trim(coalesce(p_code, ''))), '[^A-Z0-9]', '', 'g');
+  if v_normalized !~ '^[A-Z0-9]{10,40}
+  select * into v_code from public.product_auth_codes
+  where code_hash = encode(extensions.digest(v_normalized, 'sha256'), 'hex') and active = true for update;
+  if not found then return jsonb_build_object('valid', false); end if;
+  update public.product_auth_codes set validation_count = validation_count + 1,
+    first_validated_at = coalesce(first_validated_at, now()), last_validated_at = now()
+  where id = v_code.id returning * into v_code;
+  select p.name, pv.name into v_product_name, v_variant_name from public.products p
+  join public.product_variants pv on pv.product_id = p.id where p.id = v_code.product_id and pv.id = v_code.variant_id;
+  return jsonb_build_object('valid', true, 'product_name', v_product_name, 'variant_name', v_variant_name,
+    'lot_code', v_code.lot_code, 'validation_count', v_code.validation_count,
+    'first_validation', v_code.validation_count = 1, 'first_validated_at', v_code.first_validated_at,
+    'last_validated_at', v_code.last_validated_at);
+end;
+$$;
+revoke all on function public.validate_product_auth_code(text) from public;
+grant execute on function public.validate_product_auth_code(text) to anon, authenticated;
+commit;
+ then
+      raise exception 'Formato inválido. Use 10 caracteres alfanuméricos ou um código antigo de 12 a 40 caracteres.';
+    end if;
+    insert into public.product_auth_codes(code_hash, code_suffix, product_id, variant_id, lot_code, created_by)
+    values (encode(extensions.digest(v_normalized, 'sha256'), 'hex'), right(v_normalized, 4), v_product_id, p_variant_id, v_lot, auth.uid());
+    v_count := v_count + 1;
+  end loop;
+  return jsonb_build_object('created', v_count);
+exception when unique_violation then raise exception 'Um ou mais códigos já existem no sistema. Nenhum código desta operação foi importado.';
+end;
+$$;
+revoke all on function public.admin_create_product_auth_codes(uuid, text[], text) from public, anon;
+grant execute on function public.admin_create_product_auth_codes(uuid, text[], text) to authenticated;
+
+create or replace function public.validate_product_auth_code(p_code text)
+returns jsonb language plpgsql security definer set search_path = ''
+as $$
+declare
+  v_normalized text; v_code public.product_auth_codes%rowtype; v_product_name text; v_variant_name text;
+begin
+  v_normalized := regexp_replace(upper(trim(coalesce(p_code, ''))), '[^A-Z0-9]', '', 'g');
+  if v_normalized !~ '^[A-Z0-9]{12,40}$' then return jsonb_build_object('valid', false); end if;
+  select * into v_code from public.product_auth_codes
+  where code_hash = encode(extensions.digest(v_normalized, 'sha256'), 'hex') and active = true for update;
+  if not found then return jsonb_build_object('valid', false); end if;
+  update public.product_auth_codes set validation_count = validation_count + 1,
+    first_validated_at = coalesce(first_validated_at, now()), last_validated_at = now()
+  where id = v_code.id returning * into v_code;
+  select p.name, pv.name into v_product_name, v_variant_name from public.products p
+  join public.product_variants pv on pv.product_id = p.id where p.id = v_code.product_id and pv.id = v_code.variant_id;
+  return jsonb_build_object('valid', true, 'product_name', v_product_name, 'variant_name', v_variant_name,
+    'lot_code', v_code.lot_code, 'validation_count', v_code.validation_count,
+    'first_validation', v_code.validation_count = 1, 'first_validated_at', v_code.first_validated_at,
+    'last_validated_at', v_code.last_validated_at);
+end;
+$$;
+revoke all on function public.validate_product_auth_code(text) from public;
+grant execute on function public.validate_product_auth_code(text) to anon, authenticated;
+commit;
+ then return jsonb_build_object('valid', false); end if;
+  select * into v_code from public.product_auth_codes
+  where code_hash = encode(extensions.digest(v_normalized, 'sha256'), 'hex') and active = true for update;
+  if not found then return jsonb_build_object('valid', false); end if;
+  update public.product_auth_codes set validation_count = validation_count + 1,
+    first_validated_at = coalesce(first_validated_at, now()), last_validated_at = now()
+  where id = v_code.id returning * into v_code;
+  select p.name, pv.name into v_product_name, v_variant_name from public.products p
+  join public.product_variants pv on pv.product_id = p.id where p.id = v_code.product_id and pv.id = v_code.variant_id;
+  return jsonb_build_object('valid', true, 'product_name', v_product_name, 'variant_name', v_variant_name,
+    'lot_code', v_code.lot_code, 'validation_count', v_code.validation_count,
+    'first_validation', v_code.validation_count = 1, 'first_validated_at', v_code.first_validated_at,
+    'last_validated_at', v_code.last_validated_at);
+end;
+$$;
+revoke all on function public.validate_product_auth_code(text) from public;
+grant execute on function public.validate_product_auth_code(text) to anon, authenticated;
+commit;
+ then
+      raise exception 'Formato inválido. Use 10 caracteres alfanuméricos ou um código antigo de 12 a 40 caracteres.';
     end if;
     insert into public.product_auth_codes(code_hash, code_suffix, product_id, variant_id, lot_code, created_by)
     values (encode(extensions.digest(v_normalized, 'sha256'), 'hex'), right(v_normalized, 4), v_product_id, p_variant_id, v_lot, auth.uid());
