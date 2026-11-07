@@ -232,3 +232,24 @@ main{background:#fff}
   .footer-contact{padding:17px}
   .footer-links{gap:12px 18px}
 }
+\n
+/* Validação de autenticidade Aset Life */
+.product-validation{padding:76px 0;background:linear-gradient(145deg,#f4f8f5,#eaf2ec)}
+.validation-card{max-width:760px;margin:28px auto 0;padding:clamp(22px,4vw,38px);background:#fff;border:1px solid #dce8df;border-radius:20px;box-shadow:0 18px 55px rgba(18,57,35,.08)}
+.validation-card>p{color:#64766a;line-height:1.7;font-size:14px}
+.validation-form{display:flex;gap:10px;margin-top:22px}
+.validation-form input{flex:1;min-width:0;padding:15px 16px;border:1px solid #cbd9cf;border-radius:10px;font:600 14px inherit;letter-spacing:.06em;text-transform:uppercase}
+.validation-form button{white-space:nowrap}
+.validation-feedback{min-height:20px;margin:12px 0 0;color:#8a5b22;font-size:12px}
+.validation-result{margin-top:18px;padding:20px;border:1px solid #d9e6dc;border-radius:13px;background:#fbfdfb}
+.validation-result[hidden]{display:none}
+.validation-result-head{display:flex;flex-direction:column;gap:5px;padding:0 0 15px;border-bottom:1px solid #e1eae3}
+.validation-result-head strong{font-size:16px;color:#17633c}
+.validation-result-head span{font-size:12px;color:#6b7c70}
+.validation-result-head.repeat strong{color:#98651b}
+.validation-result-details{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0}
+.validation-result-details div{min-width:0}
+.validation-result-details dt{font-size:10px;color:#718176;text-transform:uppercase;letter-spacing:.08em}
+.validation-result-details dd{margin:5px 0 0;color:#203c2b;font-size:13px;font-weight:700;overflow-wrap:anywhere}
+.validation-result-note{margin:0;color:#68786d;font-size:11px;line-height:1.65}
+@media(max-width:600px){.product-validation{padding:54px 0}.validation-form{flex-direction:column}.validation-form button{width:100%}.validation-result-details{grid-template-columns:1fr}}
