@@ -168,8 +168,8 @@
   }
 
   const compareProductVariants = (a, b) =>
-    String(a.product?.name || 'Produto').localeCompare(String(b.product?.name || 'Produto'), 'pt-BR', { sensitivity: 'base' }) ||
-    String(a.name || '').localeCompare(String(b.name || ''), 'pt-BR', { sensitivity: 'base' });
+    String(a.product?.name || 'Produto').localeCompare(String(b.product?.name || 'Produto'), 'pt-BR', { sensitivity: 'base', numeric: true }) ||
+    String(a.name || '').localeCompare(String(b.name || ''), 'pt-BR', { sensitivity: 'base', numeric: true });
 
   function balanceFor(variant) {
     const balance = Array.isArray(variant.inventory_balances)
