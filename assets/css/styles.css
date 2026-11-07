@@ -207,3 +207,28 @@ main{background:#fff}
 .checkout-review-total strong{color:#126b40;font-size:19px;font-variant-numeric:tabular-nums}
 .checkout-review-note{margin:10px 0 0;color:#718176;font-size:10px;line-height:1.6}
 @media(max-width:480px){.checkout-review{padding:13px}.checkout-review-total strong{font-size:18px}}
+
+/* PR C — institucional, FAQ e rodapé */
+.footer-layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(230px,.7fr);gap:28px 56px;align-items:start}
+.footer-main{min-width:0}
+.footer-small{max-width:680px;margin:10px 0 0;color:#9bb2a2;font-size:11px;line-height:1.85}
+.footer-links{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:19px}
+.footer-links a{color:#c6ddce;text-decoration:none;font-size:11px;font-weight:700}
+.footer-links a:hover{color:#8ee3aa;text-decoration:underline;text-underline-offset:4px}
+.footer-contact{padding:19px;border:1px solid rgba(141,224,167,.2);border-radius:15px;background:rgba(192,241,207,.055)}
+.footer-contact-label{color:#8ee3aa;font-size:10px;font-weight:850;letter-spacing:.16em;text-transform:uppercase}
+.footer-contact p{margin:8px 0 15px;color:#a9c1b1;font-size:11px;line-height:1.7}
+.footer-bottom{grid-column:1/-1;padding-top:18px;border-top:1px solid rgba(141,224,167,.14);color:#789485;font-size:10px;line-height:1.6}
+.faq details{max-width:940px}
+.faq summary{align-items:center;padding-right:4px}
+.faq details[open] summary{color:#08794b}
+.quality-side{border-color:rgba(159,229,179,.28)}
+.quality-side p{line-height:1.9}
+.about-card{position:relative}
+.about-card:before{content:"";display:block;width:38px;height:3px;margin-bottom:17px;border-radius:4px;background:#26a965}
+@media(max-width:700px){
+  .footer-layout{grid-template-columns:1fr;gap:22px}
+  .footer-bottom{grid-column:auto}
+  .footer-contact{padding:17px}
+  .footer-links{gap:12px 18px}
+}
