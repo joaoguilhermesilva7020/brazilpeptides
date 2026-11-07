@@ -1,5 +1,7 @@
 -- Aset Life product authenticity codes.
 begin;
+create schema if not exists extensions;
+create extension if not exists pgcrypto with schema extensions;
 create table if not exists public.product_auth_codes (
   id uuid primary key default gen_random_uuid(),
   code_hash text not null unique,
@@ -44,8 +46,8 @@ begin
   from public.product_variants pv join public.products p on p.id = pv.product_id
   where pv.id = p_variant_id and pv.active = true and p.active = true;
   if v_product_id is null then raise exception 'Produto ou apresentação inativa ou inexistente.'; end if;
-  select count(distinct regexp_replace(upper(trim(x)), '[^A-Z0-9]', '', 'g')) into v_distinct
-  from unnest(p_codes) as x;
+  select count(distinct regexp_replace(upper(trim(t.code)), '[^A-Z0-9]', '', 'g')) into v_distinct
+  from unnest(p_codes) as t(code);
   if v_distinct <> cardinality(p_codes) then raise exception 'A lista contém códigos repetidos.'; end if;
   foreach v_code in array p_codes loop
     v_normalized := regexp_replace(upper(trim(v_code)), '[^A-Z0-9]', '', 'g');
