@@ -254,3 +254,20 @@ main{background:#fff}
 .validation-result-details dd{margin:5px 0 0;color:#203c2b;font-size:13px;font-weight:700;overflow-wrap:anywhere}
 .validation-result-note{margin:0;color:#68786d;font-size:11px;line-height:1.65}
 @media(max-width:600px){.product-validation{padding:54px 0}.validation-form{flex-direction:column}.validation-form button{width:100%}.validation-result-details{grid-template-columns:1fr}}
+
+/* Guia de boas práticas para clientes */
+.good-practices{padding:78px 0;background:#f7faf7}
+.practice-intro{display:flex;gap:16px;align-items:flex-start;max-width:900px;margin:26px 0 22px;padding:20px 22px;border:1px solid #d7e6da;border-radius:15px;background:#fff}
+.practice-intro-mark{display:grid;place-items:center;flex:0 0 38px;width:38px;height:38px;border-radius:11px;background:#e8f4eb;color:#16834f;font-size:21px}
+.practice-intro strong{display:block;color:#173d29;font-size:14px}
+.practice-intro p{margin:6px 0 0;color:#627568;font-size:12px;line-height:1.75}
+.practice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.practice-card{display:grid;grid-template-columns:42px minmax(0,1fr);gap:13px;padding:21px;border:1px solid #e0e9e2;border-radius:15px;background:#fff;box-shadow:0 8px 26px rgba(18,57,35,.035)}
+.practice-number{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:#eaf4ed;color:#16834f;font-size:12px;font-weight:850;letter-spacing:.04em}
+.practice-card h3{margin:3px 0 11px;color:#183d29;font-size:15px}
+.practice-card ul{display:grid;gap:8px;margin:0;padding-left:17px;color:#627568;font-size:11px;line-height:1.7}
+.practice-card li::marker{color:#29965c}
+.practice-warning{margin-top:18px;padding:19px 21px;border-left:3px solid #b58a42;border-radius:0 12px 12px 0;background:#f3efe6}
+.practice-warning strong{display:block;color:#6e5225;font-size:12px;letter-spacing:.04em}
+.practice-warning p{margin:7px 0 0;color:#6d6557;font-size:11px;line-height:1.75}
+@media(max-width:700px){.good-practices{padding:55px 0}.practice-grid{grid-template-columns:1fr}.practice-card{padding:17px}.practice-intro{padding:17px;gap:12px}}
