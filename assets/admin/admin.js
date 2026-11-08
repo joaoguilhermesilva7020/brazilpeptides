@@ -323,7 +323,7 @@
     $('affiliateCommissionValue').placeholder = fixed ? 'Ex.: 25,00' : 'Ex.: 10';
     $('affiliateCommissionHelp').textContent = fixed
       ? 'Valor fixo registrado quando o pagamento do pedido for confirmado.'
-      : 'Calculada sobre o subtotal do pedido quando o pagamento for confirmado.';
+      : 'Calculada sobre o subtotal quando o pagamento for confirmado. A taxa vigente na confirmação será aplicada também a pedidos já atribuídos e ainda pendentes.';
   }
 
   async function generateAffiliateCode() {
@@ -429,6 +429,24 @@
     }
   }
 
+  async function markAffiliateCommissionPaid(commissionId, affiliateId) {
+    const commission = state.affiliateCommissions.find(item => item.id === commissionId);
+    if (!commission || !['pending', 'approved'].includes(commission.status)) return;
+    if (!window.confirm('Confirma que a comissão de ' + money(commission.commission_amount) + ' foi efetivamente paga ao afiliado?')) return;
+    try {
+      const { error } = await client.from('affiliate_commissions')
+        .update({ status: 'paid', paid_at: new Date().toISOString() })
+        .eq('id', commissionId);
+      if (error) throw error;
+      state.affiliatesLoaded = false;
+      await loadAffiliates();
+      renderAffiliateDetails(affiliateId);
+      setFeedback('dashboardFeedback', 'Comissão marcada como paga.', true);
+    } catch (error) {
+      setFeedback('dashboardFeedback', error.message || 'Não foi possível atualizar a comissão.');
+    }
+  }
+
   function renderAffiliateDetails(affiliateId) {
     const affiliate = state.affiliates.find(item => item.id === affiliateId);
     if (!affiliate) return;
@@ -441,14 +459,20 @@
       const commission = byOrder.get(order.id);
       const orderStatus = paymentLabels[order.payment_status] || order.payment_status;
       const commissionStatus = commission ? (commissionLabels[commission.status] || commission.status) : 'Sem comissão';
+      const commissionAction = commission && ['pending', 'approved'].includes(commission.status)
+        ? '<button class="view-button" type="button" data-pay-commission-id="' + escapeHtml(commission.id) + '">Marcar como paga</button>'
+        : '—';
       return '<tr><td><strong>#' + escapeHtml(order.order_number) + '</strong></td>' +
         '<td>' + escapeHtml(order.customer_name) + '</td>' +
         '<td>' + escapeHtml(date(order.created_at)) + '</td>' +
         '<td>' + escapeHtml(orderStatus) + '</td>' +
         '<td>' + escapeHtml(money(order.total)) + '</td>' +
         '<td>' + escapeHtml(commission ? money(commission.commission_amount) : '—') + '</td>' +
-        '<td>' + escapeHtml(commissionStatus) + '</td></tr>';
-    }).join('') : '<tr><td colspan="7" class="empty-cell">Este afiliado ainda não possui pedidos atribuídos.</td></tr>';
+        '<td>' + escapeHtml(commissionStatus) + '</td><td>' + commissionAction + '</td></tr>';
+    }).join('') : '<tr><td colspan="8" class="empty-cell">Este afiliado ainda não possui pedidos atribuídos.</td></tr>';
+    $('affiliateOrdersBody').querySelectorAll('[data-pay-commission-id]').forEach(button => {
+      button.addEventListener('click', () => markAffiliateCommissionPaid(button.dataset.payCommissionId, affiliateId));
+    });
     $('affiliateDetails').classList.remove('hidden');
   }
 
