@@ -153,7 +153,11 @@
   }
 
   $('productsButton').addEventListener('click', showProducts);
-  ['ordersButton','inventoryButton','affiliatesButton','validationButton'].forEach(id => $(id).addEventListener('click', () => $('productsPanel').classList.add('hidden')));
+  document.addEventListener('aset:admin-ready', authorize);
+  ['ordersButton','inventoryButton','affiliatesButton','validationButton'].forEach(id => $(id).addEventListener('click', () => {
+    $('productsPanel').classList.add('hidden');
+    $('productsButton').classList.remove('active-tab');
+  }));
   $('newProductButton').addEventListener('click', () => openEditor());
   $('addProductVariant').addEventListener('click', () => variantRow());
   $('closeProductDialog').addEventListener('click', () => $('productDialog').close());
