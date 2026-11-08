@@ -255,7 +255,7 @@
       setFeedback('dashboardFeedback', '', true);
     } catch (error) {
       setFeedback('dashboardFeedback', error.message || 'Erro ao carregar afiliados.');
-      $('affiliatesBody').innerHTML = '<tr><td colspan="7" class="empty-cell">Não foi possível carregar os afiliados.</td></tr>';
+      $('affiliatesBody').innerHTML = '<tr><td colspan="9" class="empty-cell">Não foi possível carregar os afiliados.</td></tr>';
     } finally {
       $('refreshButton').disabled = false;
     }
@@ -330,10 +330,20 @@
     const { data, error } = await client.from('affiliates').select('code');
     if (error) throw error;
     const used = new Set((data || []).map(item => String(item.code || '').toUpperCase()));
+    const numericCodes = Array.from(used)
+      .map(code => /^BP(\\d{4})$/.exec(code))
+      .filter(Boolean)
+      .map(match => Number(match[1]));
+    let nextNumber = Math.max(1000, ...numericCodes) + 1;
+    while (nextNumber <= 9999) {
+      const code = 'BP' + String(nextNumber).padStart(4, '0');
+      if (!used.has(code)) return code;
+      nextNumber++;
+    }
     for (let attempt = 0; attempt < 100; attempt++) {
       const bytes = new Uint32Array(1);
       window.crypto.getRandomValues(bytes);
-      const code = 'BP' + String(bytes[0] % 10000).padStart(4, '0');
+      const code = 'BP' + String(1000 + (bytes[0] % 9000)).padStart(4, '0');
       if (!used.has(code)) return code;
     }
     throw new Error('Não foi possível gerar um código exclusivo. Tente novamente.');
