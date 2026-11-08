@@ -288,18 +288,145 @@
       const commissions = state.affiliateCommissions.filter(item => item.affiliate_id === affiliate.id);
       const commissionTotal = commissions.reduce((sum, item) => sum + Number(item.commission_amount || 0), 0);
       const status = affiliate.active ? '<span class="status confirmed">Ativo</span>' : '<span class="status other">Inativo</span>';
+      const rate = affiliate.commission_type === 'fixed'
+        ? money(affiliate.commission_value) + ' / pedido'
+        : Number(affiliate.commission_value || 0).toLocaleString('pt-BR', { maximumFractionDigits: 2 }) + '%';
       return '<tr>' +
         '<td><strong>' + escapeHtml(affiliate.name) + '</strong><span class="subline">' + escapeHtml(affiliate.code) + '</span></td>' +
         '<td>' + status + '</td>' +
         '<td>' + orders.length + '</td><td>' + paid.length + '</td><td>' + pending.length + '</td>' +
         '<td><strong>' + escapeHtml(money(revenue)) + '</strong></td>' +
+        '<td><strong>' + escapeHtml(rate) + '</strong></td>' +
         '<td><strong>' + escapeHtml(money(commissionTotal)) + '</strong><span class="subline">' + commissions.length + ' registro(s)</span></td>' +
-        '<td><button class="view-button" type="button" data-affiliate-id="' + escapeHtml(affiliate.id) + '">Detalhes</button></td>' +
+        '<td class="affiliate-actions"><button class="view-button" type="button" data-affiliate-id="' + escapeHtml(affiliate.id) + '">Detalhes</button><button class="view-button" type="button" data-edit-affiliate-id="' + escapeHtml(affiliate.id) + '">Editar</button><button class="view-button" type="button" data-copy-affiliate-id="' + escapeHtml(affiliate.id) + '">Copiar link</button></td>' +
       '</tr>';
-    }).join('') : '<tr><td colspan="8" class="empty-cell">Nenhum afiliado corresponde ao filtro.</td></tr>';
+    }).join('') : '<tr><td colspan="9" class="empty-cell">Nenhum afiliado corresponde ao filtro.</td></tr>';
     $('affiliatesBody').querySelectorAll('[data-affiliate-id]').forEach(button => {
       button.addEventListener('click', () => renderAffiliateDetails(button.dataset.affiliateId));
     });
+    $('affiliatesBody').querySelectorAll('[data-edit-affiliate-id]').forEach(button => {
+      button.addEventListener('click', () => openAffiliateDialog(button.dataset.editAffiliateId));
+    });
+    $('affiliatesBody').querySelectorAll('[data-copy-affiliate-id]').forEach(button => {
+      button.addEventListener('click', () => copyAffiliateLink(button.dataset.copyAffiliateId));
+    });
+  }
+
+  function affiliateUrl(code) {
+    return window.location.origin + '/?ref=' + encodeURIComponent(code);
+  }
+
+  function updateAffiliateCommissionInput() {
+    const fixed = $('affiliateCommissionType').value === 'fixed';
+    $('affiliateCommissionLabel').textContent = fixed ? 'Valor fixo por pedido (R$)' : 'Percentual de comissão (%)';
+    $('affiliateCommissionValue').max = fixed ? '' : '100';
+    $('affiliateCommissionValue').placeholder = fixed ? 'Ex.: 25,00' : 'Ex.: 10';
+    $('affiliateCommissionHelp').textContent = fixed
+      ? 'Valor fixo registrado quando o pagamento do pedido for confirmado.'
+      : 'Calculada sobre o subtotal do pedido quando o pagamento for confirmado.';
+  }
+
+  async function generateAffiliateCode() {
+    const { data, error } = await client.from('affiliates').select('code');
+    if (error) throw error;
+    const used = new Set((data || []).map(item => String(item.code || '').toUpperCase()));
+    for (let attempt = 0; attempt < 100; attempt++) {
+      const bytes = new Uint32Array(1);
+      window.crypto.getRandomValues(bytes);
+      const code = 'BP' + String(bytes[0] % 10000).padStart(4, '0');
+      if (!used.has(code)) return code;
+    }
+    throw new Error('Não foi possível gerar um código exclusivo. Tente novamente.');
+  }
+
+  function openAffiliateDialog(affiliateId = null) {
+    const affiliate = affiliateId ? state.affiliates.find(item => item.id === affiliateId) : null;
+    $('affiliateForm').reset();
+    $('affiliateId').value = affiliate?.id || '';
+    $('affiliateDialogTitle').textContent = affiliate ? 'Editar afiliado' : 'Novo afiliado';
+    $('affiliateName').value = affiliate?.name || '';
+    $('affiliateCommissionType').value = affiliate?.commission_type || 'percent';
+    $('affiliateCommissionValue').value = affiliate ? Number(affiliate.commission_value || 0) : '';
+    $('affiliateActive').checked = affiliate ? Boolean(affiliate.active) : true;
+    $('affiliateCode').value = affiliate?.code || 'Gerando código…';
+    $('affiliateCode').readOnly = true;
+    $('affiliateCodeHelp').textContent = affiliate
+      ? 'O código é permanente para preservar links e atribuições já existentes.'
+      : 'Um código exclusivo será reservado automaticamente ao salvar.';
+    $('affiliateLinkPreview').textContent = affiliate ? affiliateUrl(affiliate.code) : 'Será criado após gerar o código';
+    $('affiliateLinkPreview').dataset.code = affiliate?.code || '';
+    $('copyAffiliateLink').disabled = !affiliate;
+    $('affiliateFormFeedback').textContent = '';
+    updateAffiliateCommissionInput();
+    $('affiliateDialog').showModal();
+    if (!affiliate) {
+      generateAffiliateCode().then(code => {
+        if (!$('affiliateId').value && $('affiliateDialog').open) {
+          $('affiliateCode').value = code;
+          $('affiliateLinkPreview').textContent = affiliateUrl(code);
+          $('affiliateLinkPreview').dataset.code = code;
+        }
+      }).catch(error => setFeedback('affiliateFormFeedback', error.message || 'Não foi possível gerar o código.'));
+    }
+  }
+
+  async function copyAffiliateLink(affiliateId) {
+    const affiliate = state.affiliates.find(item => item.id === affiliateId);
+    if (!affiliate) return;
+    const url = affiliateUrl(affiliate.code);
+    try {
+      await navigator.clipboard.writeText(url);
+      $('toast').textContent = 'Link de indicação copiado.';
+      $('toast').classList.add('show');
+      window.setTimeout(() => $('toast').classList.remove('show'), 2600);
+    } catch (_) {
+      window.prompt('Copie o link de indicação:', url);
+    }
+  }
+
+  async function saveAffiliate(event) {
+    event.preventDefault();
+    if (!state.isAdmin) return;
+    const button = $('saveAffiliateButton');
+    const id = $('affiliateId').value;
+    const name = $('affiliateName').value.trim();
+    const code = $('affiliateCode').value.trim().toUpperCase();
+    const type = $('affiliateCommissionType').value;
+    const value = Number($('affiliateCommissionValue').value);
+    if (!name) return setFeedback('affiliateFormFeedback', 'Informe o nome do afiliado.');
+    if (!code || !/^BP[0-9]{4}$/.test(code)) return setFeedback('affiliateFormFeedback', 'Código de afiliado inválido. Feche e abra o cadastro novamente.');
+    if (!Number.isFinite(value) || value < 0 || (type === 'percent' && value > 100)) {
+      return setFeedback('affiliateFormFeedback', type === 'percent' ? 'Informe um percentual entre 0 e 100.' : 'Informe um valor fixo válido.');
+    }
+    button.disabled = true;
+    setFeedback('affiliateFormFeedback', 'Salvando afiliado…', true);
+    try {
+      const payload = {
+        name,
+        commission_type: type,
+        commission_value: value,
+        active: $('affiliateActive').checked
+      };
+      let result;
+      if (id) {
+        result = await client.from('affiliates').update(payload).eq('id', id).select('id').single();
+      } else {
+        result = await client.from('affiliates').insert({
+          ...payload,
+          legacy_id: code,
+          code
+        }).select('id').single();
+      }
+      if (result.error) throw result.error;
+      $('affiliateDialog').close();
+      state.affiliatesLoaded = false;
+      await loadAffiliates();
+      setFeedback('dashboardFeedback', id ? 'Afiliado atualizado.' : 'Afiliado cadastrado com sucesso.', true);
+    } catch (error) {
+      setFeedback('affiliateFormFeedback', error.message || 'Não foi possível salvar o afiliado.');
+    } finally {
+      button.disabled = false;
+    }
   }
 
   function renderAffiliateDetails(affiliateId) {
@@ -461,6 +588,20 @@
   $('inventoryButton').addEventListener('click', () => showPanel('inventory'));
   $('affiliatesButton').addEventListener('click', () => showPanel('affiliates'));
   $('validationButton').addEventListener('click', () => showPanel('validation'));
+  $('newAffiliateButton').addEventListener('click', () => openAffiliateDialog());
+  $('closeAffiliateDialog').addEventListener('click', () => $('affiliateDialog').close());
+  $('affiliateForm').addEventListener('submit', saveAffiliate);
+  $('affiliateCommissionType').addEventListener('change', updateAffiliateCommissionInput);
+  $('copyAffiliateLink').addEventListener('click', async () => {
+    const code = $('affiliateLinkPreview').dataset.code;
+    if (!code) return;
+    try {
+      await navigator.clipboard.writeText(affiliateUrl(code));
+      setFeedback('affiliateFormFeedback', 'Link copiado.', true);
+    } catch (_) {
+      window.prompt('Copie o link de indicação:', affiliateUrl(code));
+    }
+  });
   $('affiliateSearch').addEventListener('input', renderAffiliates);
   $('affiliateFilter').addEventListener('change', renderAffiliates);
   $('orderSearch').addEventListener('input', renderOrders);
