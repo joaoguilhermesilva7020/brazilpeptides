@@ -109,3 +109,30 @@ input:focus,select:focus,textarea:focus{border-color:#8eb99a;box-shadow:0 0 0 3p
 .auth-code-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
 .auth-code-table{min-width:1100px}
 @media(max-width:720px){.auth-code-form-grid{grid-template-columns:1fr}.auth-code-actions .button{flex:1}}
+
+
+/* Affiliate management */
+.affiliate-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:18px}
+.affiliate-heading .button{white-space:nowrap}
+.affiliate-table{min-width:1080px}
+.affiliate-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.affiliate-actions .view-button{white-space:nowrap}
+.affiliate-dialog{width:min(560px,calc(100% - 28px))}
+.affiliate-dialog .confirm-form{display:grid;gap:2px}
+.affiliate-dialog .confirm-form>label{margin:13px 0 6px}
+.affiliate-dialog input:not([type="checkbox"]),.affiliate-dialog select{width:100%}
+.affiliate-dialog input[readonly]{color:var(--green2);background:#10271d}
+.affiliate-dialog .form-help{margin:5px 0 8px;color:var(--muted);font-size:11px;line-height:1.5}
+.affiliate-active-label{display:flex!important;align-items:center;gap:10px;margin:16px 0!important}
+.affiliate-active-label input{width:17px;height:17px;margin:0;accent-color:#9bc9a8}
+.affiliate-link-preview{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:12px;margin:14px 0;background:#071a12;border:1px solid var(--line);border-radius:10px}
+.affiliate-link-preview span{grid-column:1/-1;color:var(--muted);font-size:11px}
+.affiliate-link-preview code{min-width:0;overflow-wrap:anywhere;color:var(--green2);font-size:11px}
+.affiliate-link-preview .button{padding:8px 10px}
+.affiliate-dialog #saveAffiliateButton{width:100%;margin-top:10px}
+@media(max-width:720px){
+  .affiliate-heading{align-items:stretch;flex-direction:column}
+  .affiliate-heading .button{width:100%}
+  .affiliate-link-preview{grid-template-columns:1fr}
+  .affiliate-link-preview span{grid-column:auto}
+}

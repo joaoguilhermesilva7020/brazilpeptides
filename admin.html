@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#071b13">
   <meta name="robots" content="noindex,nofollow">
   <title>Painel administrativo | Aset Life</title>
-  <link rel="stylesheet" href="./assets/admin/admin.css?v=auth-validation-3">
+  <link rel="stylesheet" href="./assets/admin/admin.css?v=affiliate-management-1">
 </head>
 <body>
   <main class="admin-shell">
@@ -96,8 +96,9 @@
         </div>
       </section>
       <section id="affiliatesPanel" class="hidden">
-        <div class="inventory-intro">
-          <div><div class="eyebrow">DESEMPENHO COMERCIAL</div><h2>Desempenho dos afiliados</h2><p>Vendas atribuídas pelos códigos de afiliado e comissões já registradas no sistema.</p></div>
+        <div class="inventory-intro affiliate-heading">
+          <div><div class="eyebrow">GESTÃO COMERCIAL</div><h2>Programa de afiliados</h2><p>Cadastre parceiros, configure comissões individuais e acompanhe indicações e resultados.</p></div>
+          <button class="button primary" id="newAffiliateButton" type="button">+ Novo afiliado</button>
         </div>
         <div class="stats affiliate-stats">
           <article><span>Pedidos atribuídos</span><strong id="affiliateOrdersStat">—</strong></article>
@@ -110,15 +111,15 @@
         </div>
         <div class="orders-table-wrap">
           <table class="orders-table affiliate-table">
-            <thead><tr><th>Afiliado</th><th>Status</th><th>Pedidos</th><th>Pagos</th><th>Pendentes</th><th>Faturamento pago</th><th>Comissões</th><th></th></tr></thead>
-            <tbody id="affiliatesBody"><tr><td colspan="8" class="empty-cell">Carregando afiliados…</td></tr></tbody>
+            <thead><tr><th>Afiliado</th><th>Status</th><th>Pedidos</th><th>Pagos</th><th>Pendentes</th><th>Faturamento pago</th><th>Comissão</th><th>Comissões geradas</th><th>Ações</th></tr></thead>
+            <tbody id="affiliatesBody"><tr><td colspan="9" class="empty-cell">Carregando afiliados…</td></tr></tbody>
           </table>
         </div>
         <div id="affiliateDetails" class="affiliate-details hidden">
           <div class="detail-section-title" id="affiliateDetailsTitle">Pedidos do afiliado</div>
           <div class="orders-table-wrap">
             <table class="orders-table affiliate-orders-table">
-              <thead><tr><th>Pedido</th><th>Cliente</th><th>Data</th><th>Status</th><th>Total</th><th>Comissão</th><th>Situação</th></tr></thead>
+              <thead><tr><th>Pedido</th><th>Cliente</th><th>Data</th><th>Status</th><th>Total</th><th>Comissão</th><th>Situação</th><th>Ação</th></tr></thead>
               <tbody id="affiliateOrdersBody"></tbody>
             </table>
           </div>
@@ -154,11 +155,34 @@
       <p class="feedback" id="confirmFeedback" role="alert"></p>
     </form>
   </dialog>
+  <dialog class="order-dialog affiliate-dialog" id="affiliateDialog">
+    <div class="dialog-head"><div><div class="eyebrow">PROGRAMA DE AFILIADOS</div><h2 id="affiliateDialogTitle">Novo afiliado</h2></div><button class="icon-button" id="closeAffiliateDialog" type="button" aria-label="Fechar">×</button></div>
+    <form id="affiliateForm" class="confirm-form">
+      <input id="affiliateId" type="hidden">
+      <label for="affiliateName">Nome do afiliado</label>
+      <input id="affiliateName" type="text" maxlength="120" required placeholder="Nome ou identificação do parceiro">
+      <label for="affiliateCode">Código de indicação</label>
+      <input id="affiliateCode" type="text" readonly>
+      <p class="form-help" id="affiliateCodeHelp">Código exclusivo gerado automaticamente. Ele não muda depois do cadastro.</p>
+      <label for="affiliateCommissionType">Tipo de comissão</label>
+      <select id="affiliateCommissionType">
+        <option value="percent">Percentual (%)</option>
+        <option value="fixed">Valor fixo por pedido (R$)</option>
+      </select>
+      <label for="affiliateCommissionValue" id="affiliateCommissionLabel">Percentual de comissão (%)</label>
+      <input id="affiliateCommissionValue" type="number" min="0" max="100" step="0.01" required inputmode="decimal" placeholder="Ex.: 10">
+      <p class="form-help" id="affiliateCommissionHelp">Calculada sobre o subtotal do pedido quando o pagamento for confirmado.</p>
+      <label class="affiliate-active-label"><input id="affiliateActive" type="checkbox" checked> Afiliado ativo</label>
+      <div class="affiliate-link-preview"><span>Link de indicação</span><code id="affiliateLinkPreview">—</code><button class="button secondary" id="copyAffiliateLink" type="button">Copiar link</button></div>
+      <button class="button primary" id="saveAffiliateButton" type="submit">Salvar afiliado</button>
+      <p class="feedback" id="affiliateFormFeedback" role="alert"></p>
+    </form>
+  </dialog>
   <div class="toast" id="toast" role="status"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./assets/js/supabase-config.js"></script>
-  <script src="./assets/admin/admin.js?v=auth-validation-3"></script>
+  <script src="./assets/admin/admin.js?v=affiliate-management-1"></script>
   <script src="./assets/admin/validation-admin.js?v=auth-validation-3"></script>
 </body>
 </html>
