@@ -33,6 +33,7 @@
     if (error) throw error;
     if (data !== true) throw new Error('Este usuário não possui permissão de administrador ativo.');
     state.isAdmin = true;
+    document.dispatchEvent(new Event('aset:admin-ready'));
     $('adminEmail').textContent = user.email || '';
     $('loginView').classList.add('hidden');
     $('dashboardView').classList.remove('hidden');
