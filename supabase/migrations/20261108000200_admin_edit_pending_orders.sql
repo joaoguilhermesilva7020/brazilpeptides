@@ -61,10 +61,14 @@ begin
     raise exception 'Este pedido possui pagamento confirmado e não pode ser editado.';
   end if;
 
-  select count(*) into v_payment_count
+  perform 1
   from public.payments
   where order_id = p_order_id and status = 'pending'
   for update;
+
+  select count(*) into v_payment_count
+  from public.payments
+  where order_id = p_order_id and status = 'pending';
 
   if v_payment_count = 0 then
     raise exception 'Pagamento pendente não encontrado para este pedido.';
