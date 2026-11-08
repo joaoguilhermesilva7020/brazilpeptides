@@ -9,7 +9,7 @@
 
   const client = window.supabase.createClient(config.url, config.anonKey);
   const $ = (id) => document.getElementById(id);
-  const state = { orders: [], selectedOrder: null, isAdmin: false, inventory: [], inventoryLoaded: false, affiliates: [], affiliateOrders: [], affiliateCommissions: [], affiliatesLoaded: false };
+  const state = { orders: [], selectedOrder: null, isAdmin: false, inventory: [], inventoryLoaded: false, affiliates: [], affiliateOrders: [], affiliateCommissions: [], affiliatesLoaded: false, orderEditItems: [], orderEditVariants: [] };
   const statusLabels = {
     pending_payment: 'Aguardando pagamento', paid: 'Pago', processing: 'Em processamento',
     completed: 'Concluído', cancelled: 'Cancelado', payment_issue: 'Problema no pagamento', refunded: 'Reembolsado'
@@ -94,7 +94,7 @@
     try {
       const { data, error } = await client
         .from('orders')
-        .select('id,order_number,customer_name,customer_phone,customer_email,status,payment_status,subtotal,discount,total,affiliate_ref,notes,created_at,order_items(id,product_name_snapshot,variant_name_snapshot,sku_snapshot,unit_price,quantity,line_total),payments(id,method,amount,status,payment_reference,confirmed_at,notes,created_at)')
+        .select('id,order_number,customer_name,customer_phone,customer_email,status,payment_status,subtotal,discount,total,affiliate_ref,notes,created_at,order_items(id,variant_id,product_name_snapshot,variant_name_snapshot,sku_snapshot,unit_price,quantity,line_total),payments(id,method,amount,status,payment_reference,confirmed_at,notes,created_at)')
         .order('created_at', { ascending: false })
         .limit(200);
       if (error) throw error;
@@ -486,7 +486,7 @@
     $('affiliateDetails').classList.remove('hidden');
   }
 
-  function openOrder(id) {
+  async function openOrder(id) {
     const order = state.orders.find(item => item.id === id);
     if (!order) return;
     state.selectedOrder = order;
@@ -526,8 +526,110 @@
 
     const canConfirm = order.payment_status === 'pending' && ['pending_payment','payment_issue'].includes(order.status);
     $('confirmForm').classList.toggle('hidden', !canConfirm);
+    $('orderEditFeedback').textContent = '';
+    $('orderEditPanel').classList.toggle('hidden', !canConfirm);
+    state.orderEditItems = (order.order_items || []).map(item => ({
+      variant_id: item.variant_id, quantity: Number(item.quantity),
+      product_name_snapshot: item.product_name_snapshot, variant_name_snapshot: item.variant_name_snapshot,
+      unit_price: Number(item.unit_price)
+    }));
+    if (canConfirm) {
+      try {
+        const { data, error } = await client.from('product_variants')
+          .select('id,name,price,active,product:products(name,active)')
+          .order('name', { ascending: true });
+        if (error) throw error;
+        state.orderEditVariants = data || [];
+        renderOrderEditor();
+      } catch (error) {
+        $('orderEditFeedback').textContent = 'Não foi possível carregar o catálogo para edição: ' + (error.message || '');
+      }
+    }
     $('orderDialog').showModal();
   }
+
+  function renderOrderEditor() {
+    const editor = $('orderEditItems');
+    const rows = state.orderEditItems.map((item, index) => {
+      const variant = state.orderEditVariants.find(v => v.id === item.variant_id);
+      const productName = variant?.product?.name || item.product_name_snapshot || 'Produto';
+      const variantName = variant?.name || item.variant_name_snapshot || 'Variante';
+      const unitPrice = variant ? Number(variant.price) : Number(item.unit_price);
+      return '<div class="order-edit-row" data-edit-row="' + index + '">' +
+        '<div class="order-edit-product"><strong>' + escapeHtml(productName) + '</strong><small>' +
+        escapeHtml(variantName) + ' · ' + escapeHtml(money(unitPrice)) + '</small></div>' +
+        '<label>Qtd. <input type="number" min="1" max="1000" step="1" value="' + escapeHtml(item.quantity) + '" data-edit-quantity="' + index + '"></label>' +
+        '<button class="view-button" type="button" data-edit-remove="' + index + '">Remover</button></div>';
+    }).join('');
+    const addOptions = state.orderEditVariants.filter(v => v.active && v.product?.active !== false).map(v =>
+      '<option value="' + escapeHtml(v.id) + '">' + escapeHtml((v.product?.name || 'Produto') + ' — ' + v.name + ' (' + money(v.price) + ')') + '</option>'
+    ).join('');
+    editor.innerHTML = (rows || '<p class="form-help">Nenhum item no pedido.</p>') +
+      '<div class="order-edit-add"><select id="orderEditVariant"><option value="">Adicionar produto / variante…</option>' + addOptions + '</select>' +
+      '<input id="orderEditAddQuantity" type="number" min="1" max="1000" step="1" value="1" aria-label="Quantidade a adicionar">' +
+      '<button class="button secondary" id="orderEditAddButton" type="button">Adicionar</button></div>';
+    editor.querySelectorAll('[data-edit-quantity]').forEach(input => input.addEventListener('change', () => {
+      const index = Number(input.dataset.editQuantity), quantity = Number(input.value);
+      if (!Number.isInteger(quantity) || quantity < 1 || quantity > 1000) {
+        input.value = state.orderEditItems[index].quantity;
+        return;
+      }
+      state.orderEditItems[index].quantity = quantity;
+    }));
+    editor.querySelectorAll('[data-edit-remove]').forEach(button => button.addEventListener('click', () => {
+      state.orderEditItems.splice(Number(button.dataset.editRemove), 1);
+      renderOrderEditor();
+    }));
+    $('orderEditAddButton').addEventListener('click', () => {
+      const variantId = $('orderEditVariant').value;
+      const quantity = Number($('orderEditAddQuantity').value);
+      const variant = state.orderEditVariants.find(v => v.id === variantId);
+      if (!variantId || !variant || !Number.isInteger(quantity) || quantity < 1 || quantity > 1000) {
+        setFeedback('orderEditFeedback', 'Selecione uma variante ativa e informe uma quantidade válida.');
+        return;
+      }
+      const existing = state.orderEditItems.find(item => item.variant_id === variantId);
+      if (existing) existing.quantity += quantity;
+      else state.orderEditItems.push({
+        variant_id: variant.id, quantity, product_name_snapshot: variant.product?.name || 'Produto',
+        variant_name_snapshot: variant.name, unit_price: Number(variant.price)
+      });
+      setFeedback('orderEditFeedback', '');
+      renderOrderEditor();
+    });
+  }
+
+  $('saveOrderEditButton').addEventListener('click', async () => {
+    const order = state.selectedOrder;
+    if (!order || !state.isAdmin || order.payment_status !== 'pending' ||
+        !['pending_payment','payment_issue'].includes(order.status)) return;
+    if (!state.orderEditItems.length) {
+      setFeedback('orderEditFeedback', 'O pedido precisa ter pelo menos um item.');
+      return;
+    }
+    const button = $('saveOrderEditButton');
+    button.disabled = true;
+    setFeedback('orderEditFeedback', 'Salvando alterações…', true);
+    try {
+      const { data, error } = await client.rpc('admin_update_pending_order', {
+        p_order_id: order.id,
+        p_items: state.orderEditItems.map(item => ({ variant_id: item.variant_id, quantity: item.quantity })),
+        p_reason: 'Itens e quantidades ajustados pelo painel antes do pagamento.'
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      await loadOrders();
+      const updated = state.orders.find(item => item.id === order.id);
+      if (updated) await openOrder(updated.id);
+      $('toast').textContent = 'Pedido atualizado. Total e pagamento pendente recalculados.';
+      $('toast').classList.add('show');
+      window.setTimeout(() => $('toast').classList.remove('show'), 3200);
+    } catch (error) {
+      setFeedback('orderEditFeedback', error.message || 'Não foi possível atualizar o pedido.');
+    } finally {
+      button.disabled = false;
+    }
+  });
 
   $('inventoryForm').addEventListener('submit', async (event) => {
     event.preventDefault();
