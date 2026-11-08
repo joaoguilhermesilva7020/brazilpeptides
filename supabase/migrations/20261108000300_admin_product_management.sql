@@ -78,7 +78,7 @@ begin
         evidence = nullif(trim(p_product->>'evidence'), ''),
         disclaimer = nullif(trim(p_product->>'disclaimer'), ''),
         active = coalesce((p_product->>'active')::boolean, true),
-        sort_order = coalesce((p_product->>'sort_order')::integer, 0),
+        sort_order = coalesce((p_product->>'sort_order')::integer, 0)
     where id = p_product_id
     returning id into v_product_id;
     if v_product_id is null then
@@ -92,7 +92,7 @@ begin
 
   -- Existing variants omitted from the submitted form are deactivated, never deleted.
   update public.product_variants
-  set active = false, updated_at = now()
+  set active = false
   where product_id = v_product_id;
 
   for v_variant in select value from jsonb_array_elements(p_variants)
@@ -133,7 +133,7 @@ begin
           sku = v_sku,
           price = v_price,
           active = v_active,
-          sort_order = v_sort_order,
+          sort_order = v_sort_order
       where id = v_variant_id and product_id = v_product_id;
       if not found then
         raise exception 'Apresentação % não pertence a este produto.', v_count;
