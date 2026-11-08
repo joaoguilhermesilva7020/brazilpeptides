@@ -331,7 +331,7 @@
     if (error) throw error;
     const used = new Set((data || []).map(item => String(item.code || '').toUpperCase()));
     const numericCodes = Array.from(used)
-      .map(code => /^BP(\\d{4})$/.exec(code))
+      .map(code => /^BP(\d{4})$/.exec(code))
       .filter(Boolean)
       .map(match => Number(match[1]));
     let nextNumber = Math.max(1000, ...numericCodes) + 1;
