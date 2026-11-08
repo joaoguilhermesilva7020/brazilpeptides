@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#071b13">
   <meta name="robots" content="noindex,nofollow">
   <title>Painel administrativo | Aset Life</title>
-  <link rel="stylesheet" href="./assets/admin/admin.css?v=affiliate-management-1">
+  <link rel="stylesheet" href="./assets/admin/admin.css?v=order-edit-1">
 </head>
 <body>
   <main class="admin-shell">
@@ -144,6 +144,13 @@
   <dialog class="order-dialog" id="orderDialog">
     <div class="dialog-head"><div><div class="eyebrow">DETALHES DO PEDIDO</div><h2 id="dialogTitle">Pedido</h2></div><button class="icon-button" id="closeDialog" type="button" aria-label="Fechar">×</button></div>
     <div id="orderDetails"></div>
+    <section id="orderEditPanel" class="order-edit-panel hidden">
+      <div class="detail-section-title">Editar pedido antes do pagamento</div>
+      <p class="form-help">Altere quantidades, remova itens ou adicione outras variantes. Os valores serão recalculados pelos preços atuais do catálogo. O pedido mantém o mesmo número.</p>
+      <div id="orderEditItems"></div>
+      <button class="button primary" id="saveOrderEditButton" type="button">Salvar alterações do pedido</button>
+      <p class="feedback" id="orderEditFeedback" role="status"></p>
+    </section>
     <form id="confirmForm" class="confirm-form">
       <div class="confirm-heading">Confirmar recebimento</div>
       <p class="warning">Confirme somente depois de verificar o recebimento real do pagamento. Esta ação baixa o estoque automaticamente e não pode ser desfeita pelo painel.</p>
@@ -182,7 +189,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./assets/js/supabase-config.js"></script>
-  <script src="./assets/admin/admin.js?v=affiliate-management-1"></script>
+  <script src="./assets/admin/admin.js?v=order-edit-1"></script>
   <script src="./assets/admin/validation-admin.js?v=auth-validation-3"></script>
 </body>
 </html>
