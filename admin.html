@@ -38,6 +38,7 @@
           <button class="button secondary" id="inventoryButton" type="button">Estoque</button>
           <button class="button secondary" id="affiliatesButton" type="button">Afiliados</button>
           <button class="button secondary" id="validationButton" type="button">Autenticidade</button>
+          <button class="button secondary hidden" id="productsButton" type="button">Produtos</button>
           <button class="button secondary" id="refreshButton" type="button">Atualizar</button>
           <button class="button ghost" id="logoutButton" type="button">Sair</button>
         </div>
@@ -94,6 +95,23 @@
             <tbody id="inventoryBody"><tr><td colspan="5" class="empty-cell">Carregando estoque…</td></tr></tbody>
           </table>
         </div>
+      </section>
+      <section id="productsPanel" class="hidden">
+        <div class="inventory-intro product-admin-heading">
+          <div><div class="eyebrow">CATÁLOGO</div><h2>Gestão de produtos</h2><p>Edite textos, categorias, apresentações, preços e disponibilidade do catálogo.</p></div>
+          <button class="button primary" id="newProductButton" type="button">+ Novo produto</button>
+        </div>
+        <div class="orders-toolbar">
+          <input id="productSearch" type="search" placeholder="Buscar produto por nome ou código..." aria-label="Buscar produto">
+          <button class="button secondary" id="refreshProductsButton" type="button">Atualizar catálogo</button>
+        </div>
+        <div class="orders-table-wrap">
+          <table class="orders-table product-admin-table">
+            <thead><tr><th>Produto</th><th>Categoria</th><th>Apresentações ativas</th><th>Status</th><th>Ação</th></tr></thead>
+            <tbody id="productsAdminBody"><tr><td colspan="5" class="empty-cell">Carregue a área de produtos.</td></tr></tbody>
+          </table>
+        </div>
+        <p class="feedback" id="productAdminFeedback" role="status"></p>
       </section>
       <section id="affiliatesPanel" class="hidden">
         <div class="inventory-intro affiliate-heading">
@@ -185,11 +203,31 @@
       <p class="feedback" id="affiliateFormFeedback" role="alert"></p>
     </form>
   </dialog>
+  <dialog class="order-dialog product-dialog" id="productDialog">
+    <div class="dialog-head"><div><div class="eyebrow">CATÁLOGO</div><h2 id="productDialogTitle">Novo produto</h2></div><button class="icon-button" id="closeProductDialog" type="button" aria-label="Fechar">×</button></div>
+    <form id="productForm" class="confirm-form product-form">
+      <input id="productId" type="hidden">
+      <label for="productName">Nome do produto</label><input id="productName" maxlength="160" required>
+      <label for="productLegacyId">Código interno (opcional)</label><input id="productLegacyId" maxlength="120" placeholder="Gerado automaticamente se ficar vazio">
+      <label for="productCategory">Categoria</label><select id="productCategory" required><option value="">Carregando categorias…</option></select>
+      <label for="productShortDescription">Descrição curta</label><textarea id="productShortDescription" rows="2" maxlength="500"></textarea>
+      <label for="productDescription">Descrição completa</label><textarea id="productDescription" rows="5"></textarea>
+      <label for="productUses">Informações de pesquisa / usos descritos</label><textarea id="productUses" rows="4"></textarea>
+      <label for="productEvidence">Evidências / documentação</label><textarea id="productEvidence" rows="4"></textarea>
+      <label for="productDisclaimer">Observações e avisos</label><textarea id="productDisclaimer" rows="3"></textarea>
+      <div class="product-variant-heading"><strong>Apresentações e preços</strong><button class="button secondary" id="addProductVariant" type="button">+ Adicionar apresentação</button></div>
+      <div id="productVariantRows"></div>
+      <div class="product-form-meta"><label>Ordem de exibição<input id="productSortOrder" type="number" step="1" value="0"></label><label class="affiliate-active-label"><input id="productActive" type="checkbox" checked> Produto ativo no catálogo</label></div>
+      <button class="button primary" id="saveProductButton" type="submit">Salvar produto</button>
+      <p class="feedback" id="productFormFeedback" role="alert"></p>
+    </form>
+  </dialog>
   <div class="toast" id="toast" role="status"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./assets/js/supabase-config.js"></script>
   <script src="./assets/admin/admin.js?v=order-edit-1"></script>
   <script src="./assets/admin/validation-admin.js?v=auth-validation-3"></script>
+  <script src="./assets/admin/products-admin.js?v=product-management-1"></script>
 </body>
 </html>
