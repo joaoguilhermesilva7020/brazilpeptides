@@ -34,9 +34,10 @@ begin
   if p_order_id is null then
     raise exception 'Pedido inválido.';
   end if;
-  if jsonb_typeof(p_items) is distinct from 'array'
-     or jsonb_array_length(p_items) < 1
-     or jsonb_array_length(p_items) > 50 then
+  if jsonb_typeof(p_items) is distinct from 'array' then
+    raise exception 'A lista de itens do pedido é inválida.';
+  end if;
+  if jsonb_array_length(p_items) < 1 or jsonb_array_length(p_items) > 50 then
     raise exception 'O pedido deve conter de 1 a 50 itens.';
   end if;
 
