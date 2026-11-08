@@ -79,7 +79,6 @@ begin
         disclaimer = nullif(trim(p_product->>'disclaimer'), ''),
         active = coalesce((p_product->>'active')::boolean, true),
         sort_order = coalesce((p_product->>'sort_order')::integer, 0),
-        updated_at = now()
     where id = p_product_id
     returning id into v_product_id;
     if v_product_id is null then
@@ -135,7 +134,6 @@ begin
           price = v_price,
           active = v_active,
           sort_order = v_sort_order,
-          updated_at = now()
       where id = v_variant_id and product_id = v_product_id;
       if not found then
         raise exception 'Apresentação % não pertence a este produto.', v_count;
