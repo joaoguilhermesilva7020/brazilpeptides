@@ -150,3 +150,37 @@ input:focus,select:focus,textarea:focus{border-color:#8eb99a;box-shadow:0 0 0 3p
 .order-edit-add input,.order-edit-add select{padding:10px;font-size:11px}
 .order-edit-panel>#saveOrderEditButton{width:100%;margin-top:16px}
 @media(max-width:520px){.order-edit-row{grid-template-columns:minmax(0,1fr) 74px}.order-edit-row .view-button{grid-column:1/-1}.order-edit-add{grid-template-columns:1fr 76px}.order-edit-add .button{grid-column:1/-1}}
+
+
+/* Product catalog management */
+.product-admin-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:18px}
+.product-admin-heading .button{white-space:nowrap}
+.product-admin-table{min-width:760px}
+.product-dialog{width:min(760px,calc(100% - 28px))}
+.product-form{display:grid;gap:2px}
+.product-form>label{margin:12px 0 5px}
+.product-form input:not([type="checkbox"]),.product-form select,.product-form textarea{width:100%}
+.product-form textarea{resize:vertical;line-height:1.5}
+.product-variant-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:20px 0 10px}
+.product-variant-heading strong{font-size:13px}
+.product-variant-row{display:grid;grid-template-columns:minmax(120px,1.2fr) minmax(90px,.7fr) minmax(110px,1fr) auto auto;gap:8px;align-items:end;padding:12px 0;border-bottom:1px solid var(--line)}
+.product-variant-row label{display:block;margin:0 0 5px;color:var(--muted);font-size:10px}
+.product-variant-row input:not([type="checkbox"]){width:100%;padding:9px;font-size:11px}
+.product-variant-row .pv-active{display:flex;align-items:center;gap:5px;white-space:nowrap;padding-bottom:8px}
+.product-variant-row .pv-active input{accent-color:#9bc9a8}
+.product-variant-row .pv-remove{white-space:nowrap;margin-bottom:2px}
+.product-form-meta{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:16px 0}
+.product-form-meta>label{display:grid;gap:6px;color:var(--muted);font-size:11px}
+.product-form-meta input[type="number"]{max-width:130px}
+.product-form-meta .affiliate-active-label{margin:0!important}
+.product-form #saveProductButton{width:100%;margin-top:8px}
+#productAdminFeedback{margin-top:14px}
+@media(max-width:680px){
+  .product-admin-heading{align-items:stretch;flex-direction:column}
+  .product-admin-heading .button{width:100%}
+  .product-variant-row{grid-template-columns:1fr 1fr}
+  .product-variant-row>div:first-child,.product-variant-row>div:nth-child(3){grid-column:1/-1}
+  .product-variant-row .pv-active{grid-column:1}
+  .product-variant-row .pv-remove{grid-column:2}
+  .product-form-meta{align-items:flex-start;flex-direction:column}
+}
