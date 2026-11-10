@@ -271,3 +271,17 @@ main{background:#fff}
 .practice-warning strong{display:block;color:#6e5225;font-size:12px;letter-spacing:.04em}
 .practice-warning p{margin:7px 0 0;color:#6d6557;font-size:11px;line-height:1.75}
 @media(max-width:700px){.good-practices{padding:55px 0}.practice-grid{grid-template-columns:1fr}.practice-card{padding:17px}.practice-intro{padding:17px;gap:12px}}
+
+
+/* Selos promocionais e destaques personalizados dos produtos */
+.product-art .product-badge{position:absolute;top:13px;left:13px;z-index:3;display:inline-flex;align-items:center;max-width:calc(100% - 26px);padding:7px 11px;border-radius:6px;font-size:9px;font-weight:900;letter-spacing:.09em;line-height:1.2;text-transform:uppercase;overflow-wrap:anywhere;box-shadow:0 5px 14px rgba(0,0,0,.12)}
+.product-badge.badge-green{background:#147a49;color:#fff}
+.product-badge.badge-red{background:#c73535;color:#fff}
+.product-badge.badge-gold{background:#d7ad45;color:#26321f}
+.product-badge.badge-dark{background:#172b20;color:#fff}
+.product-badge-editor{margin:18px 0;padding:14px 16px;background:#10271d;border:1px solid #315b40;border-radius:12px}
+.product-badge-editor .product-variant-heading{margin:0 0 8px}
+.product-badge-editor>label:not(.affiliate-active-label){display:block;margin:12px 0 6px;color:var(--muted);font-size:11px}
+.product-badge-editor input:not([type="checkbox"]),.product-badge-editor select{width:100%}
+.product-badge-editor .affiliate-active-label{margin:8px 0!important}
+.product-badge-editor .form-help{margin:8px 0 0;color:var(--muted);font-size:10px;line-height:1.5}

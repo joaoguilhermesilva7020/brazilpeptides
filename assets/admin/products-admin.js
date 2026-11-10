@@ -34,7 +34,7 @@
     feedback('Carregando catálogo…', true);
     try {
       const [productsResult, categoriesResult] = await Promise.all([
-        client.from('products').select('id,legacy_id,name,short_description,description,uses,evidence,disclaimer,active,sort_order,product_categories(category_id,category:categories(id,name)),product_variants(id,name,sku,price,active,sort_order)').order('sort_order').order('name'),
+        client.from('products').select('id,legacy_id,name,short_description,description,uses,evidence,disclaimer,active,sort_order,badge_active,badge_text,badge_style,product_categories(category_id,category:categories(id,name)),product_variants(id,name,sku,price,active,sort_order)').order('sort_order').order('name'),
         client.from('categories').select('id,name,sort_order').order('sort_order').order('name')
       ]);
       if (productsResult.error) throw productsResult.error;
@@ -84,6 +84,9 @@
     $('productUses').value = p?.uses || '';
     $('productEvidence').value = p?.evidence || '';
     $('productDisclaimer').value = p?.disclaimer || '';
+    $('productBadgeActive').checked = p ? Boolean(p.badge_active) : false;
+    $('productBadgeText').value = p?.badge_text || '';
+    $('productBadgeStyle').value = p?.badge_style || 'green';
     $('productActive').checked = p ? Boolean(p.active) : true;
     $('productSortOrder').value = p?.sort_order ?? 0;
     const categoryId = p?.product_categories?.[0]?.category_id || '';
@@ -134,6 +137,9 @@
           uses: $('productUses').value.trim(),
           evidence: $('productEvidence').value.trim(),
           disclaimer: $('productDisclaimer').value.trim(),
+          badge_active: $('productBadgeActive').checked,
+          badge_text: $('productBadgeText').value.trim(),
+          badge_style: $('productBadgeStyle').value,
           active: $('productActive').checked,
           sort_order: Number($('productSortOrder').value || 0)
         },

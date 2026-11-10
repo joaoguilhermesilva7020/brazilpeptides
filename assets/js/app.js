@@ -130,7 +130,11 @@
         const priceText = min === null ? 'Consulte' : 'A partir de ' + money(min);
         const categoryLabels = productCategories(product).slice(0, 2).map(category => '<span class="product-category-label">' + safeText(category) + '</span>').join('');
         const variantCount = (product.variants || []).length;
-        return '<article class="product"><div class="product-art"><div class="vial-visual"><img src="./assets/vial-base.png" alt="Frasco ilustrativo de ' + safeText(product.name) + '"><span class="vial-name">' + safeText(product.name) + '</span></div></div><div class="product-body"><div class="product-category-list">' + categoryLabels + '</div><h3>' + safeText(product.name) + '</h3><p class="short-desc">' + safeText(product.shortDescription || 'Abra para consultar os detalhes do produto.') + '</p><div class="price-row"><div><div class="price-caption">A PARTIR DE</div><div class="price">' + priceText + '</div></div><span class="variant-count">' + variantCount + (variantCount === 1 ? ' apresentação' : ' apresentações') + '</span></div><button class="btn btn-primary" type="button" data-product="' + safeText(product.id) + '">Ver detalhes ↗</button></div></article>';
+        const badgeStyle = ['green','red','gold','dark'].includes(product.badgeStyle) ? product.badgeStyle : 'green';
+        const badge = product.badgeActive && product.badgeText
+          ? '<span class="product-badge badge-' + badgeStyle + '">' + safeText(product.badgeText) + '</span>'
+          : '';
+        return '<article class="product"><div class="product-art">' + badge + '<div class="vial-visual"><img src="./assets/vial-base.png" alt="Frasco ilustrativo de ' + safeText(product.name) + '"><span class="vial-name">' + safeText(product.name) + '</span></div></div><div class="product-body"><div class="product-category-list">' + categoryLabels + '</div><h3>' + safeText(product.name) + '</h3><p class="short-desc">' + safeText(product.shortDescription || 'Abra para consultar os detalhes do produto.') + '</p><div class="price-row"><div><div class="price-caption">A PARTIR DE</div><div class="price">' + priceText + '</div></div><span class="variant-count">' + variantCount + (variantCount === 1 ? ' apresentação' : ' apresentações') + '</span></div><button class="btn btn-primary" type="button" data-product="' + safeText(product.id) + '">Ver detalhes ↗</button></div></article>';
       }).join('');
       grid.querySelectorAll('[data-product]').forEach(button => button.addEventListener('click', () => openProduct(button.dataset.product)));
     }
@@ -390,7 +394,7 @@
       const [settingsResult, productsResult] = await Promise.all([
         supabaseClient.from('site_settings').select('key,value').in('key', ['brand', 'whatsapp']),
         supabaseClient.from('products')
-          .select('id,legacy_id,name,short_description,description,uses,evidence,disclaimer,active,sort_order,product_categories(category:categories(name,sort_order)),product_variants(id,name,price,active,sort_order)')
+          .select('id,legacy_id,name,short_description,description,uses,evidence,disclaimer,active,sort_order,badge_active,badge_text,badge_style,product_categories(category:categories(name,sort_order)),product_variants(id,name,price,active,sort_order)')
           .eq('active', true)
           .order('sort_order', { ascending: true })
       ]);
@@ -428,6 +432,9 @@
             uses: product.uses || '',
             evidence: product.evidence || '',
             disclaimer: product.disclaimer || '',
+            badgeActive: Boolean(product.badge_active),
+            badgeText: product.badge_text || '',
+            badgeStyle: product.badge_style || 'green',
             variants
           };
         })
