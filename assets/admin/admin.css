@@ -184,3 +184,12 @@ input:focus,select:focus,textarea:focus{border-color:#8eb99a;box-shadow:0 0 0 3p
   .product-variant-row .pv-remove{grid-column:2}
   .product-form-meta{align-items:flex-start;flex-direction:column}
 }
+
+
+/* Editor de selos de destaque do produto */
+.product-badge-editor{margin:18px 0;padding:14px 16px;background:#10271d;border:1px solid #315b40;border-radius:12px}
+.product-badge-editor .product-variant-heading{margin:0 0 8px}
+.product-badge-editor>label:not(.affiliate-active-label){display:block;margin:12px 0 6px;color:var(--muted);font-size:11px}
+.product-badge-editor input:not([type="checkbox"]),.product-badge-editor select{width:100%}
+.product-badge-editor .affiliate-active-label{margin:8px 0!important}
+.product-badge-editor .form-help{margin:8px 0 0;color:var(--muted);font-size:10px;line-height:1.5}
