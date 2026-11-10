@@ -215,6 +215,20 @@
       <label for="productUses">Informações de pesquisa / usos descritos</label><textarea id="productUses" rows="4"></textarea>
       <label for="productEvidence">Evidências / documentação</label><textarea id="productEvidence" rows="4"></textarea>
       <label for="productDisclaimer">Observações e avisos</label><textarea id="productDisclaimer" rows="3"></textarea>
+      <section class="product-badge-editor">
+        <div class="product-variant-heading"><strong>Selo de destaque no catálogo</strong></div>
+        <label class="affiliate-active-label"><input id="productBadgeActive" type="checkbox"> Exibir selo neste produto</label>
+        <label for="productBadgeText">Texto do selo</label>
+        <input id="productBadgeText" type="text" maxlength="40" placeholder="Ex.: BLACK FRIDAY, MAIS VENDIDO, NOVO">
+        <label for="productBadgeStyle">Estilo do selo</label>
+        <select id="productBadgeStyle">
+          <option value="green">Verde — destaque da marca</option>
+          <option value="red">Vermelho — promoção</option>
+          <option value="gold">Dourado — especial</option>
+          <option value="dark">Escuro — discreto</option>
+        </select>
+        <p class="form-help">O selo aparece no cartão do produto. Deixe desativado para ocultá-lo sem apagar o texto.</p>
+      </section>
       <div class="product-variant-heading"><strong>Apresentações e preços</strong><button class="button secondary" id="addProductVariant" type="button">+ Adicionar apresentação</button></div>
       <div id="productVariantRows"></div>
       <div class="product-form-meta"><label>Ordem de exibição<input id="productSortOrder" type="number" step="1" value="0"></label><label class="affiliate-active-label"><input id="productActive" type="checkbox" checked> Produto ativo no catálogo</label></div>
