@@ -157,6 +157,14 @@
     }
 
     const cart = new Map();
+    let appliedCoupon = null;
+    function invalidateAppliedCoupon() {
+      if (!appliedCoupon) return;
+      appliedCoupon = null;
+      const message = document.getElementById('checkoutCouponFeedback');
+      if (message) { message.textContent = 'O carrinho mudou. Valide o cupom novamente.'; message.className = 'checkout-coupon-feedback'; }
+      if (document.getElementById('checkoutReview')) renderCheckoutReview();
+    }
     const cartBackdrop = document.getElementById('cartBackdrop');
     const cartItemsEl = document.getElementById('cartItems');
     const cartTotalEl = document.getElementById('cartTotal');
@@ -164,6 +172,7 @@
     const toastEl = document.getElementById('toast');
     let toastTimer;
     function addToCart(product, variant) {
+      invalidateAppliedCoupon();
       const key = String(product.id) + '::' + String(variant.size);
       const existing = cart.get(key);
       if (existing) existing.qty += 1;
@@ -174,7 +183,7 @@
       clearTimeout(toastTimer);
       toastTimer = setTimeout(() => toastEl.classList.remove('show'), 1800);
     }
-    function changeQty(key, delta) { const item = cart.get(key); if (!item) return; item.qty += delta; if (item.qty <= 0) cart.delete(key); renderCart(); }
+    function changeQty(key, delta) { const item = cart.get(key); if (!item) return; invalidateAppliedCoupon(); item.qty += delta; if (item.qty <= 0) cart.delete(key); renderCart(); }
     function renderCart() {
       const count = [...cart.values()].reduce((sum, item) => sum + item.qty, 0);
       const total = [...cart.values()].reduce((sum, item) => sum + item.price * item.qty, 0);
@@ -190,7 +199,7 @@
       document.getElementById('checkoutWhatsapp').style.opacity = '1';
       cartItemsEl.innerHTML = [...cart.entries()].map(([key, item]) => '<div class="cart-line"><div class="cart-line-top"><div><div class="cart-line-name">' + safeText(item.name) + '</div><div class="cart-line-meta">' + safeText(item.size) + ' · ' + money(item.price) + ' por unidade</div></div><div class="cart-line-price">' + money(item.price * item.qty) + '</div></div><div class="cart-line-controls"><div class="qty-control"><button type="button" data-qty="-1" data-key="' + safeText(key) + '" aria-label="Diminuir quantidade">−</button><span>' + item.qty + '</span><button type="button" data-qty="1" data-key="' + safeText(key) + '" aria-label="Aumentar quantidade">+</button></div><button type="button" class="remove-item" data-remove="' + safeText(key) + '">Remover</button></div></div>').join('');
       cartItemsEl.querySelectorAll('[data-qty]').forEach(btn => btn.addEventListener('click', () => changeQty(btn.dataset.key, Number(btn.dataset.qty))));
-      cartItemsEl.querySelectorAll('[data-remove]').forEach(btn => btn.addEventListener('click', () => { cart.delete(btn.dataset.remove); renderCart(); }));
+      cartItemsEl.querySelectorAll('[data-remove]').forEach(btn => btn.addEventListener('click', () => { invalidateAppliedCoupon(); cart.delete(btn.dataset.remove); renderCart(); }));
     }
     function openCart() { renderCart(); cartBackdrop.classList.add('open'); document.body.style.overflow = 'hidden'; document.getElementById('closeCart').focus(); }
     function closeCart() { cartBackdrop.classList.remove('open'); document.body.style.overflow = ''; }
@@ -210,11 +219,15 @@
       if (!container) return;
       const items = [...cart.values()];
       const count = items.reduce((sum, item) => sum + item.qty, 0);
-      const total = items.reduce((sum, item) => sum + item.price * item.qty, 0);
+      const subtotal = items.reduce((sum, item) => sum + item.price * item.qty, 0);
+      const discount = appliedCoupon && appliedCoupon.subtotal === subtotal ? appliedCoupon.discountAmount : 0;
+      const total = Math.max(0, subtotal - discount);
       container.innerHTML = '<div class="checkout-review-heading"><strong>Revise seu pedido</strong><span>' + count + (count === 1 ? ' item' : ' itens') + '</span></div>' +
         '<div class="checkout-review-items">' + items.map(item =>
           '<div class="checkout-review-line"><div><strong>' + safeText(item.name) + '</strong><span>' + safeText(item.size) + ' · ' + item.qty + ' × ' + money(item.price) + '</span></div><b>' + money(item.price * item.qty) + '</b></div>'
         ).join('') + '</div>' +
+        '<div class="checkout-review-total"><span>Subtotal</span><strong>' + money(subtotal) + '</strong></div>' +
+        (discount > 0 ? '<div class="checkout-review-total coupon-discount-line"><span>Desconto (' + safeText(appliedCoupon.code) + ')</span><strong>− ' + money(discount) + '</strong></div>' : '') +
         '<div class="checkout-review-total"><span>Total estimado</span><strong>' + money(total) + '</strong></div>' +
         '<p class="checkout-review-note">Confira as apresentações e quantidades. A equipe confirmará disponibilidade e condições pelo WhatsApp.</p>';
     }
@@ -222,7 +235,7 @@
     function ensureCheckoutForm() {
       if (document.getElementById('checkoutFormBackdrop')) return;
       const style = document.createElement('style');
-      style.textContent = '.checkout-form-backdrop{position:fixed;inset:0;z-index:1300;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(2,15,9,.72);backdrop-filter:blur(7px)}.checkout-form-backdrop.open{display:flex}.checkout-form-card{width:min(100%,480px);padding:28px;border:1px solid #d7e8dc;border-radius:20px;background:#fbfefc;box-shadow:0 28px 90px rgba(0,0,0,.32)}.checkout-form-head{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:8px}.checkout-form-kicker{color:#07804b;font-size:10px;font-weight:850;letter-spacing:.18em;text-transform:uppercase}.checkout-form-title{margin:6px 0 0;color:#103b25;font-size:25px;line-height:1.2;letter-spacing:-.04em}.checkout-form-description{margin:8px 0 22px;color:#6b7f72;font-size:12px;line-height:1.7}.checkout-form-fields{display:grid;gap:15px}.checkout-form-field{display:grid;gap:6px}.checkout-form-field label{color:#234b34;font-size:11px;font-weight:800}.checkout-form-field input,.checkout-form-field select{width:100%;min-height:48px;padding:12px 14px;border:1px solid #cadfd1;border-radius:10px;background:#fff;color:#173a26;font:inherit;font-size:13px;outline:none}.checkout-form-field input:focus,.checkout-form-field select:focus{border-color:#23a765;box-shadow:0 0 0 3px rgba(35,167,101,.1)}.checkout-form-help{color:#829287;font-size:10px}.checkout-form-actions{display:flex;gap:10px;margin-top:22px}.checkout-form-actions button{flex:1;min-height:46px}.checkout-form-cancel{border:1px solid #d5e4da;border-radius:11px;background:#fff;color:#456452;font-size:11px;font-weight:800;cursor:pointer}@media(max-width:480px){.checkout-form-card{padding:23px 19px}.checkout-form-actions{flex-direction:column-reverse}}';
+      style.textContent = '.checkout-form-backdrop{position:fixed;inset:0;z-index:1300;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(2,15,9,.72);backdrop-filter:blur(7px)}.checkout-form-backdrop.open{display:flex}.checkout-form-card{width:min(100%,480px);padding:28px;border:1px solid #d7e8dc;border-radius:20px;background:#fbfefc;box-shadow:0 28px 90px rgba(0,0,0,.32)}.checkout-form-head{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:8px}.checkout-form-kicker{color:#07804b;font-size:10px;font-weight:850;letter-spacing:.18em;text-transform:uppercase}.checkout-form-title{margin:6px 0 0;color:#103b25;font-size:25px;line-height:1.2;letter-spacing:-.04em}.checkout-form-description{margin:8px 0 22px;color:#6b7f72;font-size:12px;line-height:1.7}.checkout-form-fields{display:grid;gap:15px}.checkout-form-field{display:grid;gap:6px}.checkout-form-field label{color:#234b34;font-size:11px;font-weight:800}.checkout-form-field input,.checkout-form-field select{width:100%;min-height:48px;padding:12px 14px;border:1px solid #cadfd1;border-radius:10px;background:#fff;color:#173a26;font:inherit;font-size:13px;outline:none}.checkout-form-field input:focus,.checkout-form-field select:focus{border-color:#23a765;box-shadow:0 0 0 3px rgba(35,167,101,.1)}.checkout-form-help{color:#829287;font-size:10px}.checkout-coupon{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin:0 0 18px}.checkout-coupon input{min-width:0;min-height:44px;padding:10px 12px;border:1px solid #cadfd1;border-radius:10px;background:#fff;color:#173a26;font:inherit;font-size:13px;text-transform:uppercase}.checkout-coupon button{padding:0 16px;border:0;border-radius:10px;background:#145b39;color:#fff;font-size:11px;font-weight:800;cursor:pointer}.checkout-coupon button:disabled{opacity:.55;cursor:wait}.checkout-coupon-feedback{grid-column:1/-1;margin:0;color:#7a8d80;font-size:11px}.checkout-coupon-feedback.success{color:#087a45}.checkout-coupon-feedback.error{color:#b33b3b}.coupon-discount-line{color:#087a45}.checkout-form-actions{display:flex;gap:10px;margin-top:22px}.checkout-form-actions button{flex:1;min-height:46px}.checkout-form-cancel{border:1px solid #d5e4da;border-radius:11px;background:#fff;color:#456452;font-size:11px;font-weight:800;cursor:pointer}@media(max-width:480px){.checkout-form-card{padding:23px 19px}.checkout-form-actions{flex-direction:column-reverse}}';
       document.head.appendChild(style);
       document.body.insertAdjacentHTML('beforeend',
         '<div class="checkout-form-backdrop" id="checkoutFormBackdrop" role="dialog" aria-modal="true" aria-labelledby="checkoutFormTitle">' +
@@ -230,7 +243,8 @@
             '<div class="checkout-form-head"><div><div class="checkout-form-kicker">Finalização do pedido</div><h2 class="checkout-form-title" id="checkoutFormTitle">Seus dados</h2></div><button class="close" type="button" id="checkoutFormClose" aria-label="Fechar">×</button></div>' +
             '<p class="checkout-form-description">Preencha seus dados para registrar o pedido e continuar pelo WhatsApp.</p>' +
             '<section class="checkout-review" id="checkoutReview" aria-label="Revisão do pedido"></section>' +
-            '<div class="checkout-form-fields">' +
+            '<div class="checkout-coupon"><input id="checkoutCouponCode" type="text" maxlength="30" autocomplete="off" placeholder="Código do cupom" aria-label="Código do cupom"><button type="button" id="applyCheckoutCoupon">Aplicar</button><p class="checkout-coupon-feedback" id="checkoutCouponFeedback" role="status" aria-live="polite"></p></div>' +
+            '<div class="checkout-form-fields">'+
               '<div class="checkout-form-field"><label for="checkoutCustomerName">Nome completo</label><input id="checkoutCustomerName" name="customer_name" type="text" autocomplete="name" maxlength="120" placeholder="Digite seu nome completo" required></div>' +
               '<div class="checkout-form-field"><label for="checkoutCustomerPhone">Telefone com DDD</label><input id="checkoutCustomerPhone" name="customer_phone" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="15" placeholder="(00) 00000-0000" aria-describedby="checkoutPhoneHelp" required><span class="checkout-form-help" id="checkoutPhoneHelp">Informe um telefone com DDD.</span></div>' +
             '</div>' +
@@ -247,6 +261,24 @@
         document.body.style.overflow = cartBackdrop.classList.contains('open') ? 'hidden' : '';
         form.reset();
       };
+      document.getElementById('applyCheckoutCoupon').addEventListener('click', async () => {
+        const input = document.getElementById('checkoutCouponCode');
+        const feedback = document.getElementById('checkoutCouponFeedback');
+        const button = document.getElementById('applyCheckoutCoupon');
+        const code = input.value.trim().toUpperCase();
+        const subtotal = [...cart.values()].reduce((sum, item) => sum + item.price * item.qty, 0);
+        if (!code) { feedback.textContent = 'Digite o código do cupom.'; feedback.className = 'checkout-coupon-feedback error'; input.focus(); return; }
+        button.disabled = true; button.textContent = 'Validando…';
+        try {
+          const { data, error } = await supabaseClient.rpc('validate_discount_coupon', { p_code: code, p_subtotal: subtotal });
+          if (error) throw error;
+          if (!data?.valid) { appliedCoupon = null; feedback.textContent = data?.message || 'Cupom não disponível.'; feedback.className = 'checkout-coupon-feedback error'; }
+          else { appliedCoupon = { code: data.code, discountAmount: Number(data.discount_amount), subtotal }; feedback.textContent = 'Cupom aplicado. Você economiza ' + money(data.discount_amount) + '.'; feedback.className = 'checkout-coupon-feedback success'; }
+          renderCheckoutReview();
+        } catch (error) {
+          appliedCoupon = null; feedback.textContent = error.message || 'Não foi possível validar o cupom.'; feedback.className = 'checkout-coupon-feedback error'; renderCheckoutReview();
+        } finally { button.disabled = false; button.textContent = 'Aplicar'; }
+      });
       phoneInput.addEventListener('input', () => {
         phoneInput.value = formatBrazilPhone(phoneInput.value);
       });
@@ -305,6 +337,7 @@
               customer_phone: customerPhone,
               payment_method: 'other',
               affiliate_ref: currentAffiliateId || null,
+              coupon_code: appliedCoupon?.code || null,
               items: items.map(item => ({ variant_id: item.variantId, quantity: item.qty }))
             })
           });
