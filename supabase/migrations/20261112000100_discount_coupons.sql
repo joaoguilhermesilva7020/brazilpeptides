@@ -114,8 +114,8 @@ begin
      or (p_discount_type = 'fixed' and p_discount_value > 1000000) then
     raise exception 'Valor de desconto inválido.';
   end if;
-  if p_expires_at is null or p_expires_at <= now() then
-    raise exception 'A validade deve ser uma data e horário futuros.';
+  if p_expires_at is null or (coalesce(p_active,true) and p_expires_at <= now()) then
+    raise exception 'A validade de um cupom ativo deve ser uma data e horário futuros.';
   end if;
   if p_coupon_id is null then
     insert into public.discount_coupons(code, discount_type, discount_value, expires_at, active)
