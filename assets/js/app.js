@@ -257,6 +257,7 @@
       const form = document.getElementById('checkoutCustomerForm');
       const phoneInput = document.getElementById('checkoutCustomerPhone');
       const closeForm = () => {
+        appliedCoupon = null;
         backdrop.classList.remove('open');
         document.body.style.overflow = cartBackdrop.classList.contains('open') ? 'hidden' : '';
         form.reset();
