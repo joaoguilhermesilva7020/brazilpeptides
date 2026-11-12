@@ -349,14 +349,18 @@
           const order = result.data;
           const lines = items.map(item => '• ' + item.name + ' — ' + item.size + ' | Qtd: ' + item.qty + ' | ' + money(item.price * item.qty));
           const affiliateLine = currentAffiliateId ? '\nREF: ' + currentAffiliateId : '';
+          const discountLine = Number(order.discount || 0) > 0
+            ? '\nSubtotal: ' + money(order.subtotal) + '\nCupom: ' + (order.coupon_code || appliedCoupon?.code || '') + '\nDesconto: − ' + money(order.discount)
+            : '';
           const message = 'Olá! Meu pedido foi registrado no site.\n\nPedido nº: ' + order.order_number +
-            '\n' + lines.join('\n') + '\n\nTotal registrado: ' + money(order.total) +
+            '\n' + lines.join('\n') + discountLine + '\n\nTotal registrado: ' + money(order.total) +
             affiliateLine +
             '\n\nAguardo as orientações para pagamento e confirmação.';
           const destination = waUrl(message);
           if (whatsappWindow) whatsappWindow.location.href = destination;
           else window.location.href = destination;
           cart.clear();
+          appliedCoupon = null;
           renderCart();
           closeForm();
           closeCart();
