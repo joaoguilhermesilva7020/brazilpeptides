@@ -95,7 +95,7 @@
     try {
       const { data, error } = await client
         .from('orders')
-        .select('id,order_number,customer_name,customer_phone,customer_email,status,payment_status,subtotal,discount,total,affiliate_ref,notes,created_at,order_items(id,variant_id,product_name_snapshot,variant_name_snapshot,sku_snapshot,unit_price,quantity,line_total),payments(id,method,amount,status,payment_reference,confirmed_at,notes,created_at)')
+        .select('id,order_number,customer_name,customer_phone,customer_email,status,payment_status,subtotal,discount,total,coupon_code,affiliate_ref,notes,created_at,order_items(id,variant_id,product_name_snapshot,variant_name_snapshot,sku_snapshot,unit_price,quantity,line_total),payments(id,method,amount,status,payment_reference,confirmed_at,notes,created_at)')
         .order('created_at', { ascending: false })
         .limit(200);
       if (error) throw error;
@@ -324,7 +324,7 @@
     $('affiliateCommissionValue').placeholder = fixed ? 'Ex.: 25,00' : 'Ex.: 10';
     $('affiliateCommissionHelp').textContent = fixed
       ? 'Valor fixo registrado quando o pagamento do pedido for confirmado.'
-      : 'Calculada sobre o subtotal quando o pagamento for confirmado. A taxa vigente na confirmação será aplicada também a pedidos já atribuídos e ainda pendentes.';
+      : 'Calculada sobre o total após descontos quando o pagamento for confirmado. A taxa vigente na confirmação será aplicada também a pedidos já atribuídos e ainda pendentes.';
   }
 
   async function generateAffiliateCode() {
@@ -506,6 +506,7 @@
       ['Status do pagamento', paymentLabels[order.payment_status] || order.payment_status],
       ['Forma de pagamento', methodLabels[payment?.method] || payment?.method || '—'],
       ['Referência afiliado', order.affiliate_ref || '—'],
+      ['Cupom', order.coupon_code || '—'],
       ['Subtotal', money(order.subtotal)],
       ['Desconto', money(order.discount)],
       ['Total', money(order.total)],
