@@ -146,6 +146,6 @@
       feedback('Cupom desativado. O histórico foi preservado.',true); await loadCoupons();
     } catch(error) { feedback(error.message || 'Não foi possível desativar o cupom.'); }
   }
-  document.addEventListener('aset:admin-ready',init);
+  document.addEventListener('aset:admin-ready',() => Promise.resolve().then(init));
   if($('dashboardView') && !$('dashboardView').classList.contains('hidden')) init();
 })();
