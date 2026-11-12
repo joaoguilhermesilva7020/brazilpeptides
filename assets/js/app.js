@@ -262,6 +262,16 @@
         document.body.style.overflow = cartBackdrop.classList.contains('open') ? 'hidden' : '';
         form.reset();
       };
+      document.getElementById('checkoutCouponCode').addEventListener('input', () => {
+        const input = document.getElementById('checkoutCouponCode');
+        if (appliedCoupon && input.value.trim().toUpperCase() !== appliedCoupon.code) {
+          appliedCoupon = null;
+          const feedback = document.getElementById('checkoutCouponFeedback');
+          feedback.textContent = 'Aplique o novo código para atualizar o desconto.';
+          feedback.className = 'checkout-coupon-feedback';
+          renderCheckoutReview();
+        }
+      });
       document.getElementById('applyCheckoutCoupon').addEventListener('click', async () => {
         const input = document.getElementById('checkoutCouponCode');
         const feedback = document.getElementById('checkoutCouponFeedback');
