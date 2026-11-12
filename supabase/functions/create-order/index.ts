@@ -2,6 +2,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const allowedOrigins = new Set([
   "https://joaoguilhermesilva7020.github.io",
+  "https://asetlife.com",
+  "https://www.asetlife.com",
 ]);
 
 function corsHeadersFor(req: Request): Headers {
@@ -53,6 +55,7 @@ Deno.serve(async (req) => {
         customer_email: body.customer_email ?? null,
         payment_method: body.payment_method,
         affiliate_ref: body.affiliate_ref ?? null,
+        coupon_code: body.coupon_code ?? null,
         notes: body.notes ?? null,
         items: body.items.map((item: { variant_id: string; quantity: number }) => ({
           variant_id: item.variant_id,
