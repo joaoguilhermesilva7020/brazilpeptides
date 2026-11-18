@@ -26,6 +26,11 @@
       currentAffiliate = currentAffiliateId ? { id: currentAffiliateId } : null;
     }
 
+    // Meta Pixel: eventos enviados apenas quando a ação correspondente realmente acontece.
+    function trackMetaEvent(eventName, params) {
+      if (typeof window.fbq === 'function') window.fbq('track', eventName, params || {});
+    }
+
     function money(value) {
       return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 2 }).format(Number(value));
     }
@@ -142,6 +147,13 @@
       const p = (catalog.products || []).find(item => item.id === id);
       if (!p) return;
       selectedProduct = p;
+      trackMetaEvent('ViewContent', {
+        content_ids: [String(p.id)],
+        content_name: p.name,
+        content_type: 'product',
+        value: productMinPrice(p) ?? 0,
+        currency: 'BRL'
+      });
       document.getElementById('modalCategory').textContent = productCategories(p).join(' · ') || 'CATÁLOGO';
       document.getElementById('modalTitle').textContent = p.name;
       const variants = (p.variants || []);
@@ -174,6 +186,14 @@
     function addToCart(product, variant) {
       invalidateAppliedCoupon();
       const key = String(product.id) + '::' + String(variant.size);
+      trackMetaEvent('AddToCart', {
+        content_ids: [String(product.id)],
+        content_name: product.name,
+        content_type: 'product',
+        contents: [{ id: String(product.id), quantity: 1, item_price: Number(variant.price) }],
+        value: Number(variant.price),
+        currency: 'BRL'
+      });
       const existing = cart.get(key);
       if (existing) existing.qty += 1;
       else cart.set(key, { id: product.id, variantId: variant.id, name: product.name, size: variant.size, price: Number(variant.price), qty: 1 });
@@ -358,6 +378,18 @@
           }
 
           const order = result.data;
+          const orderValue = Number(order.total);
+          const eventContents = items.map(item => ({ id: String(item.id), quantity: item.qty, item_price: item.price }));
+          // Lead só é registrado depois que o backend confirma o registro do pedido e recebeu os dados do cliente.
+          trackMetaEvent('Lead', {
+            content_name: 'Pedido iniciado pelo site',
+            content_category: 'WhatsApp checkout',
+            content_ids: items.map(item => String(item.id)),
+            contents: eventContents,
+            num_items: items.reduce((sum, item) => sum + item.qty, 0),
+            value: Number.isFinite(orderValue) ? orderValue : 0,
+            currency: 'BRL'
+          });
           const lines = items.map(item => '• ' + item.name + ' — ' + item.size + ' | Qtd: ' + item.qty + ' | ' + money(item.price * item.qty));
           const affiliateLine = currentAffiliateId ? '\nREF: ' + currentAffiliateId : '';
           const discountLine = Number(order.discount || 0) > 0
@@ -368,6 +400,13 @@
             affiliateLine +
             '\n\nAguardo as orientações para pagamento e confirmação.';
           const destination = waUrl(message);
+          trackMetaEvent('Contact', {
+            content_name: 'Atendimento pelo WhatsApp',
+            content_category: 'Pedido',
+            content_ids: items.map(item => String(item.id)),
+            value: Number.isFinite(orderValue) ? orderValue : 0,
+            currency: 'BRL'
+          });
           if (whatsappWindow) whatsappWindow.location.href = destination;
           else window.location.href = destination;
           cart.clear();
@@ -392,6 +431,13 @@
         alert('O WhatsApp da loja não está configurado. Entre em contato com o suporte.');
         return;
       }
+      trackMetaEvent('InitiateCheckout', {
+        content_ids: [...cart.values()].map(item => String(item.id)),
+        contents: [...cart.values()].map(item => ({ id: String(item.id), quantity: item.qty, item_price: item.price })),
+        num_items: [...cart.values()].reduce((sum, item) => sum + item.qty, 0),
+        value: [...cart.values()].reduce((sum, item) => sum + item.price * item.qty, 0),
+        currency: 'BRL'
+      });
       ensureCheckoutForm();
       const backdrop = document.getElementById('checkoutFormBackdrop');
       renderCheckoutReview();
@@ -408,6 +454,28 @@
     modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
     search.addEventListener('input', renderProducts);
+    let lastTrackedSearch = '';
+    function trackCatalogSearch() {
+      const query = search.value.trim();
+      if (!query) { lastTrackedSearch = ''; return; }
+      if (query.toLocaleLowerCase('pt-BR') === lastTrackedSearch) return;
+      lastTrackedSearch = query.toLocaleLowerCase('pt-BR');
+      trackMetaEvent('Search', { search_string: query, content_category: 'Catálogo de produtos' });
+    }
+    search.addEventListener('change', trackCatalogSearch);
+    search.addEventListener('search', trackCatalogSearch);
+    search.addEventListener('keydown', event => { if (event.key === 'Enter') trackCatalogSearch(); });
+
+    // Links de atendimento direto (rodapé e programa de afiliados).
+    document.addEventListener('click', event => {
+      const link = event.target.closest('a[href]');
+      if (!link) return;
+      let url;
+      try { url = new URL(link.href, window.location.href); } catch (_) { return; }
+      if (url.hostname === 'wa.me' || url.hostname.endsWith('.whatsapp.com') || url.hostname === 'api.whatsapp.com') {
+        trackMetaEvent('Contact', { content_name: link.id === 'affiliatePopupWhatsapp' ? 'Programa de afiliados' : 'Contato pelo WhatsApp', content_category: 'WhatsApp' });
+      }
+    });
 
     function setupAffiliatePopup() {
       const popup = document.getElementById('affiliatePopup');
