@@ -108,6 +108,7 @@
       container.querySelectorAll('[data-category]').forEach(button => {
         button.addEventListener('click', () => {
           activeCategory = button.dataset.category;
+          if (activeCategory !== 'Todas') trackMetaEvent('Search', { search_string: activeCategory, content_category: 'Filtro de categoria' });
           renderCategoryFilters();
           renderProducts();
         });
